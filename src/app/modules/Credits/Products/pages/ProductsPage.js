@@ -8,11 +8,25 @@ import { ListingTableContextProvider } from "./Listing/ListingTableContext";
 import { EditContextProvider } from "./Edit/Context/EditContext";
 
 export default function CreditsPage() {
-    return (
-        <Switch>
-            <ContentRoute path="/credits/products" exact component={Listing} ContextProvider={ListingTableContextProvider} />
-            <ContentRoute path="/credits/products/new" exact component={ProductCreate} ContextProvider={EditContextProvider}/> 
-            <ContentRoute path="/credits/products/edit/:id" component={ProductEdit} ContextProvider={EditContextProvider}/>
-        </Switch>
-    )
+  return (
+    <Switch>
+      <ContentRoute
+        path="/credits/products"
+        exact
+        component={Listing}
+        ContextProvider={ListingTableContextProvider}
+      />
+      <ContentRoute
+        path="/credits/products/new"
+        exact
+        component={ProductCreate}
+        ContextProvider={EditContextProvider}
+      />
+      <ContentRoute
+        path="/credits/products/edit/:id"
+        component={ProductEdit}
+        ContextProvider={EditContextProvider}
+      />
+    </Switch>
+  );
 }

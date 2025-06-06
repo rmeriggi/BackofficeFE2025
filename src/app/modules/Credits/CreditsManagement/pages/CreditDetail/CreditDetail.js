@@ -16,25 +16,26 @@ import ActivitiesRegisters from "./Flaps/ActivitiesRegister/ActivitiesRegisters"
 import { CreditDetailInfo } from "./Flaps/CreditDetailInfo/CreditDetailInfo";
 import { NewContactModal } from "./Flaps/CreditDetailInfo/modals/NewContactModal";
 
-const CreditDetail= ({history, data}) => {
-
+const CreditDetail = ({ history, data }) => {
   const [tab, setTab] = useState("credit-detail");
 
-  const suhbeader = useSubheader()
-  suhbeader.setTitle("Detalle de crédito")
+  const suhbeader = useSubheader();
+  suhbeader.setTitle("Detalle de crédito");
 
-  const [showNewContactModal, setShowNewContactModal] = useState(false)
-  const [creditData] = data
+  const [showNewContactModal, setShowNewContactModal] = useState(false);
+  const [creditData] = data;
 
   const closeNewContactModal = () => {
-    setShowNewContactModal(false)
-  }
+    setShowNewContactModal(false);
+  };
 
   const backToProductsList = () => {
-    if(history.location.state?.from.includes("/clients/clients/edit/")){
-      history.push(`/clients/clients/edit/${history.location.state.id}`, {tab : "credit"})
-    }else{
-      history.goBack()
+    if (history.location.state?.from.includes("/clients/clients/edit/")) {
+      history.push(`/clients/clients/edit/${history.location.state.id}`, {
+        tab: "credit",
+      });
+    } else {
+      history.goBack();
     }
   };
 
@@ -44,7 +45,7 @@ const CreditDetail= ({history, data}) => {
     <Card>
       <CardHeader>
         <CardHeaderToolbar className="w-100 justify-content-between flex-nowrap">
-          <AccountsData idClient={credit.idClient}/>
+          <AccountsData idClient={credit.idClient} />
           <div>
             <Button
               variant="outlined"
@@ -55,11 +56,17 @@ const CreditDetail= ({history, data}) => {
             >
               Volver
             </Button>
-          </div> 
+          </div>
         </CardHeaderToolbar>
       </CardHeader>
       <CardBody>
-      <h5>Nro. de Crédito: {credit.id}{history.location.state ? " - " + history.location.state.originalId : ""} - Gestor: {credit.user.name}</h5>
+        <h5>
+          Nro. de Crédito: {credit.id}
+          {history.location.state
+            ? " - " + history.location.state.originalId
+            : ""}{" "}
+          - Gestor: {credit.user.name}
+        </h5>
         <ul className="nav nav-tabs nav-tabs-line " role="tablist">
           <li className="nav-item" onClick={() => setTab("credit-detail")}>
             <a
@@ -82,33 +89,30 @@ const CreditDetail= ({history, data}) => {
             </a>
           </li>
         </ul>
-        
+
         <div className="mt-5">
           {tab === "credit-detail" && (
-          
             <CreditDetailInfo
               creditDetail={credit}
               idClient={credit.idClient}
             />
           )}
-          {tab === "activities" && (
-           <ActivitiesRegisters />
-          )}
+          {tab === "activities" && <ActivitiesRegisters />}
         </div>
-        <NewContactModal 
-          show={showNewContactModal} 
-          onHide={closeNewContactModal} 
+        <NewContactModal
+          show={showNewContactModal}
+          onHide={closeNewContactModal}
         />
       </CardBody>
     </Card>
   );
-}
+};
 
 const hooks = [
   {
     hook: useOneCredit,
-    params: "id"
-  }
-]
+    params: "id",
+  },
+];
 
-export default withLayoutSplashScreen(CreditDetail, hooks)
+export default withLayoutSplashScreen(CreditDetail, hooks);

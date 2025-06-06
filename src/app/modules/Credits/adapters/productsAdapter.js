@@ -1,20 +1,17 @@
 export const productsAdapter = (products) => {
-  if(!products) return []
-  const formattedProducts = products.products.map((p) => {
-    const formattedProduct = {
-      TNA: p.TNA,
-      amount: p.amount,
-      date: p.date,
-      id: p.id,
-      idCountry: p.idCountry,
-      idCurrency: p.idCurrency,
-      idEntity: p.idEntity,
-      product: p.product,
-      status: p.status,
-      timestamp: p.timestamp,
-      iva: p.iva,
-    }
-    return formattedProduct
-  })
-  return formattedProducts
-}
+  if (!Array.isArray(products)) return [];
+
+  return products.map((p) => ({
+    TNA: parseFloat(p.TNA),
+    amount: parseFloat(p.amount),
+    date: p.date,
+    id: parseInt(p.id),
+    idCountry: parseInt(p.idCountry),
+    idCurrency: parseInt(p.idCurrency),
+    idEntity: parseInt(p.idEntity),
+    product: p.product?.trim(),
+    status: p.status,
+    timestamp: p.timestamp,
+    iva: parseFloat(p.iva),
+  }));
+};

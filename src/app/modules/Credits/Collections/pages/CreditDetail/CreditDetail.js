@@ -1,7 +1,10 @@
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid,jsx-a11y/role-supports-aria-props */
 import { Button } from "@material-ui/core";
 import React, { useState } from "react";
-import { LayoutSplashScreen, useSubheader } from "../../../../../../_metronic/layout";
+import {
+  LayoutSplashScreen,
+  useSubheader,
+} from "../../../../../../_metronic/layout";
 import {
   Card,
   CardBody,
@@ -19,44 +22,44 @@ import { useParams } from "react-router-dom";
 import { oneCreditAdapter } from "../../../adapters/creditsAdapters";
 import { managmentStatusAdapter } from "../../../adapters";
 
-export function CreditDetail({history}) {
-  
+export function CreditDetail({ history }) {
   const [tab, setTab] = useState("credit-detail");
-  
+
   const isMounted = useIsMountedRef();
   const { id } = useParams();
-  const suhbeader = useSubheader()
-  suhbeader.setTitle("Detalle de crédito")
+  const suhbeader = useSubheader();
+  suhbeader.setTitle("Detalle de crédito");
 
-  
+  const [showNewContactModal, setShowNewContactModal] = useState(false);
 
-  const [showNewContactModal, setShowNewContactModal] = useState(false)
-
-  const [creditData, creditCompleted] = useOneCredit(isMounted, id)
-  const [managmentStatus, managmentCompleted] = useManagmentStatus(isMounted, 0)
+  const [creditData, creditCompleted] = useOneCredit(isMounted, id);
+  const [managmentStatus, managmentCompleted] = useManagmentStatus(
+    isMounted,
+    0
+  );
 
   const openNewContactModal = (id) => {
-    setShowNewContactModal(true)
-  }
+    setShowNewContactModal(true);
+  };
   const closeNewContactModal = () => {
-    setShowNewContactModal(false)
-  }
+    setShowNewContactModal(false);
+  };
 
   const backToProductsList = () => {
     history.push(`/credits/management`);
   };
 
-  if(!(creditCompleted && managmentCompleted)) return <LayoutSplashScreen />
+  if (!(creditCompleted && managmentCompleted)) return <LayoutSplashScreen />;
 
-  const credit    = oneCreditAdapter(creditData.credit);
-  const managment = managmentStatusAdapter(managmentStatus)
+  const credit = oneCreditAdapter(creditData.credit);
+  const managment = managmentStatusAdapter(managmentStatus);
 
   return (
     <Card>
       <CardHeader>
         <CardHeaderToolbar className="w-100 justify-content-between flex-nowrap">
-          <AccountsData idClient={credit.idClient}/>
-          <div className="d-flex flex-nowrap" style={{height: '40px'}}>
+          <AccountsData idClient={credit.idClient} />
+          <div className="d-flex flex-nowrap" style={{ height: "40px" }}>
             <Button
               variant="outlined"
               color="secondary"
@@ -73,11 +76,15 @@ export function CreditDetail({history}) {
             >
               Nuevo Contacto
             </Button>
-          </div> 
+          </div>
         </CardHeaderToolbar>
       </CardHeader>
       <CardBody>
-      <h5>Nro. de Crédito: {credit.id}{credit.originalId ? " - " + credit.originalId : ""} - Gestor: {credit.user.name}</h5>
+        <h5>
+          Nro. de Crédito: {credit.id}
+          {credit.originalId ? " - " + credit.originalId : ""} - Gestor:{" "}
+          {credit.user.name}
+        </h5>
         <ul className="nav nav-tabs nav-tabs-line " role="tablist">
           <li className="nav-item" onClick={() => setTab("credit-detail")}>
             <a
@@ -99,7 +106,6 @@ export function CreditDetail({history}) {
               Registro de actividades
             </a>
           </li>
-          
         </ul>
         <div className="mt-5">
           {tab === "credit-detail" && (
@@ -109,15 +115,13 @@ export function CreditDetail({history}) {
             />
           )}
           {tab === "activities" && (
-           <ActivitiesRegisters idClient={credit.idClient}/>
+            <ActivitiesRegisters idClient={credit.idClient} />
           )}
-          {tab === "contact" && (
-           <Contact idClient={credit.idClient}/>
-          )}
+          {tab === "contact" && <Contact idClient={credit.idClient} />}
         </div>
-        <NewContactModal 
-          show={showNewContactModal} 
-          onHide={closeNewContactModal} 
+        <NewContactModal
+          show={showNewContactModal}
+          onHide={closeNewContactModal}
           idClient={credit.idClient}
           managmentStatus={managment}
         />
@@ -125,4 +129,3 @@ export function CreditDetail({history}) {
     </Card>
   );
 }
-

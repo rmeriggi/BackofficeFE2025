@@ -35,7 +35,7 @@ export default function Listing() {
   useEffect(() => {
     const getProducts = async () => {
       const response = await getAllProducts(initialValues);
-      setData(response);
+      setData(response.products);
       disableLoading();
     };
     getProducts();
@@ -44,7 +44,9 @@ export default function Listing() {
 
   if (!data) return <LayoutSplashScreen />;
 
-  const products = data?.products ? productsAdapter(data.products) : [];
+  const products = productsAdapter(data);
+
+  console.log(products);
 
   return (
     <Card>
@@ -57,7 +59,7 @@ export default function Listing() {
             enableLoading={enableLoading}
             disableLoading={disableLoading}
           />
-          <ListingFilter disabled={products.length === 0} />
+          <ListingFilter disabled={data.length === 0} />
           <Button
             variant="contained"
             color="secondary"
@@ -73,7 +75,7 @@ export default function Listing() {
         {loading ? (
           <CircularProgress size={20} color="secondary" />
         ) : (
-          <ListingTable productsData={products} />
+          <ListingTable productsData={data} />
         )}
       </CardBody>
     </Card>

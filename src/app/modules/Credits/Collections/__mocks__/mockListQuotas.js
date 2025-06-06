@@ -1,0 +1,48 @@
+export default {
+  quotas : [
+    {
+      id: 457,
+      idCredit: 29,
+      statusQuota: "test",
+      quota: 1,
+      amount: 1000.0000,
+      expiration: "2022-01-19T21:07:22.097",
+      interest: 100.0000,
+      capital: 900.0000,
+      expenses: 0.0000,
+      punitive: 0.0000,
+      taxes: 0.0000,
+      collect: 0.0000,
+      pending: 1000.0000,
+      timestamp: "0001-01-01T00:00:00",
+      sure: 0.0000,
+      platform: 0.0000,
+      iva: 21.0000,
+      tna: 320.00,
+      total: 10,
+      lastPayment:"2022-01-19T21:07:22.097"
+    },
+    {
+    id: 458,
+    idCredit: 29,
+    quota: 2,
+    statusQuota: "test",
+    amount: 1000.0000,
+    expiration: "2022-01-19T21:07:22.097",
+    interest: 100.0000,
+    capital: 900.0000,
+    expenses: 0.0000,
+    punitive: 0.0000,
+    taxes: 0.0000,
+    collect: 0.0000,
+    pending: 1000.0000,
+    timestamp: "0001-01-01T00:00:00",
+    sure: 0.0000,
+    platform: 0.0000,
+    iva: 21.0000,
+    tna: 320.00,
+    total: 10,
+    lastPayment: "2022-01-19T21:07:22.097"
+    },
+  ]
+}

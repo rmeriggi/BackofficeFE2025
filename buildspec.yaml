@@ -1,0 +1,26 @@
+# Do not change version. This is the version of aws buildspec, not the version of your buldspec file.
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      nodejs: 14
+    commands:
+      - echo Installing source NPM dependencies...
+      - npm install
+  pre_build:
+    commands:
+      - echo Nothing to do here...
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Compiling the Node.js code
+      - export NODE_OPTIONS="--max_old_space_size=7168"
+      - npm run build
+  post_build:
+    commands:
+      - echo Build completed on `date`
+# Include only the files required for your application to run.
+artifacts:
+  files:
+    - '**/*'
+  base-directory: build

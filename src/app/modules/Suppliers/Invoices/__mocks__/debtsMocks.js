@@ -1,0 +1,50 @@
+export default {
+  "debts": [
+    {
+        "id": 8,
+        "id_account": 161,
+        "id_type_movement": 30,
+        "id_category": 3,
+        "id_center_cost": 15,
+        "cuit": "20397182089",
+        "businnes_name": "Pedro Gomez",
+        "date": "6/26/2024 7:17:55 PM",
+        "expiration_date": "10/17/2024",
+        "payment_condition": null,
+        "trx_automatic": 0,
+        "email": "ejemplo@maxplus.com",
+        "url": "",
+        "receipt": "",
+        "amount": 3.2,
+        "received": 0,
+        "pending": 3.2,
+        "description": "",
+        "executed": 0,
+        "id_origin": 2,
+        "time_stamp": "6/26/2024 7:17:55 PM"
+    },
+    {
+        "id": 9,
+        "id_account": 161,
+        "id_type_movement": 30,
+        "id_category": 3,
+        "id_center_cost": 15,
+        "cuit": "20397182089",
+        "businnes_name": "Pedro Gomez",
+        "date": "6/26/2024 7:19:54 PM",
+        "expiration_date": "10/17/2024",
+        "payment_condition": null,
+        "trx_automatic": 0,
+        "email": "ejemplo@maxplus.com",
+        "url": "",
+        "receipt": "",
+        "amount": 3.2,
+        "received": 0,
+        "pending": 3.2,
+        "description": "",
+        "executed": 0,
+        "id_origin": 2,
+        "time_stamp": "6/26/2024 7:19:54 PM"
+    }
+]
+}

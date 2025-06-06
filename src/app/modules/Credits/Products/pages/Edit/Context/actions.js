@@ -1,0 +1,2 @@
+export const EDIT_PRODUCT = "EDIT_PRODUCT"
+export const GET_ONE_PRODUCT = "GET_ONE_PRODUCT"

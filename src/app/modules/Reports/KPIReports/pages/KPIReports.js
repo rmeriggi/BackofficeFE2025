@@ -17,7 +17,7 @@ const KPIReports = () => {
     <div className="container-fluid py-4" ref={printRef}>
       <div
         className="card-header border-0 py-5 d-flex justify-content-between align-items-center"
-        style={{ marginBottom: "2rem" }} // espacio debajo del header
+        style={{ marginBottom: "2rem" }}
       >
         <div>
           <h3 className="card-title align-items-start flex-column mb-1">

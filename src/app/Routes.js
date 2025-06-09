@@ -12,14 +12,14 @@ import { Layout } from "../_metronic/layout";
 import BasePage from "./BasePage";
 import { Logout, AuthPage } from "./modules/Auth";
 import { ErrorPage } from "./pages/ErrorsPage";
-import {getFirstPageLinkWithAccess} from "./utils/access";
+import { getFirstPageLinkWithAccess } from "./utils/access";
 
 export function Routes() {
   const { isAuthorized, menu, access } = useSelector(
     ({ auth }) => ({
       isAuthorized: auth.user != null,
-        menu: auth.menu,
-        access: auth.access
+      menu: auth.menu,
+      access: auth.access,
     }),
     shallowEqual
   );
@@ -31,14 +31,14 @@ export function Routes() {
         <Route>
           <AuthPage />
         </Route>
-      ) :
-        /*Otherwise redirect to root page (`/`)*/
-          typeof menu == 'undefined' || typeof access == 'undefined' ? (<Route component={null} />) : (<Redirect from="/auth" to={getFirstPageLinkWithAccess(menu, access)} />)
-      }
-
+      ) : /*Otherwise redirect to root page (`/`)*/
+      typeof menu == "undefined" || typeof access == "undefined" ? (
+        <Route component={null} />
+      ) : (
+        <Redirect from="/auth" to={getFirstPageLinkWithAccess(menu, access)} />
+      )}
       <Route path="/error" component={ErrorPage} />
       <Route path="/logout" component={Logout} />
-
       {!isAuthorized ? (
         /*Redirect to `/auth` when user is not authorized*/
         <Redirect to="/auth/login" />

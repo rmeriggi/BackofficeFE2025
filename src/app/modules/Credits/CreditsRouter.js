@@ -40,9 +40,6 @@ const CreditsManagementPage = lazy(() =>
 const CollectionsCampaignsPage = lazy(() =>
   import("../Credits/CollectionsCampaigns/pages/CollectionsCampaignsPage")
 );
-const KPIReportsPage = lazy(() =>
-  import("../Credits/CollectionsCampaigns/pages/CollectionsCampaignsPage")
-);
 
 export default function ProductsRouter() {
   const access = useSelector((state) => state.auth.access);
@@ -139,14 +136,7 @@ export default function ProductsRouter() {
           access
         )}
       />
-      <ContentRoute
-        path={baseRouterUrl + "/kpi-reports"}
-        component={checkRouteAccess(
-          "credits.Reporte KPI",
-          KPIReportsPage,
-          access
-        )}
-      />
+
       <Route component={ErrorPageMenu} />
     </Switch>
   );

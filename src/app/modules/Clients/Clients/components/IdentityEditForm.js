@@ -61,7 +61,7 @@ export function IdentityEditForm({ setData }) {
   const [progress, setProgress] = useState(false);
   const {
     open,
-    setOpen,
+    /*   setOpen, */
     variant,
     message,
     handleClose,

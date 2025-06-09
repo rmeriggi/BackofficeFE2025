@@ -1,14 +1,22 @@
 import React from "react";
-import { Formik, Form, Field } from "formik";
+import { /*  Formik, Form, */ Field } from "formik";
 
-const SelectInput = ({ field, form, options, set, valueName, keyName, values }) => {
+const SelectInput = ({
+  field,
+  form,
+  options,
+  set,
+  valueName,
+  keyName,
+  values,
+}) => {
   const handleChange = (e) => {
-    set(valueName, e.target.value)
+    set(valueName, e.target.value);
   };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      set(valueName, e.target.value)
+      set(valueName, e.target.value);
     }
   };
 
@@ -29,24 +37,26 @@ const SelectInput = ({ field, form, options, set, valueName, keyName, values }) 
   );
 };
 
-const GeneralSelectorArrow = ({data, setField, valueName, keyName, values}) => {
-
+const GeneralSelectorArrow = ({
+  data,
+  setField,
+  valueName,
+  keyName,
+  values,
+}) => {
   return (
     <div>
-          <Field
-            name={valueName}
-            component={SelectInput}
-            options={data}
-            set={setField}
-            valueName={valueName}
-            keyName={keyName}
-            values={values}
-          />
+      <Field
+        name={valueName}
+        component={SelectInput}
+        options={data}
+        set={setField}
+        valueName={valueName}
+        keyName={keyName}
+        values={values}
+      />
     </div>
   );
 };
 
 export default GeneralSelectorArrow;
-
-
-

@@ -18,7 +18,7 @@ import { GeneralSelector } from "../../../../components/Fields/GeneralSelector";
 import { updateRelation } from "../../../../_redux/relations/relationsCrud";
 import { getAllRelations } from "../../../../_redux/relations/relationsActions";
 import { useDispatch } from "react-redux";
-import { getOne, getUrlImages } from "../../BankAccounts/utils/service"; 
+import { getOne, getUrlImages } from "../../BankAccounts/utils/service";
 
 const RelationEdit = Yup.object().shape({
   participation: Yup.number().required("Nombre es un campo requerido"),
@@ -31,7 +31,7 @@ export function RelationsEdit({
   setIsEdit,
   setSelectedRelation,
   selectedRelation,
-  clientId, 
+  clientId,
 }) {
   const formikRef = useRef(null);
   const dispatch = useDispatch();
@@ -44,9 +44,9 @@ export function RelationsEdit({
     img3: false,
     img4: false,
   });
-  const [clientData, setClientData] = useState({}); 
-  const [urlImage, setUrlImage] = useState("");
-  const [imageUrls, setImageUrls] = useState({}); 
+  const [clientData, setClientData] = useState({});
+  const [, /* urlImage */ setUrlImage] = useState("");
+  const [imageUrls, setImageUrls] = useState({});
 
   useEffect(() => {
     const fetchClientData = async () => {
@@ -61,21 +61,24 @@ export function RelationsEdit({
     if (clientId || id) {
       fetchClientData();
     }
-  }, [clientId, id]); 
+  }, [clientId, id]);
 
   useEffect(() => {
     const fetchImageUrl = async () => {
       try {
-        const response = await getUrlImages(); 
-        const imageUrl = response.url.replace("VALIDATIONS", "DOCUMENTS"); 
-        setUrlImage(imageUrl); 
+        const response = await getUrlImages();
+        const imageUrl = response.url.replace("VALIDATIONS", "DOCUMENTS");
+        setUrlImage(imageUrl);
         console.log("URL de imagen base:", imageUrl);
 
-        const passport = clientData?.client?.client.passport || "default_passport"; 
+        const passport =
+          clientData?.client?.client.passport || "default_passport";
         const cuit = selectedRelation.cuit || "default_cuit";
 
         if (!passport || !cuit) {
-          console.warn("Passport o CUIT no están definidos, no se pueden construir las URLs de las imágenes.");
+          console.warn(
+            "Passport o CUIT no están definidos, no se pueden construir las URLs de las imágenes."
+          );
           return;
         }
 
@@ -103,7 +106,7 @@ export function RelationsEdit({
     if (clientData.client && selectedRelation.cuit) {
       fetchImageUrl();
     }
-  }, [clientData, selectedRelation]); 
+  }, [clientData, selectedRelation]);
 
   const handleError = (name) => {
     setError({ ...error, [name]: true });
@@ -121,7 +124,8 @@ export function RelationsEdit({
       idRelation: Number(values.idRelation),
       status: Number(values.status),
       dischargeDate: new Date().toISOString(),
-      participation: values.idRelation === "2" ? 0 : Number(values.participation),
+      participation:
+        values.idRelation === "2" ? 0 : Number(values.participation),
     };
     try {
       await updateRelation(RelationValues);
@@ -260,7 +264,7 @@ export function RelationsEdit({
                       label="Email"
                     />
                   </div>
-                  {values.idRelation == "1" && (
+                  {String(values.idRelation) === "1" && (
                     <div className="col-lg-3">
                       <Field
                         name="participation"
@@ -292,7 +296,11 @@ export function RelationsEdit({
             <div className="col-3">
               <img
                 className="w-100"
-                src={error.img1 ? toAbsoluteUrl("/media/error/bg3.jpg") : imageUrls.frontImage}
+                src={
+                  error.img1
+                    ? toAbsoluteUrl("/media/error/bg3.jpg")
+                    : imageUrls.frontImage
+                }
                 alt="Frente del DNI"
                 onError={() => handleError("img1")}
                 role="button"
@@ -301,7 +309,11 @@ export function RelationsEdit({
             <div className="col-3">
               <img
                 className="w-100"
-                src={error.img2 ? toAbsoluteUrl("/media/error/bg3.jpg") : imageUrls.backImage}
+                src={
+                  error.img2
+                    ? toAbsoluteUrl("/media/error/bg3.jpg")
+                    : imageUrls.backImage
+                }
                 alt="Dorso del DNI"
                 onError={() => handleError("img2")}
                 role="button"
@@ -310,7 +322,11 @@ export function RelationsEdit({
             <div className="col-3">
               <img
                 className="w-100"
-                src={error.img3 ? toAbsoluteUrl("/media/error/bg3.jpg") : imageUrls.seriousImage}
+                src={
+                  error.img3
+                    ? toAbsoluteUrl("/media/error/bg3.jpg")
+                    : imageUrls.seriousImage
+                }
                 alt="Selfie serio"
                 onError={() => handleError("img3")}
                 role="button"
@@ -319,7 +335,11 @@ export function RelationsEdit({
             <div className="col-3">
               <img
                 className="w-100"
-                src={error.img4 ? toAbsoluteUrl("/media/error/bg3.jpg") : imageUrls.smilingImage}
+                src={
+                  error.img4
+                    ? toAbsoluteUrl("/media/error/bg3.jpg")
+                    : imageUrls.smilingImage
+                }
                 alt="Selfie sonriendo"
                 onError={() => handleError("img4")}
                 role="button"

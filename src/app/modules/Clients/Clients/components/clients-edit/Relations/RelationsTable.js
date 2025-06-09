@@ -7,13 +7,17 @@ import { PaginatedTable } from "../../../../../../components/PaginatedTable";
 import { TableNoRecordsFoundMessage } from "../../../../../../components/TableNoRecordsFound";
 import { orderSorted, sizePerPageList } from "../../ListingTableHelpers";
 import { useListingTableContext } from "./ListingTableContext";
-import { ActionColumnFormatter }from "./utils/ActionColumnFormatter";
+import { ActionColumnFormatter } from "./utils/ActionColumnFormatter";
 import { StatusColumnFormater } from "./utils/StatusColumnFormater";
-import { useHistory } from "react-router-dom";
-
-export default function RelationsTable({ relations,setIsEdit, setSelectedRelation }) {
+/* import { useHistory } from "react-router-dom";
+ */
+export default function RelationsTable({
+  relations,
+  setIsEdit,
+  setSelectedRelation,
+}) {
   const { size, pageNumber, setSize, setPageNumber } = useListingTableContext();
-  const history = useHistory();
+  /*   const history = useHistory(); */
 
   if (!relations || !Array.isArray(relations) || relations.length === 0) {
     return <TableNoRecordsFoundMessage entities={"relaciones"} />;
@@ -46,7 +50,7 @@ export default function RelationsTable({ relations,setIsEdit, setSelectedRelatio
       sort: true,
       sortCaret: sortCaret,
       headerSortingClasses,
-      formatter:StatusColumnFormater
+      formatter: StatusColumnFormater,
     },
     {
       dataField: "relation",
@@ -67,12 +71,12 @@ export default function RelationsTable({ relations,setIsEdit, setSelectedRelatio
       text: "Accion",
       formatter: ActionColumnFormatter,
       formatExtraData: {
-        tooltip: 'Editar', 
-        fnAction : (row) => {
-          setSelectedRelation(row)
-          setIsEdit(true)
-        }
-      }
+        tooltip: "Editar",
+        fnAction: (row) => {
+          setSelectedRelation(row);
+          setIsEdit(true);
+        },
+      },
     },
   ];
 
@@ -83,7 +87,6 @@ export default function RelationsTable({ relations,setIsEdit, setSelectedRelatio
     sizePerPage: size,
     page: pageNumber,
   };
-
 
   return relations.length === 0 ? (
     <TableNoRecordsFoundMessage entities={"Relaciones"} />

@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 import { Formik } from "formik";
-import {isEqual} from "lodash";
-import propTypes from 'prop-types';
-import {useListingTableContext} from "./ListingTableContext";
-import { Button } from '@material-ui/core'
-
+/* import {isEqual} from "lodash"; */
+import propTypes from "prop-types";
+/* import {useListingTableContext} from "./ListingTableContext"; */
+import { Button } from "@material-ui/core";
+/* 
 const prepareFilter = (queryParams, values) => {
     const newQueryParams = { ...queryParams };
     const filter = {};
@@ -12,12 +12,10 @@ const prepareFilter = (queryParams, values) => {
     filter.especie=values
     newQueryParams.filter = filter;
     return newQueryParams;
-};
+}; */
 
-
-const ListingFilter = ({disabled, data, setShowCreateModal}) => {
-
-    const {
+const ListingFilter = ({ disabled, data, setShowCreateModal }) => {
+  /*     const {
         queryParamsInstrument,
         setQueryParamsInstrument,
         setPageNumber
@@ -32,33 +30,32 @@ const ListingFilter = ({disabled, data, setShowCreateModal}) => {
             setQueryParamsInstrument(newQueryParams);
         }
     };  
+ */
 
-
-    return (
-        <>
-            <Formik
-                initialValues={{
-                    searchText: "",
-                    from:new Date(),
-                    to:new Date(),
-                    idMoney:1,
-                    id:0,
-                    searchQuery: '',
-                }}
-                onSubmit={(values) => {
-                }}
-            >
-                {({
-                      values,
-                      handleSubmit,
-                      handleBlur,
-                      handleChange,
-                      setFieldValue,
-                  }) => (
-                    <form onSubmit={handleSubmit} className="form form-label-right">
-                        <div className="row">
-                            <div className="col-12">
-                                {/* <input
+  return (
+    <>
+      <Formik
+        initialValues={{
+          searchText: "",
+          from: new Date(),
+          to: new Date(),
+          idMoney: 1,
+          id: 0,
+          searchQuery: "",
+        }}
+        onSubmit={(values) => {}}
+      >
+        {({
+          values,
+          handleSubmit,
+          handleBlur,
+          handleChange,
+          setFieldValue,
+        }) => (
+          <form onSubmit={handleSubmit} className="form form-label-right">
+            <div className="row">
+              <div className="col-12">
+                {/* <input
                                     type="text"
                                     className="form-control"
                                     name="searchText"
@@ -71,31 +68,30 @@ const ListingFilter = ({disabled, data, setShowCreateModal}) => {
                                         applyFilter(e.target.value);
                                     }}
                                 /> */}
-                            </div>
-                           
-                  </div>
-                </form>
-                )}
-            </Formik>
-            <Button
-                variant="contained"
-                color="secondary"
-                className="ml-4"
-                size="large"
-                onClick={() => setShowCreateModal(true)}
-            >
-                {'Crear'}
-            </Button>         
-        </>
-    );
-}
+              </div>
+            </div>
+          </form>
+        )}
+      </Formik>
+      <Button
+        variant="contained"
+        color="secondary"
+        className="ml-4"
+        size="large"
+        onClick={() => setShowCreateModal(true)}
+      >
+        {"Crear"}
+      </Button>
+    </>
+  );
+};
 
 ListingFilter.defaultProps = {
-    disabled: false,
-}
+  disabled: false,
+};
 
 ListingFilter.propTypes = {
-    disabled: propTypes.bool
-}
+  disabled: propTypes.bool,
+};
 
 export default ListingFilter;

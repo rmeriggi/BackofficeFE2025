@@ -1,8 +1,6 @@
-import moment from "moment";
+/* import moment from "moment"; */
 
-export function DateColumnFormatter(cellContent) {  
-    const arrayDate =cellContent.split(' ')  
-  return (
-    arrayDate[0]
-  )
+export function DateColumnFormatter(cellContent) {
+  const arrayDate = cellContent.split(" ");
+  return arrayDate[0];
 }

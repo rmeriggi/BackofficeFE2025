@@ -21,7 +21,7 @@ export function ListingTableContextProvider({ relations, children }) {
   const [ids, setIds] = useState([]);
   const [size, setSize] = useState(10);
   const [pageNumber, setPageNumber] = useState(1);
-  const [relationData, setRelationData] = useState([]);
+  const [relationData /* setRelationData */] = useState([]);
 
   const setQueryParams = useCallback((nextQueryParams) => {
     setQueryParamsBase((prevQueryParams) => {

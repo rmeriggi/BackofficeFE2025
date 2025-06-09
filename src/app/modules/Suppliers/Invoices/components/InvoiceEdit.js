@@ -3,26 +3,34 @@ import {
   Card,
   CardBody,
   CardHeader,
-  CardHeaderToolbar
+  CardHeaderToolbar,
 } from "../../../../../_metronic/_partials/controls";
 import { useHistory } from "react-router";
 import { useParams } from "react-router-dom";
 import { Button } from "@material-ui/core";
 import { SnackbarMessage } from "../../../../components/SnackbarMessage";
-import { useSnackBar } from '../../../../hooks/useSnackBar';
-import { Formik, Form, Field } from 'formik';
+import { useSnackBar } from "../../../../hooks/useSnackBar";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { Input } from "../../../../../_metronic/_partials/controls";
 import { LayoutSplashScreen } from "../../../../../_metronic/layout";
-import { useDispatch } from "react-redux";
-import { useFetchCombos } from '../../../../hooks';
-import { getCategories, getCostCenters } from "../../../../_redux/combos/combosActions";
-import { GeneralSelector } from '../../../../components/Fields/GeneralSelector';
-import { getInvoicesById, editInvoice } from "../../../../_redux/invoices/invoicesCrud";
+/* import { useDispatch } from "react-redux"; */
+import { useFetchCombos } from "../../../../hooks";
+import {
+  getCategories,
+  getCostCenters,
+} from "../../../../_redux/combos/combosActions";
+import { GeneralSelector } from "../../../../components/Fields/GeneralSelector";
+import {
+  getInvoicesById,
+  editInvoice,
+} from "../../../../_redux/invoices/invoicesCrud";
 
 const NotificationsSchema = Yup.object().shape({
-  date: Yup.string().required('La fecha es obligatoria'),
-  expiration_date: Yup.string().required('La fecha de vencimiento es obligatoria'),
+  date: Yup.string().required("La fecha es obligatoria"),
+  expiration_date: Yup.string().required(
+    "La fecha de vencimiento es obligatoria"
+  ),
 });
 
 export function InvoiceEdit() {
@@ -33,10 +41,10 @@ export function InvoiceEdit() {
   const [invoice, setInvoice] = useState();
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(false);
-  const dispatch = useDispatch();
-  
-  const [categories] = useFetchCombos('categories', getCategories);
-  const [costCenters] = useFetchCombos('costCenters', getCostCenters);
+  /*   const dispatch = useDispatch(); */
+
+  const [categories] = useFetchCombos("categories", getCategories);
+  const [costCenters] = useFetchCombos("costCenters", getCostCenters);
 
   useEffect(() => {
     const fetchInvoice = async () => {
@@ -46,7 +54,7 @@ export function InvoiceEdit() {
         setInvoice(response);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching invoice:', error);
+        console.error("Error fetching invoice:", error);
         setLoading(false);
       }
     };
@@ -80,7 +88,7 @@ export function InvoiceEdit() {
       const response = await editInvoice(payload);
       if (response.id) {
         setOpenMessage("Edición exitosa", "success");
-        history.push('/suppliers/invoices'); // Navega a la página anterior
+        history.push("/suppliers/invoices"); // Navega a la página anterior
         window.location.reload(); // Recarga la página para mostrar los datos actualizados
       } else {
         setOpenMessage("No se pudo editar", "error");
@@ -92,7 +100,7 @@ export function InvoiceEdit() {
       setLoading(false); // Asegúrate de detener la carga en cualquier caso
     }
   };
-  
+
   if (!invoice || loading) {
     return <LayoutSplashScreen />;
   }
@@ -145,7 +153,13 @@ export function InvoiceEdit() {
               handleEdit(values);
             }}
           >
-            {({ handleSubmit, values, handleChange, setFieldValue, isSubmitting }) => (
+            {({
+              handleSubmit,
+              values,
+              handleChange,
+              setFieldValue,
+              isSubmitting,
+            }) => (
               <Form className="form form-label-right">
                 <div className="row">
                   <div className="col-lg-12">
@@ -159,11 +173,22 @@ export function InvoiceEdit() {
                   </div>
                   <div className="col-lg-6">
                     <p className="header-title fs-2 mb-5 mt-4">IMPORTE</p>
-                    <Field name="amount" component={Input} type="number" label="" />
+                    <Field
+                      name="amount"
+                      component={Input}
+                      type="number"
+                      label=""
+                    />
                   </div>
                   <div className="col-lg-6">
-                    <p className="header-title fs-2 mb-5 mt-4">CONDICIÓN DE PAGO</p>
-                    <Field name="payment_condition" component={Input} label="" />
+                    <p className="header-title fs-2 mb-5 mt-4">
+                      CONDICIÓN DE PAGO
+                    </p>
+                    <Field
+                      name="payment_condition"
+                      component={Input}
+                      label=""
+                    />
                   </div>
                   <div className="col-lg-6">
                     <p className="header-title fs-2 mb-5 mt-4">DESCRIPCIÓN</p>
@@ -174,7 +199,9 @@ export function InvoiceEdit() {
                     <Field name="date" component={Input} label="" />
                   </div>
                   <div className="col-lg-6">
-                    <p className="header-title fs-2 mb-5 mt-4">FECHA DE VENCIMIENTO</p>
+                    <p className="header-title fs-2 mb-5 mt-4">
+                      FECHA DE VENCIMIENTO
+                    </p>
                     <Field name="expiration_date" component={Input} label="" />
                   </div>
                   <div className="col-lg-6">
@@ -191,22 +218,24 @@ export function InvoiceEdit() {
                   </div>
                   <div className="col-lg-6">
                     <p className="header-title fs-2 mb-5 mt-4">CATEGORÍA</p>
-                    <GeneralSelector 
+                    <GeneralSelector
                       values={values}
-                      valueName='id_category'
-                      keyName='categoria'
-                      label=''
+                      valueName="id_category"
+                      keyName="categoria"
+                      label=""
                       data={categories}
                       setFieldValue={setFieldValue}
                     />
                   </div>
                   <div className="col-lg-6">
-                    <p className="header-title fs-2 mb-5 mt-4">CENTRO DE COSTO</p>
-                    <GeneralSelector 
+                    <p className="header-title fs-2 mb-5 mt-4">
+                      CENTRO DE COSTO
+                    </p>
+                    <GeneralSelector
                       values={values}
-                      valueName='id_center_cost'
-                      keyName='CentroC'
-                      label=''
+                      valueName="id_center_cost"
+                      keyName="CentroC"
+                      label=""
                       data={costCenters}
                       setFieldValue={setFieldValue}
                     />

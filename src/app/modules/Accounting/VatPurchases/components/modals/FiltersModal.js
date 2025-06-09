@@ -1,14 +1,22 @@
 /* eslint-disable eqeqeq */
-import React, { useState } from 'react';
-import { es } from 'date-fns/locale';
-import { Form, Formik } from 'formik';
-import { Modal } from 'react-bootstrap';
-import DateFnsUtils from '@date-io/date-fns';
-import { ThemeProvider } from '@material-ui/styles';
-import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import { Button, CircularProgress, colors, createMuiTheme } from '@material-ui/core';
-import { setDatesValues } from '../../../../../utils/validationDates';
-import { getVatPurchasesVista } from '../../../../../_redux/accounting/accountingCrud';
+import React, { useState } from "react";
+import { es } from "date-fns/locale";
+import { Form, Formik } from "formik";
+import { Modal } from "react-bootstrap";
+import DateFnsUtils from "@date-io/date-fns";
+import { ThemeProvider } from "@material-ui/styles";
+import {
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider,
+} from "@material-ui/pickers";
+import {
+  Button,
+  CircularProgress,
+  colors,
+  createMuiTheme,
+} from "@material-ui/core";
+/* import { setDatesValues } from '../../../../../utils/validationDates'; */
+import { getVatPurchasesVista } from "../../../../../_redux/accounting/accountingCrud";
 
 const defaultMaterialTheme = createMuiTheme({
   palette: {
@@ -48,7 +56,12 @@ export const FiltersModal = ({
   };
 
   return (
-    <Modal show={show} onHide={onHide} aria-labelledby="example-modal-sizes-title-lg" size="xl">
+    <Modal
+      show={show}
+      onHide={onHide}
+      aria-labelledby="example-modal-sizes-title-lg"
+      size="xl"
+    >
       <Modal.Header closeButton>
         <Modal.Title id="example-modal-sizes-title-lg">Filtros</Modal.Title>
       </Modal.Header>
@@ -74,13 +87,17 @@ export const FiltersModal = ({
                         inputVariant="outlined"
                         label="Mes"
                         format="MM/yyyy"
-                        views={['year', 'month']}
+                        views={["year", "month"]}
                         value={values.month}
                         cancelLabel="cancelar"
                         onChange={(date) => {
-                          setFieldValue('month', date.getMonth() + 1);
-                          setFieldValue('year', date.getFullYear());
-                          setInitial({ ...initial, month: date.getMonth() + 1, year: date.getFullYear() });
+                          setFieldValue("month", date.getMonth() + 1);
+                          setFieldValue("year", date.getFullYear());
+                          setInitial({
+                            ...initial,
+                            month: date.getMonth() + 1,
+                            year: date.getFullYear(),
+                          });
                         }}
                       />
                     </ThemeProvider>
@@ -93,7 +110,11 @@ export const FiltersModal = ({
                     color="secondary"
                     disabled={isSubmitting}
                     onSubmit={handleSubmit}
-                    endIcon={isSubmitting && <CircularProgress size={20} color="secondary" />}
+                    endIcon={
+                      isSubmitting && (
+                        <CircularProgress size={20} color="secondary" />
+                      )
+                    }
                   >
                     Aplicar Filtros
                   </Button>

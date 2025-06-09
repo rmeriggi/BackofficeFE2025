@@ -7,7 +7,10 @@ import { Form, Formik, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useSnackBar } from "../../../../../hooks/useSnackBar";
 import { SnackbarMessage } from "../../../../../components/SnackbarMessage";
-import { Input, Checkbox } from "../../../../../../_metronic/_partials/controls";
+import {
+  Input,
+  Checkbox,
+} from "../../../../../../_metronic/_partials/controls";
 import { GeneralSelector } from "../../../../../components/Fields/GeneralSelector";
 import { newSignature } from "../../../../../_redux/signatures/signaturesCrud";
 import { getSignaturesByClient } from "../../../../../_redux/signatures/signaturesByClientActions";
@@ -30,7 +33,7 @@ const ProductEditSchema = Yup.object().shape({
   SMS: Yup.number().required("Este es un campo requerido"),
   Token: Yup.number().required("Este es un campo requerido"),
   Status: Yup.number().required("Este es un campo requerido"),
-  tipoEsquema: Yup.string().required("Este es un campo requerido"), 
+  tipoEsquema: Yup.string().required("Este es un campo requerido"),
 });
 
 export function CreateModal(props) {
@@ -38,12 +41,12 @@ export function CreateModal(props) {
   const dispatch = useDispatch();
   const { id } = useParams();
   const { open, variant, message, handleClose } = useSnackBar();
-  const [relations, loading] = useFetchRelations(id);
+  const [relations /* loading */] = useFetchRelations(id);
   const firmantes = relations?.filter((e) => e.relation === "FIRMANTES");
 
   const initialValues = {
     IDClient: id,
-    IDRelation: '',
+    IDRelation: "",
     transfers: 0,
     payments: 0,
     Inversions: 0,
@@ -63,7 +66,7 @@ export function CreateModal(props) {
     SMS: 0,
     Token: 0,
     Status: 1,
-    tipoEsquema: '',
+    tipoEsquema: "",
   };
 
   const handleCreate = async (values) => {
@@ -83,7 +86,7 @@ export function CreateModal(props) {
       SMS: values.SMS,
       Token: values.Token,
       Status: values.Status,
-      tipoEsquema: values.tipoEsquema, 
+      tipoEsquema: values.tipoEsquema,
     };
 
     try {
@@ -118,25 +121,33 @@ export function CreateModal(props) {
           return handleCreate(values);
         }}
       >
-        {({ handleSubmit, handleChange, setFieldValue, values, isSubmitting }) => (
+        {({
+          handleSubmit,
+          handleChange,
+          setFieldValue,
+          values,
+          isSubmitting,
+        }) => (
           <>
             <Modal.Body className="overlay overlay-block cursor-default">
               <Form className="form form-label-right">
-              <div className="col-lg-5">
-    <label className="font-size-h7">Nombre de esquema</label>
-    <Field 
-      name="tipoEsquema" 
-      className="form-control" 
-      placeholder="Ingrese el nombre del esquema"
-      type="text"
-    />
-    <ErrorMessage name="tipoEsquema">
-      {(error) => <p className="text-danger text-xs">{error}</p>}
-    </ErrorMessage>
-  </div>
+                <div className="col-lg-5">
+                  <label className="font-size-h7">Nombre de esquema</label>
+                  <Field
+                    name="tipoEsquema"
+                    className="form-control"
+                    placeholder="Ingrese el nombre del esquema"
+                    type="text"
+                  />
+                  <ErrorMessage name="tipoEsquema">
+                    {(error) => <p className="text-danger text-xs">{error}</p>}
+                  </ErrorMessage>
+                </div>
                 <div className="form-product row">
                   <div className="col-lg-5">
-                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">Firmante</label>
+                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">
+                      Firmante
+                    </label>
                     <GeneralSelector
                       values={values}
                       valueName="IDRelation"
@@ -148,16 +159,18 @@ export function CreateModal(props) {
                       setFieldValue={setFieldValue}
                     />
                     <ErrorMessage name="IDRelation">
-                      {(error) => <p className="text-danger text-xs">{error}</p>}
+                      {(error) => (
+                        <p className="text-danger text-xs">{error}</p>
+                      )}
                     </ErrorMessage>
                   </div>
                 </div>
-                <div className="form-product row">
-
-</div>
+                <div className="form-product row"></div>
                 <div className="form-product row">
                   <div className="col-lg-3">
-                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">transfers</label>
+                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">
+                      transfers
+                    </label>
                     <span className="switch switch-sm">
                       <Checkbox
                         name="transfers"
@@ -169,7 +182,9 @@ export function CreateModal(props) {
                     </span>
                   </div>
                   <div className="col-lg-3">
-                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">Trxmin($)</label>
+                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">
+                      Trxmin($)
+                    </label>
                     <Field
                       name="TrxminVista"
                       component={Input}
@@ -177,14 +192,24 @@ export function CreateModal(props) {
                       type="text"
                       label=""
                       onChange={(e) => {
-                        setFieldValue("TrxminVista", e.target.value.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
-                        setFieldValue("Trxmin", e.target.value.replace(/[^0-9]/g, ''));
+                        setFieldValue(
+                          "TrxminVista",
+                          e.target.value
+                            .replace(/[^0-9]/g, "")
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                        );
+                        setFieldValue(
+                          "Trxmin",
+                          e.target.value.replace(/[^0-9]/g, "")
+                        );
                       }}
                     />
                     <Field type="hidden" name="Trxmin" />
                   </div>
                   <div className="col-lg-3">
-                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">TrxMax($)</label>
+                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">
+                      TrxMax($)
+                    </label>
                     <Field
                       name="TrxMaxVista"
                       component={Input}
@@ -192,8 +217,16 @@ export function CreateModal(props) {
                       type="text"
                       label=""
                       onChange={(e) => {
-                        setFieldValue("TrxMaxVista", e.target.value.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
-                        setFieldValue("TrxMax", e.target.value.replace(/[^0-9]/g, ''));
+                        setFieldValue(
+                          "TrxMaxVista",
+                          e.target.value
+                            .replace(/[^0-9]/g, "")
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                        );
+                        setFieldValue(
+                          "TrxMax",
+                          e.target.value.replace(/[^0-9]/g, "")
+                        );
                       }}
                     />
                     <Field type="hidden" name="TrxMax" />
@@ -201,7 +234,9 @@ export function CreateModal(props) {
                 </div>
                 <div className="form-product row">
                   <div className="col-lg-3">
-                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">payments</label>
+                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">
+                      payments
+                    </label>
                     <span className="switch switch-sm">
                       <Checkbox
                         name="payments"
@@ -213,7 +248,9 @@ export function CreateModal(props) {
                     </span>
                   </div>
                   <div className="col-lg-3">
-                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">Paymin($)</label>
+                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">
+                      Paymin($)
+                    </label>
                     <Field
                       name="PayminVista"
                       component={Input}
@@ -221,14 +258,24 @@ export function CreateModal(props) {
                       type="text"
                       label=""
                       onChange={(e) => {
-                        setFieldValue("PayminVista", e.target.value.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
-                        setFieldValue("Paymin", e.target.value.replace(/[^0-9]/g, ''));
+                        setFieldValue(
+                          "PayminVista",
+                          e.target.value
+                            .replace(/[^0-9]/g, "")
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                        );
+                        setFieldValue(
+                          "Paymin",
+                          e.target.value.replace(/[^0-9]/g, "")
+                        );
                       }}
                     />
                     <Field type="hidden" name="Paymin" />
                   </div>
                   <div className="col-lg-3">
-                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">Paymax($)</label>
+                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">
+                      Paymax($)
+                    </label>
                     <Field
                       name="PaymaxVista"
                       component={Input}
@@ -236,8 +283,16 @@ export function CreateModal(props) {
                       type="text"
                       label=""
                       onChange={(e) => {
-                        setFieldValue("PaymaxVista", e.target.value.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
-                        setFieldValue("Paymax", e.target.value.replace(/[^0-9]/g, ''));
+                        setFieldValue(
+                          "PaymaxVista",
+                          e.target.value
+                            .replace(/[^0-9]/g, "")
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                        );
+                        setFieldValue(
+                          "Paymax",
+                          e.target.value.replace(/[^0-9]/g, "")
+                        );
                       }}
                     />
                     <Field type="hidden" name="Paymax" />
@@ -245,7 +300,9 @@ export function CreateModal(props) {
                 </div>
                 <div className="form-product row">
                   <div className="col-lg-3">
-                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">Investment</label>
+                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">
+                      Investment
+                    </label>
                     <span className="switch switch-sm">
                       <Checkbox
                         name="Inversions"
@@ -258,7 +315,9 @@ export function CreateModal(props) {
                   </div>
 
                   <div className="col-lg-3">
-                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">Invmin($)</label>
+                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">
+                      Invmin($)
+                    </label>
                     <Field
                       name="InvminVista"
                       component={Input}
@@ -266,14 +325,24 @@ export function CreateModal(props) {
                       type="text"
                       label=""
                       onChange={(e) => {
-                        setFieldValue("InvminVista", e.target.value.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
-                        setFieldValue("Invmin", e.target.value.replace(/[^0-9]/g, ''));
+                        setFieldValue(
+                          "InvminVista",
+                          e.target.value
+                            .replace(/[^0-9]/g, "")
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                        );
+                        setFieldValue(
+                          "Invmin",
+                          e.target.value.replace(/[^0-9]/g, "")
+                        );
                       }}
                     />
                     <Field type="hidden" name="Invmin" />
                   </div>
                   <div className="col-lg-3">
-                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">Invmax($)</label>
+                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">
+                      Invmax($)
+                    </label>
                     <Field
                       name="InvmaxVista"
                       component={Input}
@@ -281,8 +350,16 @@ export function CreateModal(props) {
                       type="text"
                       label=""
                       onChange={(e) => {
-                        setFieldValue("InvmaxVista", e.target.value.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
-                        setFieldValue("Invmax", e.target.value.replace(/[^0-9]/g, ''));
+                        setFieldValue(
+                          "InvmaxVista",
+                          e.target.value
+                            .replace(/[^0-9]/g, "")
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                        );
+                        setFieldValue(
+                          "Invmax",
+                          e.target.value.replace(/[^0-9]/g, "")
+                        );
                       }}
                     />
                     <Field type="hidden" name="Invmax" />
@@ -290,7 +367,9 @@ export function CreateModal(props) {
                 </div>
                 <div className="form-product row">
                   <div className="col-lg-3">
-                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">Email</label>
+                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">
+                      Email
+                    </label>
                     <span className="switch switch-sm">
                       <Checkbox
                         name="Email"
@@ -303,7 +382,9 @@ export function CreateModal(props) {
                   </div>
 
                   <div className="col-lg-3">
-                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">SMS</label>
+                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">
+                      SMS
+                    </label>
                     <span className="switch switch-sm">
                       <Checkbox
                         name="SMS"
@@ -315,7 +396,9 @@ export function CreateModal(props) {
                     </span>
                   </div>
                   <div className="col-lg-3">
-                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">Token</label>
+                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">
+                      Token
+                    </label>
                     <span className="switch switch-sm">
                       <Checkbox
                         name="Token"
@@ -327,7 +410,9 @@ export function CreateModal(props) {
                     </span>
                   </div>
                   <div className="col-lg-3">
-                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">Status</label>
+                    <label className="font-size-h7 col-lg-4 col-form-label text-lg-left">
+                      Status
+                    </label>
                     <span className="switch switch-sm">
                       <Checkbox
                         name="Status"

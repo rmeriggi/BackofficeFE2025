@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Card,
   CardBody,
@@ -50,8 +50,7 @@ const NotificationsSchema = Yup.object().shape({
 export function SupplierCreate() {
   const history = useHistory();
   const formikRef = useRef(null);
-  const { open, variant, message, handleClose, setOpenMessage } =
-    useSnackBar();
+  const { open, variant, message, handleClose, setOpenMessage } = useSnackBar();
   const dispatch = useDispatch();
   const [progress, setProgress] = useState(false);
   const [countries] = useFetchCombos("countries", getCountries);
@@ -331,7 +330,9 @@ export function SupplierCreate() {
                 <Field name="cellphone" component={Input} label="" />
               </div>
               <div className="col-lg-12">
-                <p className="header-title fs-2 mb-5 mt-4">Correo electrónico*</p>
+                <p className="header-title fs-2 mb-5 mt-4">
+                  Correo electrónico*
+                </p>
                 <Field name="email" component={Input} label="" />
               </div>
             </Form>

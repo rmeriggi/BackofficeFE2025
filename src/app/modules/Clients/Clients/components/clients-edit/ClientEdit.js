@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useRef, useEffect } from "react";
 import {
   Card,
@@ -11,7 +12,7 @@ import AccountsListEdit from "../AccountsListEdit";
 import { ScoreEditForm } from "./ScoreEditForm";
 import { IdentityEditForm } from "./IdentityEditForm";
 import { ClientEditForm } from "./ClientEditForm";
-import { getAllClients } from "../../../../../_redux/clients/clientsActions"; 
+import { getAllClients } from "../../../../../_redux/clients/clientsActions";
 import { useDispatch } from "react-redux";
 import useIsMountedRef from "../../../../../hooks/useIsMountedRef";
 import { useOneClient, useUrlImages } from "../../utils/apiHooks";
@@ -25,7 +26,7 @@ import {
   getEmailVerification,
   recoverPassword,
   calculateMatrix,
-  getCalification
+  getCalification,
 } from "../../utils/service";
 import { clientAdapter } from "../../adapters/clientAdapter";
 import DocumentList from "../document-list/DocumentList";
@@ -45,11 +46,13 @@ export function ClientEdit({
   const [clientToEdit, clientToEditCompleted] = useOneClient(id, isMounted);
   const [urlImage, urlImageCompleted] = useUrlImages(isMounted);
 
-  const [clientCalification, setClientCalification] = useState("SIN EVALUACIÓN");
- 
+  const [clientCalification, setClientCalification] = useState(
+    "SIN EVALUACIÓN"
+  );
+
   const fetchCalification = async () => {
     try {
-      const response = await getCalification(id); 
+      const response = await getCalification(id);
       setClientCalification(response.data);
     } catch (error) {
       console.error("Error al obtener la calificación del cliente:", error);
@@ -57,8 +60,9 @@ export function ClientEdit({
   };
   useEffect(() => {
     fetchCalification();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
-  
+
   const [tab, setTab] = useState(
     history.location.state?.tab || history.location.state?.tab || "client"
   );
@@ -128,17 +132,17 @@ export function ClientEdit({
   const handleCalculateMatrix = async () => {
     setIsSubmitting(true);
     try {
-      await calculateMatrix(id); 
-      await fetchCalification(); 
+      await calculateMatrix(id);
+      await fetchCalification();
       setVariant("success");
       setMessage("La matriz fue calculada correctamente.");
-      setOpenSnackbar(true); 
+      setOpenSnackbar(true);
     } catch (error) {
       setVariant("error");
       setMessage("Error al calcular la matriz. Por favor, intentá de nuevo.");
-      setOpenSnackbar(true); 
+      setOpenSnackbar(true);
     } finally {
-      setIsSubmitting(false); 
+      setIsSubmitting(false);
     }
   };
 
@@ -228,22 +232,34 @@ export function ClientEdit({
 
   return (
     <Card>
-      <CardHeader title={
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <span>{`${initClientForEdit.bussinessName || "Editar Cliente"}`}</span>
-          <div style={{ ...getCalificationStyle(), padding: "3px 5px", borderRadius: "4px", fontSize: "0.75rem", marginLeft: "10px", height: "fit-content" }}>
-            {clientCalification}
+      <CardHeader
+        title={
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <span>{`${initClientForEdit.bussinessName ||
+              "Editar Cliente"}`}</span>
+            <div
+              style={{
+                ...getCalificationStyle(),
+                padding: "3px 5px",
+                borderRadius: "4px",
+                fontSize: "0.75rem",
+                marginLeft: "10px",
+                height: "fit-content",
+              }}
+            >
+              {clientCalification}
+            </div>
           </div>
-        </div>
-      }>
+        }
+      >
         <CardHeaderToolbar>
           <Button
             variant="contained"
             color="secondary"
             className="ml-1"
-            size="small" 
+            size="small"
             disabled={isSubmitting}
-            onClick={handleCalculateMatrix}  
+            onClick={handleCalculateMatrix}
             endIcon={
               isSubmitting && <CircularProgress size={20} color="secondary" />
             }
@@ -254,7 +270,7 @@ export function ClientEdit({
             variant="contained"
             color="secondary"
             className="ml-1"
-            size="small" 
+            size="small"
             disabled={isSubmitting}
             onClick={verifiedemail}
             endIcon={
@@ -470,7 +486,9 @@ export function ClientEdit({
             />
           )}
           {tab === "activities" && <ActivitiesList activities={activities} />}
-          {tab === "relations" && <RelationsList relations={relations} urlImage={url} />}
+          {tab === "relations" && (
+            <RelationsList relations={relations} urlImage={url} />
+          )}
         </div>
       </CardBody>
       <SnackbarMessage

@@ -1,18 +1,35 @@
 import React from "react";
+import usePrint from "../../hooks/usePrint";
 
 const MaturityCashflow = () => {
+  const { printRef, handlePrint } = usePrint();
+
   return (
-    <div className="container-fluid mt-5">
-      <div className="card card-custom gutter-b shadow-sm">
-        <div className="card-header">
-          <h3 className="card-title">
-            Reporte de Flujo de Vencimientos y Cobros
+    <div className="container-fluid mt-5" ref={printRef}>
+      <div
+        className="card-header border-0 py-5 d-flex justify-content-between align-items-center"
+        style={{ marginBottom: "2rem" }}
+      >
+        <div>
+          <h3 className="card-title align-items-start flex-column mb-1">
+            <span className="card-label font-weight-bolder text-dark d-block">
+              Reporte de Flujo de Vencimientos y Cobros
+            </span>
           </h3>
-          <div className="card-toolbar text-muted font-size-sm">
+          <span className="text-muted font-weight-bold font-size-sm">
             Actualizado al 09/06/2025
-          </div>
+          </span>
         </div>
 
+        <div>
+          <button className="btn btn-primary no-print" onClick={handlePrint}>
+            Imprimir
+          </button>
+        </div>
+      </div>
+
+      {/* Tarjeta con los datos */}
+      <div className="card card-custom gutter-b shadow-sm">
         <div className="card-body">
           {/* Flujo de la Semana */}
           <h5 className="text-primary font-weight-bold mt-4 mb-3">

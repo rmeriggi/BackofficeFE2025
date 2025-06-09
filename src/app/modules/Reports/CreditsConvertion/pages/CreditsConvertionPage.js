@@ -1,6 +1,9 @@
 import React from "react";
+import usePrint from "../../hooks/usePrint";
 
 const CreditsConvertionPage = () => {
+  const { handlePrint, printRef } = usePrint();
+
   const etapas = [
     { etapa: "Solicitudes recibidas", cantidad: 5000, conversion: "100%" },
     { etapa: "Onboarding completado", cantidad: 4200, conversion: "84%" },
@@ -10,50 +13,68 @@ const CreditsConvertionPage = () => {
     { etapa: "Crédito desembolsado", cantidad: 1850, conversion: "37%" },
   ];
 
+  const totalConversion = etapas[etapas.length - 1].conversion;
+
   return (
-    <div className="container-fluid mt-5">
-      <div className="card card-custom shadow-sm">
-        <div className="card-header">
-          <h3 className="card-title">
-            Reporte de Conversión de Créditos (Embudo)
+    <div className="container-fluid mt-5" ref={printRef}>
+      <div
+        className="card-header border-0 py-5 d-flex justify-content-between align-items-center"
+        style={{ marginBottom: "2rem" }}
+      >
+        <div>
+          <h3 className="card-title align-items-start flex-column mb-1">
+            <span className="card-label font-weight-bolder text-dark d-block">
+              Reporte de Conversión de Créditos (Embudo)
+            </span>
           </h3>
-          <div className="card-toolbar text-muted font-size-sm">
+          <span className="text-muted font-weight-bold font-size-sm">
             Actualizado al 09/06/2025
-          </div>
+          </span>
         </div>
 
-        <div className="card-body">
-          <h5 className="text-primary font-weight-bold mb-4">
-            Embudo de Conversión
-          </h5>
-          <table className="table table-bordered table-hover table-sm">
-            <thead className="thead-light">
-              <tr>
-                <th>Etapa</th>
-                <th>Cantidad</th>
-                <th>Conversión Acumulada</th>
-              </tr>
-            </thead>
-            <tbody>
-              {etapas.map((item, idx) => (
-                <tr key={idx}>
-                  <td>{item.etapa}</td>
-                  <td>{item.cantidad}</td>
-                  <td>{item.conversion}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div>
+          <button className="btn btn-primary no-print" onClick={handlePrint}>
+            Imprimir
+          </button>
+        </div>
+      </div>
 
-          <div className="mt-5">
+      <div className="card card-custom shadow-sm">
+        <div className="card-body">
+          <section>
+            <h5 className="text-primary font-weight-bold mb-4">
+              Embudo de Conversión
+            </h5>
+            <table className="table table-bordered table-hover table-sm mb-5">
+              <thead className="thead-light">
+                <tr>
+                  <th>Etapa</th>
+                  <th>Cantidad</th>
+                  <th>Conversión Acumulada</th>
+                </tr>
+              </thead>
+              <tbody>
+                {etapas.map(({ etapa, cantidad, conversion }) => (
+                  <tr key={etapa}>
+                    <td>{etapa}</td>
+                    <td>{cantidad.toLocaleString()}</td>
+                    <td>{conversion}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+
+          <section>
             <h6 className="font-weight-bold">
-              Total conversión final: <span className="text-success">37%</span>
+              Total conversión final:{" "}
+              <span className="text-success">{totalConversion}</span>
             </h6>
             <p className="text-muted small">
               Corresponde a créditos efectivamente desembolsados sobre
               solicitudes iniciales.
             </p>
-          </div>
+          </section>
         </div>
       </div>
     </div>

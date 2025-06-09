@@ -1,109 +1,121 @@
 import React from "react";
+import usePrint from "../../hooks/usePrint";
 
 const CreditsCrossPage = () => {
+  const { handlePrint, printRef } = usePrint();
+
+  // Datos de clientes recurrentes
+  const recurrentClientsData = [
+    { label: "Clientes con más de 1 crédito", value: "1.200" },
+    { label: "% sobre total de clientes", value: "38%" },
+    { label: "Tiempo promedio entre créditos", value: "8.5 meses" },
+    { label: "Ticket promedio de recurrentes", value: "$95.000" },
+  ];
+
+  // Datos de cross-selling
+  const crossSellingData = [
+    { product: "Billetera Digital", percentage: "72%" },
+    { product: "Tarjeta Prepaga", percentage: "41%" },
+    { product: "Pago de servicios", percentage: "66%" },
+    { product: "Inversiones / fondos", percentage: "18%" },
+  ];
+
+  // Datos de comportamiento
+  const behaviorData = [
+    { scoreRange: "80 - 100", percentage: "55%" },
+    { scoreRange: "60 - 80", percentage: "30%" },
+    { scoreRange: "40 - 60", percentage: "12%" },
+    { scoreRange: "< 40", percentage: "3%" },
+  ];
+
   return (
-    <div className="container-fluid mt-5">
-      <div className="card card-custom shadow-sm">
-        <div className="card-header">
-          <h3 className="card-title">Reporte de Recurrentes / Cross-Selling</h3>
-          <div className="card-toolbar text-muted font-size-sm">
+    <div className="container-fluid mt-5" ref={printRef}>
+      <div
+        className="card-header border-0 py-5 d-flex justify-content-between align-items-center"
+        style={{ marginBottom: "2rem" }}
+      >
+        <div>
+          <h3 className="card-title align-items-start flex-column mb-1">
+            <span className="card-label font-weight-bolder text-dark d-block">
+              Reporte de Conversión de Créditos (Embudo)
+            </span>
+          </h3>
+          <span className="text-muted font-weight-bold font-size-sm">
             Actualizado al 09/06/2025
-          </div>
+          </span>
         </div>
 
+        <div>
+          <button className="btn btn-primary no-print" onClick={handlePrint}>
+            Imprimir
+          </button>
+        </div>
+      </div>
+
+      <div className="card card-custom shadow-sm">
         <div className="card-body">
           {/* Recurrentes */}
-          <h5 className="text-primary font-weight-bold mb-4">
-            Clientes Recurrentes
-          </h5>
-          <table className="table table-bordered table-hover table-sm">
-            <tbody>
-              <tr>
-                <td className="font-weight-bold">
-                  Clientes con más de 1 crédito
-                </td>
-                <td>1.200</td>
-              </tr>
-              <tr>
-                <td className="font-weight-bold">% sobre total de clientes</td>
-                <td>38%</td>
-              </tr>
-              <tr>
-                <td className="font-weight-bold">
-                  Tiempo promedio entre créditos
-                </td>
-                <td>8.5 meses</td>
-              </tr>
-              <tr>
-                <td className="font-weight-bold">
-                  Ticket promedio de recurrentes
-                </td>
-                <td>$95.000</td>
-              </tr>
-            </tbody>
-          </table>
+          <section>
+            <h5 className="text-primary font-weight-bold mb-4">
+              Clientes Recurrentes
+            </h5>
+            <table className="table table-bordered table-hover table-sm mb-0">
+              <tbody>
+                {recurrentClientsData.map(({ label, value }) => (
+                  <tr key={label}>
+                    <td className="font-weight-bold">{label}</td>
+                    <td>{value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
 
           {/* Cross-selling */}
-          <h5 className="text-primary font-weight-bold mt-5 mb-3">
-            Cross-Selling: Uso combinado de productos
-          </h5>
-          <table className="table table-bordered table-hover table-sm">
-            <thead className="thead-light">
-              <tr>
-                <th>Producto combinado</th>
-                <th>% de recurrentes que lo usan</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Billetera Digital</td>
-                <td>72%</td>
-              </tr>
-              <tr>
-                <td>Tarjeta Prepaga</td>
-                <td>41%</td>
-              </tr>
-              <tr>
-                <td>Pago de servicios</td>
-                <td>66%</td>
-              </tr>
-              <tr>
-                <td>Inversiones / fondos</td>
-                <td>18%</td>
-              </tr>
-            </tbody>
-          </table>
+          <section className="mt-5">
+            <h5 className="text-primary font-weight-bold mb-3">
+              Cross-Selling: Uso combinado de productos
+            </h5>
+            <table className="table table-bordered table-hover table-sm mb-0">
+              <thead className="thead-light">
+                <tr>
+                  <th>Producto combinado</th>
+                  <th>% de recurrentes que lo usan</th>
+                </tr>
+              </thead>
+              <tbody>
+                {crossSellingData.map(({ product, percentage }) => (
+                  <tr key={product}>
+                    <td>{product}</td>
+                    <td>{percentage}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
 
           {/* Comportamiento */}
-          <h5 className="text-primary font-weight-bold mt-5 mb-3">
-            Comportamiento de Recurrentes
-          </h5>
-          <table className="table table-bordered table-hover table-sm">
-            <thead className="thead-light">
-              <tr>
-                <th>Tramo de Score</th>
-                <th>% de recurrentes</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>80 - 100</td>
-                <td>55%</td>
-              </tr>
-              <tr>
-                <td>60 - 80</td>
-                <td>30%</td>
-              </tr>
-              <tr>
-                <td>40 - 60</td>
-                <td>12%</td>
-              </tr>
-              <tr>
-                <td>&lt; 40</td>
-                <td>3%</td>
-              </tr>
-            </tbody>
-          </table>
+          <section className="mt-5">
+            <h5 className="text-primary font-weight-bold mb-3">
+              Comportamiento de Recurrentes
+            </h5>
+            <table className="table table-bordered table-hover table-sm mb-0">
+              <thead className="thead-light">
+                <tr>
+                  <th>Tramo de Score</th>
+                  <th>% de recurrentes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {behaviorData.map(({ scoreRange, percentage }) => (
+                  <tr key={scoreRange}>
+                    <td>{scoreRange}</td>
+                    <td>{percentage}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
         </div>
       </div>
     </div>

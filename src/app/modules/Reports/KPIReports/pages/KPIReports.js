@@ -1,17 +1,8 @@
-import React, { useRef } from "react";
-
+import React from "react";
+import usePrint from "../../hooks/usePrint";
+import "../css/kpi.modules.scss";
 const KPIReports = () => {
-  const printRef = useRef();
-
-  const handlePrint = () => {
-    const printContents = printRef.current.innerHTML;
-    const originalContents = document.body.innerHTML;
-
-    document.body.innerHTML = printContents;
-    window.print();
-    document.body.innerHTML = originalContents;
-    window.location.reload(); // Para recargar el estado original
-  };
+  const { printRef, handlePrint } = usePrint();
 
   return (
     <div className="container-fluid py-4" ref={printRef}>
@@ -36,12 +27,13 @@ const KPIReports = () => {
           </button>
         </div>
       </div>
+
       {/* Contenido imprimible */}
       <div>
         <div className="row">
           {/* Cartera Total Activa */}
           <div className="col-md-4 col-sm-6 mb-4">
-            <div className="card h-100 shadow-md">
+            <div className="card h-100 shadow-md card-animated">
               <div className="card-body text-center">
                 <h6 className="text-muted mb-3">Cartera Total Activa</h6>
                 <h2 style={{ color: "#003366" }}>$120.500.000</h2>
@@ -52,7 +44,7 @@ const KPIReports = () => {
 
           {/* Mora Total (NPL) */}
           <div className="col-md-4 col-sm-6 mb-4">
-            <div className="card h-100 shadow-md">
+            <div className="card h-100 shadow-md card-animated">
               <div className="card-body text-center">
                 <h6 className="text-muted mb-3">Mora Total (NPL)</h6>
                 <h2 style={{ color: "#003366" }}>4.2%</h2>
@@ -63,7 +55,7 @@ const KPIReports = () => {
 
           {/* Recupero Último Mes */}
           <div className="col-md-4 col-sm-6 mb-4">
-            <div className="card h-100 shadow-md">
+            <div className="card h-100 shadow-md card-animated">
               <div className="card-body text-center">
                 <h6 className="text-muted mb-3">Recupero Último Mes</h6>
                 <h2 style={{ color: "#003366" }}>78%</h2>
@@ -74,7 +66,7 @@ const KPIReports = () => {
 
           {/* Rentabilidad Bruta */}
           <div className="col-md-4 col-sm-6 mb-4">
-            <div className="card h-100 shadow-md">
+            <div className="card h-100 shadow-md card-animated">
               <div className="card-body text-center">
                 <h6 className="text-muted mb-3">Rentabilidad Bruta</h6>
                 <h2 style={{ color: "#003366" }}>22.8%</h2>
@@ -85,7 +77,7 @@ const KPIReports = () => {
 
           {/* Flujo de Cobros Próx. Semana */}
           <div className="col-md-4 col-sm-6 mb-4">
-            <div className="card h-100 shadow-md">
+            <div className="card h-100 shadow-md card-animated">
               <div className="card-body text-center">
                 <h6 className="text-muted mb-3">
                   Flujo de Cobros Próx. Semana
@@ -98,7 +90,7 @@ const KPIReports = () => {
 
           {/* Clientes Activos */}
           <div className="col-md-4 col-sm-6 mb-4">
-            <div className="card h-100 shadow-md">
+            <div className="card h-100 shadow-md card-animated">
               <div className="card-body text-center">
                 <h6 className="text-muted mb-3">Clientes Activos</h6>
                 <h2 style={{ color: "#003366" }}>3.250</h2>

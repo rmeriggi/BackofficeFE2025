@@ -1,38 +1,36 @@
-import React, { useRef } from "react";
+import React from "react";
+import usePrint from "../../hooks/usePrint";
 
 const DeliquencyCollectionsPage = () => {
-  const printRef = useRef();
-
-  const handlePrint = () => {
-    const printContents = printRef.current.innerHTML;
-    const originalContents = document.body.innerHTML;
-
-    document.body.innerHTML = printContents;
-    window.print();
-    document.body.innerHTML = originalContents;
-    window.location.reload();
-  };
+  const { printRef, handlePrint } = usePrint();
 
   return (
-    <div className="container-fluid mt-5">
-      {/* Card Principal */}
-      <div ref={printRef} className="card card-custom gutter-b">
-        <div className="card-header border-0 py-5">
-          <h3 className="card-title align-items-start flex-column">
-            <span className="card-label font-weight-bolder text-dark">
+    <div className="container-fluid mt-5" ref={printRef}>
+      {/* Header */}
+      <div
+        className="card-header border-0 py-5 d-flex justify-content-between align-items-center"
+        style={{ marginBottom: "2rem" }}
+      >
+        <div>
+          <h3 className="card-title align-items-start flex-column mb-1">
+            <span className="card-label font-weight-bolder text-dark d-block">
               Reporte de Morosidad y Cobranza
             </span>
-            <span className="text-muted mt-3 font-weight-bold font-size-sm">
-              Actualizado al 09/06/2025
-            </span>
           </h3>
-          <div className="mb-3">
-            <button className="btn btn-primary no-print" onClick={handlePrint}>
-              Imprimir
-            </button>
-          </div>
+          <span className="text-muted font-weight-bold font-size-sm">
+            Actualizado al 09/06/2025
+          </span>
         </div>
 
+        <div>
+          <button className="btn btn-primary no-print" onClick={handlePrint}>
+            Imprimir
+          </button>
+        </div>
+      </div>
+
+      {/* Card Principal */}
+      <div className="card card-custom gutter-b">
         <div className="card-body pt-0">
           {/* Mora por Tramo */}
           <h5 className="font-weight-bold text-primary mb-4 mt-2">
@@ -185,16 +183,7 @@ const DeliquencyCollectionsPage = () => {
                 </td>
                 <td>78%</td>
               </tr>
-              <tr>
-                <td className="font-weight-bold">Promedio de Días en Mora</td>
-                <td>42 días</td>
-              </tr>
-              <tr>
-                <td className="font-weight-bold">
-                  Recupero Histórico Acumulado
-                </td>
-                <td>83%</td>
-              </tr>
+              {/* Aquí puedes continuar con los demás indicadores si tienes más */}
             </tbody>
           </table>
         </div>

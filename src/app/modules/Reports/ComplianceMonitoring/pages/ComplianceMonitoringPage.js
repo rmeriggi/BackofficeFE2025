@@ -1,16 +1,35 @@
 import React from "react";
+import usePrint from "../../hooks/usePrint";
 
 const ComplianceMonitoringPage = () => {
+  const { printRef, handlePrint } = usePrint();
+
   return (
-    <div className="container-fluid mt-5">
-      <div className="card card-custom shadow-sm">
-        <div className="card-header">
-          <h3 className="card-title">Reporte Regulatorio / de Compliance</h3>
-          <div className="card-toolbar text-muted font-size-sm">
+    <div className="container-fluid mt-5" ref={printRef}>
+      <div
+        className="card-header border-0 py-5 d-flex justify-content-between align-items-center"
+        style={{ marginBottom: "2rem" }}
+      >
+        <div>
+          <h3 className="card-title align-items-start flex-column mb-1">
+            <span className="card-label font-weight-bolder text-dark d-block">
+              Reporte Regulatorio / de Compliance
+            </span>
+          </h3>
+          <span className="text-muted font-weight-bold font-size-sm">
             Actualizado al 09/06/2025
-          </div>
+          </span>
         </div>
 
+        <div>
+          <button className="btn btn-primary no-print" onClick={handlePrint}>
+            Imprimir
+          </button>
+        </div>
+      </div>
+
+      {/* Tarjeta con los datos */}
+      <div className="card card-custom gutter-b shadow-sm">
         <div className="card-body">
           {/* Créditos por tipo de cliente */}
           <h5 className="text-primary font-weight-bold mb-4">

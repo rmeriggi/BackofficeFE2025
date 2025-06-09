@@ -1,16 +1,33 @@
 import React from "react";
+import usePrint from "../../hooks/usePrint";
 
 const ActivePortfolioPage = () => {
+  const { printRef, handlePrint } = usePrint();
   return (
-    <div className="container-fluid mt-5">
-      <div className="card card-custom gutter-b shadow-sm">
-        <div className="card-header">
-          <h3 className="card-title">Reporte de Cartera Activa</h3>
-          <div className="card-toolbar text-muted font-size-sm">
+    <div className="container-fluid py-4" ref={printRef}>
+      <div
+        className="card-header border-0 py-5 d-flex justify-content-between align-items-center"
+        style={{ marginBottom: "2rem" }}
+      >
+        <div>
+          <h3 className="card-title align-items-start flex-column mb-1">
+            <span className="card-label font-weight-bolder text-dark d-block">
+              Reporte de Cartera Activa
+            </span>
+          </h3>
+          <span className="text-muted font-weight-bold font-size-sm">
             Actualizado al 09/06/2025
-          </div>
+          </span>
         </div>
 
+        <div>
+          <button className="btn btn-primary no-print" onClick={handlePrint}>
+            Imprimir
+          </button>
+        </div>
+      </div>
+
+      <div className="card card-custom gutter-b shadow-sm">
         <div className="card-body">
           {/* Resumen General */}
           <h5 className="text-primary font-weight-bold mt-4 mb-3">

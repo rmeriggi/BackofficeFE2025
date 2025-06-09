@@ -1,0 +1,44 @@
+/* Animaciones para las cards */
+.card-animated {
+  transition: all 0.3s ease;
+  transform: translateY(0);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-animated:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}
+
+.card-animated::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 0.5rem;
+  pointer-events: none;
+}
+
+.card-animated:hover::before {
+  opacity: 1;
+}
+
+/* Animación para los valores numéricos */
+.card-animated h2 {
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.card-animated:hover h2 {
+  transform: scale(1.05);
+  color: #0056b3 !important; /* Color más intenso al hacer hover */
+}

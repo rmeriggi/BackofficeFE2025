@@ -9,11 +9,11 @@ import {
 } from "../../../../../../_metronic/_partials/controls";
 import { Button, CircularProgress } from "@material-ui/core";
 import { SnackbarMessage } from "../../../../../components/SnackbarMessage";
-import CardEdit from "./flaps/CardEdit/CardEdit";
-import editCardsMock from "../../__mocks__/editCardsMock";
+import CardIssueContent from "./flaps/CardIssue/CardIssue";
+import createCardMock from "../../__mocks__/createCardMock";
 import TransactionsCard from "./flaps/Transactions/TransactionsCard";
 
-export function CardDetail({
+export function CardIssue({
   history,
   match: {
     params: { id },
@@ -113,8 +113,8 @@ export function CardDetail({
         </ul>
         <div className="mt-5">
           {tab === "card" && (
-            <CardEdit
-              cardInfo={editCardsMock}
+            <CardIssueContent
+              cardInfo={createCardMock}
               btnRef={btnRef}
               setIsSubmitting={setIsSubmitting}
               saveEditCard={saveEditCard}

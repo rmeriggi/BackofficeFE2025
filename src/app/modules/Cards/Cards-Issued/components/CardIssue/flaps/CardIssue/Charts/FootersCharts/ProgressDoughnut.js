@@ -1,0 +1,15 @@
+import React from 'react'
+
+export default function ProgressDoughnut({progress, color, title, value}) {
+  return (
+    <div className="col-12">
+      <div className="mb-4 d-flex justify-content-between">
+        <span className="text-muted text-uppercase">{title}</span>
+        <span className="ml-3">$ {new Intl.NumberFormat("de-DE", {minimumFractionDigits:2}).format(value)}</span>
+      </div>
+      <div className="progress mb-4" style={{width: "100%"}}>
+        <div className="progress-bar" role="progressbar" style={{width: `${progress}%`, backgroundColor: `${color}`}} aria-valuenow={progress} aria-valuemin="0" aria-valuemax={value}></div>
+      </div>
+    </div>
+  )
+}

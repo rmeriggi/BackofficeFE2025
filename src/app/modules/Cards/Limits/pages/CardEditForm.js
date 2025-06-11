@@ -3,6 +3,30 @@ import { Formik, Form, Field, ErrorMessage, useFormikContext } from "formik";
 import * as Yup from "yup";
 import { useHistory } from "react-router-dom";
 
+// Componente para campos numéricos formateados
+const FormattedNumberInput = ({ field, form, ...props }) => {
+  const handleChange = (e) => {
+    // Eliminar todos los puntos para el valor numérico
+    const rawValue = e.target.value.replace(/\./g, "");
+    form.setFieldValue(field.name, rawValue === "" ? "" : Number(rawValue));
+  };
+
+  const formatValue = (value) => {
+    if (value === undefined || value === null || value === "") return "";
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
+
+  return (
+    <input
+      {...field}
+      {...props}
+      value={formatValue(field.value)}
+      onChange={handleChange}
+      className="form-control"
+    />
+  );
+};
+
 // Componente para los botones del header
 const HeaderButtons = ({ onBack }) => {
   const { submitForm, isSubmitting } = useFormikContext();
@@ -40,16 +64,16 @@ const CardEditForm = () => {
     producto: "",
     brand: "",
     tipoTarjeta: "",
-    limiteCompra: "",
-    limiteCuotas: "",
-    limiteEfectivo: "",
-    limiteCajeroPropio: "",
-    limiteCajeroExt: "",
-    tna: "",
-    cft: "",
-    tem: "",
-    tasaPunitorios: "",
-    tasaRefinanciacion: "",
+    limiteCompra: 5000000,
+    limiteCuotas: 2000000,
+    limiteEfectivo: 200000,
+    limiteCajeroPropio: 200000,
+    limiteCajeroExt: 200000,
+    tna: 86,
+    cft: 129,
+    tem: (5 / 12).toFixed(2),
+    tasaPunitorios: 275,
+    tasaRefinanciacion: 332,
     habilitaOnline: false,
     habilitaExterior: false,
     habilitaCajero: false,
@@ -180,11 +204,7 @@ const CardEditForm = () => {
                     (field) => (
                       <div key={field} className="form-group col-md-4">
                         <label>{field.replace("limite", "Límite ")}</label>
-                        <Field
-                          type="number"
-                          name={field}
-                          className="form-control"
-                        />
+                        <Field name={field} component={FormattedNumberInput} />
                         <ErrorMessage
                           name={field}
                           component="div"
@@ -199,9 +219,8 @@ const CardEditForm = () => {
                   <div className="form-group col-md-6">
                     <label>Límite Cajero Propio</label>
                     <Field
-                      type="number"
                       name="limiteCajeroPropio"
-                      className="form-control"
+                      component={FormattedNumberInput}
                     />
                     <ErrorMessage
                       name="limiteCajeroPropio"
@@ -212,9 +231,8 @@ const CardEditForm = () => {
                   <div className="form-group col-md-6">
                     <label>Límite Cajero Externo</label>
                     <Field
-                      type="number"
                       name="limiteCajeroExt"
-                      className="form-control"
+                      component={FormattedNumberInput}
                     />
                     <ErrorMessage
                       name="limiteCajeroExt"

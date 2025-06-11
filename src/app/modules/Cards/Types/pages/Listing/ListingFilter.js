@@ -1,108 +1,113 @@
 /* eslint-disable eqeqeq */
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState } from "react";
 import { Formik } from "formik";
-import propTypes from 'prop-types';
-import {isEqual} from "lodash";
-import {useListingTableContext} from "./ListingTableContext";
-import { getExcel } from '../../../../../utils/exportExcel';
+import propTypes from "prop-types";
+import { isEqual } from "lodash";
+import { useListingTableContext } from "./ListingTableContext";
+import { getExcel } from "../../../../../utils/exportExcel";
+import { Button } from "react-bootstrap";
 
 const prepareFilter = (queryParams, values) => {
-    const { searchText } = values;
-    const newQueryParams = { ...queryParams };
-    const filter = {};
-    filter.type = searchText;
-    newQueryParams.filter = filter;
-    return newQueryParams;
+  const { searchText } = values;
+  const newQueryParams = { ...queryParams };
+  const filter = {};
+  filter.type = searchText;
+  newQueryParams.filter = filter;
+  return newQueryParams;
 };
 
 const ListingFilter = (props) => {
+  const [report, setReport] = useState([]);
 
-    const [report, setReport] = useState([])
-      
-    useMemo(() => {
-        const dataFormated = props.data
-        setReport(dataFormated)
-    }, [props.data])
+  useMemo(() => {
+    const dataFormated = props.data;
+    setReport(dataFormated);
+  }, [props.data]);
 
-    const {
-        queryParams,
-        setQueryParams,
-        setPageNumber,
-    } = useListingTableContext();
+  const {
+    queryParams,
+    setQueryParams,
+    setPageNumber,
+  } = useListingTableContext();
 
-    const applyFilter = (values) => {
-        const newQueryParams = prepareFilter(queryParams, values);
-        if (!isEqual(newQueryParams, queryParams)) {
-            setPageNumber(1)
-            newQueryParams.pageNumber = 1;
-            setQueryParams(newQueryParams);
-        }
-    };
-
-    const propertiesData = {
-        header: ['ID',"Tipo"],
-        properties:['id', 'type'] ,
-        array: report,
+  const applyFilter = (values) => {
+    const newQueryParams = prepareFilter(queryParams, values);
+    if (!isEqual(newQueryParams, queryParams)) {
+      setPageNumber(1);
+      newQueryParams.pageNumber = 1;
+      setQueryParams(newQueryParams);
     }
-    
-    return (
-        <>
-            <Formik
-                initialValues={{
-                    searchText: "",
-                }}
-                onSubmit={(values) => {
-                    applyFilter(values);
-                }}
-            >
-                {({
-                      values,
-                      handleSubmit,
-                      handleBlur,
-                      setFieldValue,
-                  }) => (
-                    <form onSubmit={handleSubmit} className="form form-label-right">
-                        <div className="row justify-space-around">
-                            <div className="col-lg-3">
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    style={{width:'150px'}}
-                                    name="searchText"
-                                    placeholder="Buscar"
-                                    disabled={props.disabled}
-                                    onBlur={handleBlur}
-                                    value={values.searchText}
-                                    onChange={(e) => {
-                                        setFieldValue("searchText", e.target.value);
-                                        handleSubmit();
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    </form>
-                )}
-            </Formik>
-            {props.data.length > 0 ? 
-            (
-            <div className="symbol-label ml-7" onClick={() => getExcel(propertiesData, "Tipos")}>
-                <i className="flaticon2-download icon-xl text-primary" role="button"></i>
+  };
+
+  const propertiesData = {
+    header: ["ID", "Tipo"],
+    properties: ["id", "type"],
+    array: report,
+  };
+
+  return (
+    <>
+      <Formik
+        initialValues={{
+          searchText: "",
+        }}
+        onSubmit={(values) => {
+          applyFilter(values);
+        }}
+      >
+        {({ values, handleSubmit, handleBlur, setFieldValue }) => (
+          <form onSubmit={handleSubmit} className="form form-label-right">
+            <div className="row justify-space-around">
+              <div className="col-lg-3">
+                <input
+                  type="text"
+                  className="form-control"
+                  style={{ width: "150px" }}
+                  name="searchText"
+                  placeholder="Buscar"
+                  disabled={props.disabled}
+                  onBlur={handleBlur}
+                  value={values.searchText}
+                  onChange={(e) => {
+                    setFieldValue("searchText", e.target.value);
+                    handleSubmit();
+                  }}
+                />
+              </div>
             </div>
-            ):(
-            <div className="symbol-label ml-7">
-                <i className="flaticon2-download icon-xl text-secondary"></i>
-            </div>
-            )}
-        </>
-    );
-}
+          </form>
+        )}
+      </Formik>
+      <div className="col-auto ml-4">
+        <Button /* onClick={() => history.push("/cards/status/create")} */>
+          Crear Tipo
+        </Button>
+      </div>
+      {props.data.length > 0 ? (
+        <div
+          className="symbol-label ml-4"
+          onClick={() => getExcel(propertiesData, "Tipos")}
+        >
+          <i
+            className="flaticon2-download icon-xl text-primary"
+            role="button"
+          ></i>
+        </div>
+      ) : (
+        <div className="symbol-label ml-4">
+          <i className="flaticon2-download icon-xl text-secondary"></i>
+        </div>
+      )}
+    </>
+  );
+};
 
 ListingFilter.defaultProps = {
-    disabled: false,
-}
+  disabled: false,
+};
 
 ListingFilter.propTypes = {
-    disabled: propTypes.bool
-}
+  disabled: propTypes.bool,
+};
 
 export default ListingFilter;

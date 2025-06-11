@@ -31,7 +31,7 @@ export function CardIssue({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const backToCardsList = () => {
-    history.push(`${cardIssuedLinks.list}`);
+    history.push(`${cardIssuedLinks}`);
   };
 
   function handleCloseSnackbar(event, reason) {
@@ -63,7 +63,7 @@ export function CardIssue({
 
   return (
     <Card>
-      <CardHeader title="Editar">
+      <CardHeader title="Crear">
         <CardHeaderToolbar>
           <Button
             variant="outlined"
@@ -85,7 +85,7 @@ export function CardIssue({
               isSubmitting && <CircularProgress size={20} color="secondary" />
             }
           >
-            Actualizar
+            Crear
           </Button>
         </CardHeaderToolbar>
       </CardHeader>

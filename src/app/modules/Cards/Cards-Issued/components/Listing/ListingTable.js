@@ -31,7 +31,7 @@ export function ListingTable({ cards }) {
   const history = useHistory();
 
   const openEditClientPage = (id) => {
-    history.push(`/cards/cards/edit/${id}`);
+    history.push(`/cards/cards/issue/edit/${id}`);
   };
 
   const columns = [

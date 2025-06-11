@@ -9,7 +9,7 @@ const IssuersPage = () => {
     <Switch>
       <ContentRoute
         exact
-        path="/cards/cardsrs"
+        path="/cards/issuers"
         component={Listing}
         ContextProvider={ListingTableContextProvider}
       />

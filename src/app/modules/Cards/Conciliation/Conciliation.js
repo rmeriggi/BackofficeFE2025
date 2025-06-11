@@ -1,8 +1,10 @@
 import React from "react";
 import usePrint from "../../hooks/usePrint";
 import { Button } from "react-bootstrap";
+import { useHistory } from "react-router-dom";
 
 const Conciliation = () => {
+  const history = useHistory();
   const { handlePrint, printRef } = usePrint();
 
   return (
@@ -23,7 +25,13 @@ const Conciliation = () => {
         </div>
 
         <div>
-          <Button className="btn btn-primary no-print" onClick={handlePrint}>
+          <Button variant="outline-primary" onClick={() => history.goBack()}>
+            volver
+          </Button>
+          <Button
+            className="ml-4 btn btn-primary no-print"
+            onClick={handlePrint}
+          >
             Imprimir
           </Button>
         </div>

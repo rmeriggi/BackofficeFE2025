@@ -1,32 +1,28 @@
+/* eslint-disable eqeqeq */
 import React, { useMemo, useState } from "react";
 import { Formik } from "formik";
-import { useListingTableContext } from "./ListingTableContext";
-import { isEqual } from "lodash";
 import propTypes from "prop-types";
-import { getExcel } from "../../../../../utils/exportExcel";
-import { formatClientReport } from "../../../../../utils/formatData";
+import { isEqual } from "lodash";
+import { useListingTableContext } from "./ListingTableContext";
+import { getExcel } from "../../../../utils/exportExcel";
 import { Button } from "react-bootstrap";
 
 const prepareFilter = (queryParams, values) => {
   const { searchText } = values;
   const newQueryParams = { ...queryParams };
   const filter = {};
-  filter.companyName = searchText;
-  filter.distributor = searchText;
-  filter.email = searchText;
-  filter.movil = searchText;
-  filter.address = searchText;
+  filter.brandName = searchText;
   newQueryParams.filter = filter;
   return newQueryParams;
 };
 
-const ListingFilter = ({ disabled, data }) => {
+const ListingFilter = (props) => {
   const [report, setReport] = useState([]);
 
   useMemo(() => {
-    const dataFormated = formatClientReport(data);
+    const dataFormated = props.data;
     setReport(dataFormated);
-  }, [data]);
+  }, [props.data]);
 
   const {
     queryParams,
@@ -44,26 +40,11 @@ const ListingFilter = ({ disabled, data }) => {
   };
 
   const propertiesData = {
-    header: [
-      "Compañia",
-      "Distribuidor",
-      "Fecha alta",
-      "Mail",
-      "Dirección",
-      "Teléfono",
-      "País",
-    ],
-    properties: [
-      "companyName",
-      "distributor",
-      "date",
-      "email",
-      "address",
-      "movil",
-      "country",
-    ],
+    header: ["ID", "Marca", "Sponsor", "Bin", "País", "Entidad"],
+    properties: ["id", "brandName", "sponsorName", "bin", "country", "entity"],
     array: report,
   };
+
   return (
     <>
       <Formik
@@ -74,23 +55,17 @@ const ListingFilter = ({ disabled, data }) => {
           applyFilter(values);
         }}
       >
-        {({
-          values,
-          handleSubmit,
-          handleBlur,
-          handleChange,
-          setFieldValue,
-        }) => (
+        {({ values, handleSubmit, handleBlur, setFieldValue }) => (
           <form onSubmit={handleSubmit} className="form form-label-right">
-            <div className="row">
-              <div className="col-lg-2">
+            <div className="row justify-space-around">
+              <div className="col-lg-3">
                 <input
                   type="text"
                   className="form-control"
-                  style={{ width: "200px" }}
+                  style={{ width: "150px" }}
                   name="searchText"
                   placeholder="Buscar"
-                  disabled={disabled}
+                  disabled={props.disabled}
                   onBlur={handleBlur}
                   value={values.searchText}
                   onChange={(e) => {
@@ -106,10 +81,10 @@ const ListingFilter = ({ disabled, data }) => {
       <div className="ml-4">
         <Button>Nuevo</Button>
       </div>
-      {data.length > 0 ? (
+      {props.data.length > 0 ? (
         <div
           className="symbol-label ml-4"
-          onClick={() => getExcel(propertiesData, "Clientes")}
+          onClick={() => getExcel(propertiesData, "Marcas")}
         >
           <i
             className="flaticon2-download icon-xl text-primary"

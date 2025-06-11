@@ -115,6 +115,7 @@ export function CardDetail({
         <div className="mt-5">
           {tab === "card" && (
             <CardEdit
+              idCard={id}
               cardInfo={editCardsMock}
               btnRef={btnRef}
               setIsSubmitting={setIsSubmitting}

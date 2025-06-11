@@ -3,29 +3,20 @@ import React from "react";
 import {
   sortCaret,
   headerSortingClasses,
-} from "../../../../../../_metronic/_helpers";
+} from "../../../../../_metronic/_helpers";
 import { defaultSorted, sizePerPageList } from "./ListingTableHelpers";
 import { useListingTableContext } from "./ListingTableContext";
-import { PaginatedTable } from "../../../../../components/PaginatedTable";
-import { TableNoRecordsFoundMessage } from "../../../../../components/TableNoRecordsFound";
+import { PaginatedTable } from "../../../../components/PaginatedTable";
+import { TableNoRecordsFoundMessage } from "../../../../components/TableNoRecordsFound";
 import { ActionColumnFormatter } from "./column-formatters/ActionColumnFormatter";
 
-const filterData = (brandsData, filter) => {
-  let filteredData = brandsData;
-  if (filter.brandName !== "") {
-    filteredData = brandsData.filter((brand) => {
-      if (
-        brand.brandName
-          .trim()
-          .toLowerCase()
-          .includes(filter.brandName.toLowerCase())
-      ) {
-        return true;
-      }
-      return false;
-    });
+const filterData = (data, filter) => {
+  if (!filter || !filter.period || filter.period.trim() === "") {
+    return data;
   }
-  return filteredData;
+  return data.filter((item) => {
+    return item.period?.toLowerCase().includes(filter.period.toLowerCase());
+  });
 };
 
 export function ListingTable({ dataTable }) {
@@ -36,25 +27,25 @@ export function ListingTable({ dataTable }) {
       sort: true,
       classes: "text-center",
       headerClasses: "text-center",
-      sortCaret: sortCaret,
+      sortCaret,
       headerSortingClasses,
     },
     {
-      dataField: "brandName",
-      text: "Brand",
+      dataField: "period",
+      text: "Período",
       sort: true,
       classes: "text-center",
       headerClasses: "text-center",
-      sortCaret: sortCaret,
+      sortCaret,
       headerSortingClasses,
     },
     {
-      dataField: "sponsorName",
-      text: "Procesador",
+      dataField: "liquidation_date",
+      text: "Fecha de Liquidación",
       sort: true,
       classes: "text-center",
       headerClasses: "text-center",
-      sortCaret: sortCaret,
+      sortCaret,
       headerSortingClasses,
     },
     {
@@ -63,23 +54,14 @@ export function ListingTable({ dataTable }) {
       sort: true,
       classes: "text-center",
       headerClasses: "text-center",
-      sortCaret: sortCaret,
-      headerSortingClasses,
-    },
-    {
-      dataField: "country",
-      text: "País",
-      sort: true,
-      classes: "text-center",
-      headerClasses: "text-center",
-      sortCaret: sortCaret,
+      sortCaret,
       headerSortingClasses,
     },
     {
       dataField: "action",
       text: "",
       classes: "d-flex justify-content-end",
-      formatter: ActionColumnFormatter,
+      formatter: (cellContent, row) => <ActionColumnFormatter row={row} />,
     },
   ];
 
@@ -94,7 +76,7 @@ export function ListingTable({ dataTable }) {
   const paginationOptions = {
     custom: true,
     totalSize: dataTable.length,
-    sizePerPageList: sizePerPageList,
+    sizePerPageList,
     sizePerPage: size,
     page: pageNumber,
   };
@@ -102,7 +84,7 @@ export function ListingTable({ dataTable }) {
   const filteredData = filterData(dataTable, queryParams.filter);
 
   return dataTable.length === 0 ? (
-    <TableNoRecordsFoundMessage entities={"Tipos"} />
+    <TableNoRecordsFoundMessage entities={"Liquidaciones"} />
   ) : (
     <PaginatedTable
       columns={columns}

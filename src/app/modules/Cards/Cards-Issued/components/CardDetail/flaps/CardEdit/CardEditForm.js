@@ -28,16 +28,24 @@ const cardSchema = Yup.object().shape({
   },
 }); */
 
+const getCardImage = (idCard) => {
+  if (idCard === "3" || idCard === "4" || idCard === "6")
+    return "/media/cards/card2.png";
+  return "/media/cards/card1.png";
+};
+
 export function CardEditForm({
   values,
   btnRef,
   setIsSubmitting,
   saveEditCard,
+  idCard,
 }) {
+  console.log(idCard);
   return (
     <div className="col-3">
       <img
-        src={toAbsoluteUrl(`/media/cards/card${values.cardId}.png`)}
+        src={toAbsoluteUrl(`${getCardImage(idCard)}`)}
         alt="card"
         className="img-fluid"
       />

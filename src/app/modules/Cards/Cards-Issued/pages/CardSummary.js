@@ -1,8 +1,10 @@
 import React from "react";
 import usePrint from "../../../hooks/usePrint";
 import { Button } from "react-bootstrap";
+import { useHistory } from "react-router-dom";
 
 const CardSummary = () => {
+  const history = useHistory();
   const { handlePrint, printRef } = usePrint();
 
   return (
@@ -25,6 +27,16 @@ const CardSummary = () => {
         <div>
           <Button className="btn btn-primary no-print" onClick={handlePrint}>
             Imprimir
+          </Button>
+
+          <Button
+            className="ml-4 no-print"
+            variant="outline-primary"
+            color="primary"
+            size="large"
+            onClick={() => history.goBack()}
+          >
+            Volver
           </Button>
         </div>
       </div>

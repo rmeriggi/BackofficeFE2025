@@ -68,6 +68,30 @@ export function ListingTable({ limits }) {
       sortCaret: sortCaret,
       headerSortingClasses,
     },
+    {
+      dataField: "buy_limit",
+      text: "Límite de compra",
+      sort: true,
+      headerClasses: "align-top",
+      sortCaret: sortCaret,
+      headerSortingClasses,
+    },
+    {
+      dataField: "quotes_limit",
+      text: "Límite en cuotas",
+      sort: true,
+      headerClasses: "align-top",
+      sortCaret: sortCaret,
+      headerSortingClasses,
+    },
+    {
+      dataField: "cash_limit",
+      text: "Límite efectivo",
+      sort: true,
+      headerClasses: "align-top",
+      sortCaret: sortCaret,
+      headerSortingClasses,
+    },
 
     {
       dataField: "actions",

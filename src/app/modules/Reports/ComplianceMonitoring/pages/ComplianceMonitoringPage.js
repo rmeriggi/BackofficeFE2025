@@ -1,5 +1,5 @@
 import React from "react";
-import usePrint from "../../hooks/usePrint";
+import usePrint from "../../../hooks/usePrint";
 
 const ComplianceMonitoringPage = () => {
   const { printRef, handlePrint } = usePrint();

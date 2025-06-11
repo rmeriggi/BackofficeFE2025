@@ -1,5 +1,5 @@
 import React from "react";
-import usePrint from "../../hooks/usePrint";
+import usePrint from "../../../hooks/usePrint";
 
 const MaturityCashflow = () => {
   const { printRef, handlePrint } = usePrint();

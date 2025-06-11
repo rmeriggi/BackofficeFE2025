@@ -97,7 +97,7 @@ export function ListingTable({ products = [] }) {
     },
     {
       dataField: "limit",
-      text: "Límite",
+      text: "Límite de compra",
       sort: true,
       headerClasses: "align-top",
       sortCaret,
@@ -106,7 +106,7 @@ export function ListingTable({ products = [] }) {
     },
     {
       dataField: "quotaLimit",
-      text: "Límite de cuota",
+      text: "Límite en cuotas",
       sort: true,
       headerClasses: "align-top",
       sortCaret,

@@ -3,13 +3,13 @@ export default [
     amount: "100.0000",
     date: "2022-01-07T00:00:00",
     id: "2123",
-    type: "Compra en comercio"
+    type: "Extracción cajero",
   },
   {
     amount: "100.0000",
     date: "2022-01-07T00:00:00",
     id: "2122",
-    type: "Compra en comercio"
+    type: "Compra en comercio",
   },
   {
     amount: "10.0000",
@@ -17,4 +17,4 @@ export default [
     id: "2121",
     type: "Compra en comercio",
   },
-]
+];

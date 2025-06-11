@@ -24,7 +24,7 @@ export function Listing() {
 
   return (
     <Card>
-      <CardHeader title="Listado">
+      <CardHeader title="Producto Tarjetas">
         <CardHeaderToolbar>
           <ListingFilter
             disabled={productsList.length === 0}

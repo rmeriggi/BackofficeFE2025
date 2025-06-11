@@ -1,27 +1,31 @@
-import React from 'react';
-import { Switch } from 'react-router-dom';
-import { ContentRoute } from '../../../../../_metronic/layout';
-import { Listing } from "../../Cards-Issued/components/Listing/index";
-import { ListingTableContextProvider } from '../../Cards-Issued/components/Listing/ListingTableContext';
-import {CardDetail} from "../../Cards-Issued/components/CardDetail/CardDetail"
+import React from "react";
+import { Switch } from "react-router-dom";
+import { ContentRoute } from "../../../../../_metronic/layout";
+import { Listing } from "./Listing/index";
+import { ListingTableContextProvider } from "./Listing/ListingTableContext";
+import CardEditForm from "./CardEditForm";
+import CardCreateForm from "./CardCreateForm";
 
-export default function LimitsPage () {
-
-    const baseRouterUrl = "/cards"
-    return (
-      <>
+export default function LimitsPage() {
+  const baseRouterUrl = "/cards";
+  return (
+    <>
       <Switch>
-        <ContentRoute 
+        <ContentRoute
           path={baseRouterUrl + "/limits"}
           exact
-          component={Listing} 
-          ContextProvider={ListingTableContextProvider} 
+          component={Listing}
+          ContextProvider={ListingTableContextProvider}
         />
-        <ContentRoute 
-          path={baseRouterUrl + "/cards/edit/:id"}
-          component={CardDetail} 
+        <ContentRoute
+          path={baseRouterUrl + "/limits/create"}
+          component={CardCreateForm}
         />
-      </Switch>  
-      </> 
-    )
-  }
+        <ContentRoute
+          path={baseRouterUrl + "/limits/edit/:id"}
+          component={CardEditForm}
+        />
+      </Switch>
+    </>
+  );
+}

@@ -8,11 +8,11 @@ import { useHistory } from "react-router";
 
 import { useSnackBar } from "../../../../../hooks/useSnackBar";
 
-const ProductEditSchema = Yup.object().shape({
+const ProductCreateSchema = Yup.object().shape({
   product: Yup.string().required("Nombre del grupo es un campo requerido"),
 });
 
-export function ProductEditForm({ product, ref }) {
+export function ProductCreateForm({ product, formikRef }) {
   const initialValues = {
     product: product.product,
     brand: product.brand,
@@ -42,7 +42,7 @@ export function ProductEditForm({ product, ref }) {
 
   const handleEdit = async (values) => {
     try {
-      //await edit(product.id, values);
+      console.log(values);
       setOpenMessage("success", "El producto fue actualizado correctamente.");
       setTimeout(() => {
         history.push("/cards/products");
@@ -58,10 +58,10 @@ export function ProductEditForm({ product, ref }) {
   return (
     <>
       <Formik
-        innerRef={ref}
         enableReinitialize
         initialValues={initialValues}
-        validationSchema={ProductEditSchema}
+        validationSchema={ProductCreateSchema}
+        innerRef={formikRef}
         onSubmit={(values) => {
           setProgress(!progress);
           handleEdit(values);
@@ -213,42 +213,51 @@ export function ProductEditForm({ product, ref }) {
                 </div>
               </div>
               <div className="form-product row">
-                <div className="col-lg-3">
+                <div className="col-lg-4">
                   <FormControlLabel
                     control={
                       <Switch
-                        checked={values.extractCashier === "1" ? true : false}
+                        checked={values.extractCashier === "1"}
                         onChange={(e) => {
-                          //setFieldValue("automaticApproval", e.target.checked === true? "1" : "0")
+                          setFieldValue(
+                            "extractCashier",
+                            e.target.checked ? "1" : "0"
+                          );
                         }}
+                        color="primary"
                       />
                     }
                     label="Extrae Cajero"
                     labelPlacement="top"
                   />
                 </div>
-                <div className="col-lg-3">
+                <div className="col-lg-4">
                   <FormControlLabel
                     control={
                       <Switch
-                        checked={values.refinancing === "1" ? true : false}
+                        checked={values.refinancing === "1"}
                         onChange={(e) => {
-                          //setFieldValue("automaticApproval", e.target.checked === true? "1" : "0")
+                          setFieldValue(
+                            "refinancing",
+                            e.target.checked ? "1" : "0"
+                          );
                         }}
+                        color="primary"
                       />
                     }
                     label="Refinanciación"
                     labelPlacement="top"
                   />
                 </div>
-                <div className="col-lg-3">
+                <div className="col-lg-4">
                   <FormControlLabel
                     control={
                       <Switch
-                        checked={values.flota === "1" ? true : false}
+                        checked={values.flota === "1"}
                         onChange={(e) => {
-                          //setFieldValue("automaticApproval", e.target.checked === true? "1" : "0")
+                          setFieldValue("flota", e.target.checked ? "1" : "0");
                         }}
+                        color="primary"
                       />
                     }
                     label="Flota"

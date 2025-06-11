@@ -1,111 +1,135 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState } from "react";
 import { Formik } from "formik";
-import {useListingTableContext} from "./ListingTableContext";
-import {isEqual} from "lodash";
-import propTypes from 'prop-types';
-import { getExcel } from '../../../../../utils/exportExcel';
-import { formatClientReport } from '../../../../../utils/formatData';
-
+import { useListingTableContext } from "./ListingTableContext";
+import { isEqual } from "lodash";
+import propTypes from "prop-types";
+import { getExcel } from "../../../../../utils/exportExcel";
+import { formatClientReport } from "../../../../../utils/formatData";
+import { useHistory } from "react-router-dom";
+import { Button } from "react-bootstrap";
 const prepareFilter = (queryParams, values) => {
-    const { searchText } = values;
-    const newQueryParams = { ...queryParams };
-    const filter = {};
-    filter.providerName = searchText;
-    filter.providerLastname = searchText;
-    filter.issuerName = searchText;
-    filter.issuerLastname = searchText;
-    filter.brand = searchText;
-    newQueryParams.filter = filter;
-    return newQueryParams;
+  const { searchText } = values;
+  const newQueryParams = { ...queryParams };
+  const filter = {};
+  filter.providerName = searchText;
+  filter.providerLastname = searchText;
+  filter.issuerName = searchText;
+  filter.issuerLastname = searchText;
+  filter.brand = searchText;
+  newQueryParams.filter = filter;
+  return newQueryParams;
 };
 
-const ListingFilter = ({disabled, data}) => {
-    const [report, setReport] = useState([])
-  
-    useMemo(() => {
-        const dataFormated = formatClientReport(data)
-        setReport(dataFormated)
-    }, [data])
+const ListingFilter = ({ disabled, data }) => {
+  const history = useHistory();
+  const [report, setReport] = useState([]);
 
-    const {
-        queryParams,
-        setQueryParams,
-        setPageNumber
-    } = useListingTableContext();
+  useMemo(() => {
+    const dataFormated = formatClientReport(data);
+    setReport(dataFormated);
+  }, [data]);
 
-    const applyFilter = (values) => {
-        const newQueryParams = prepareFilter(queryParams, values);
-        if (!isEqual(newQueryParams, queryParams)) {
-            setPageNumber(1)
-            newQueryParams.pageNumber = 1;
-            setQueryParams(newQueryParams);
-        }
-    };
+  const {
+    queryParams,
+    setQueryParams,
+    setPageNumber,
+  } = useListingTableContext();
 
-    const propertiesData = {
-        header: ["Nombre Emisor", "Apellido Emisor","Nombre Procesador", "Apellido Procesador", "Marca"],
-        properties:["providerName", "providerLastname", "issuerName","issuerLastname", "brand"] ,
-        array: report,
+  const applyFilter = (values) => {
+    const newQueryParams = prepareFilter(queryParams, values);
+    if (!isEqual(newQueryParams, queryParams)) {
+      setPageNumber(1);
+      newQueryParams.pageNumber = 1;
+      setQueryParams(newQueryParams);
     }
-    return (
-        <>
-            <Formik
-                initialValues={{
-                    searchText: "",
-                }}
-                onSubmit={(values) => {
-                    applyFilter(values);
-                }}
-            >
-                {({
-                      values,
-                      handleSubmit,
-                      handleBlur,
-                      handleChange,
-                      setFieldValue,
-                  }) => (
-                    <form onSubmit={handleSubmit} className="form form-label-right">
-                        <div className="row">
-                            <div className="col-lg-2">
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    style={{width:'200px'}}
-                                    name="searchText"
-                                    placeholder="Buscar"
-                                    disabled={disabled}
-                                    onBlur={handleBlur}
-                                    value={values.searchText}
-                                    onChange={(e) => {
-                                        setFieldValue("searchText", e.target.value);
-                                        handleSubmit();
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    </form>
-                )}
-            </Formik>
-            {data.length > 0 ? 
-            (
-            <div className="symbol-label ml-7" onClick={() => getExcel(propertiesData, "Clientes")}>
-                <i className="flaticon2-download icon-xl text-primary" role="button"></i>
+  };
+
+  const propertiesData = {
+    header: [
+      "Nombre Emisor",
+      "Apellido Emisor",
+      "Nombre Procesador",
+      "Apellido Procesador",
+      "Marca",
+    ],
+    properties: [
+      "providerName",
+      "providerLastname",
+      "issuerName",
+      "issuerLastname",
+      "brand",
+    ],
+    array: report,
+  };
+  return (
+    <>
+      <Formik
+        initialValues={{
+          searchText: "",
+        }}
+        onSubmit={(values) => {
+          applyFilter(values);
+        }}
+      >
+        {({
+          values,
+          handleSubmit,
+          handleBlur,
+          handleChange,
+          setFieldValue,
+        }) => (
+          <form onSubmit={handleSubmit} className="form form-label-right">
+            <div className="row">
+              <div className="col-lg-2">
+                <input
+                  type="text"
+                  className="form-control"
+                  style={{ width: "200px" }}
+                  name="searchText"
+                  placeholder="Buscar"
+                  disabled={disabled}
+                  onBlur={handleBlur}
+                  value={values.searchText}
+                  onChange={(e) => {
+                    setFieldValue("searchText", e.target.value);
+                    handleSubmit();
+                  }}
+                />
+              </div>
             </div>
-            ):(
-            <div className="symbol-label ml-7">
-                <i className="flaticon2-download icon-xl text-secondary"></i>
-            </div>
-            )}
-        </>
-    );
-}
+          </form>
+        )}
+      </Formik>
+      <div className="col-auto ml-4">
+        <Button onClick={() => history.push("/cards/limits/create")}>
+          Crear
+        </Button>
+      </div>
+      {data.length > 0 ? (
+        <div
+          className="symbol-label ml-4"
+          onClick={() => getExcel(propertiesData, "Clientes")}
+        >
+          <i
+            className="flaticon2-download icon-xl text-primary"
+            role="button"
+          ></i>
+        </div>
+      ) : (
+        <div className="symbol-label ml-4">
+          <i className="flaticon2-download icon-xl text-secondary"></i>
+        </div>
+      )}
+    </>
+  );
+};
 
 ListingFilter.defaultProps = {
-    disabled: false,
-}
+  disabled: false,
+};
 
 ListingFilter.propTypes = {
-    disabled: propTypes.bool
-}
+  disabled: propTypes.bool,
+};
 
 export default ListingFilter;

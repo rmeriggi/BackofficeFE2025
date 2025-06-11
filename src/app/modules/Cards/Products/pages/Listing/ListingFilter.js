@@ -5,6 +5,7 @@ import { isEqual } from "lodash";
 import propTypes from "prop-types";
 import { getExcel } from "../../../../../utils/exportExcel";
 import { formatClientReport } from "../../../../../utils/formatData";
+import NewCardButton from "./NewCardButton";
 
 const prepareFilter = (queryParams, values) => {
   const { searchText } = values;
@@ -54,59 +55,54 @@ const ListingFilter = ({ disabled, data }) => {
     properties: ["product", "lastname", "date", "email", "passport", "brand"],
     array: report,
   };
+
   return (
     <>
-      HOLAAAAAAAAA
       <Formik
-        initialValues={{
-          searchText: "",
-        }}
-        onSubmit={(values) => {
-          applyFilter(values);
-        }}
+        initialValues={{ searchText: "" }}
+        onSubmit={(values) => applyFilter(values)}
       >
-        {({
-          values,
-          handleSubmit,
-          handleBlur,
-          handleChange,
-          setFieldValue,
-        }) => (
-          <form onSubmit={handleSubmit} className="form form-label-right">
-            <div className="row">
-              <div className="col-lg-2">
+        {({ values, handleBlur, setFieldValue }) => (
+          <form className="form form-label-right">
+            <div className="form-group row align-items-center">
+              {/* Campo de búsqueda */}
+              <div className="col-auto">
                 <input
                   type="text"
                   className="form-control"
-                  style={{ width: "200px" }}
                   name="searchText"
                   placeholder="Buscar"
                   disabled={disabled}
                   onBlur={handleBlur}
                   value={values.searchText}
                   onChange={(e) => {
-                    setFieldValue("searchText", e.target.value);
-                    handleSubmit();
+                    const value = e.target.value;
+                    setFieldValue("searchText", value);
+                    applyFilter({ searchText: value });
                   }}
                 />
+              </div>
+
+              {/* Botón Nueva Tarjeta */}
+              <div className="col-auto ml-4">
+                <NewCardButton />
+              </div>
+
+              {/* Ícono de exportar */}
+              <div className="col-auto ml-4" role="button">
+                {report.length > 0 ? (
+                  <i
+                    className="flaticon2-download icon-xl text-primary"
+                    onClick={() => getExcel(propertiesData, "Clientes")}
+                  />
+                ) : (
+                  <i className="flaticon2-download icon-xl text-secondary" />
+                )}
               </div>
             </div>
           </form>
         )}
       </Formik>
-      <div
-        className="symbol-label ml-7"
-        onClick={() => getExcel(propertiesData, "Clientes")}
-      >
-        <i
-          className="flaticon2-download icon-xl text-primary"
-          role="button"
-        ></i>
-      </div>
-      ) : (
-      <div className="symbol-label ml-7">
-        <i className="flaticon2-download icon-xl text-secondary"></i>
-      </div>
     </>
   );
 };

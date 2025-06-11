@@ -5,6 +5,7 @@ import { ContentRoute } from "../../../../../_metronic/layout";
 import { CardDetail } from "../components/CardDetail/CardDetail";
 import { CardIssue } from "../components/CardIssue/CardIssue";
 import { ListingTableContextProvider } from "../components/Listing/ListingTableContext";
+import CardSummary from "./CardSummary";
 
 export default function CardsIssuedPage() {
   const baseRouterUrl = "/cards/cards";
@@ -16,6 +17,10 @@ export default function CardsIssuedPage() {
           exact
           component={Listing}
           ContextProvider={ListingTableContextProvider}
+        />
+        <ContentRoute
+          path={baseRouterUrl + "/issue/summary/:id"}
+          component={CardSummary}
         />
         <ContentRoute
           path={baseRouterUrl + "/issue/edit/:id"}

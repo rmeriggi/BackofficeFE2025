@@ -12,6 +12,7 @@ import { SnackbarMessage } from "../../../../../components/SnackbarMessage";
 import CardIssueContent from "./flaps/CardIssue/CardIssue";
 import createCardMock from "../../__mocks__/createCardMock";
 import TransactionsCard from "./flaps/Transactions/TransactionsCard";
+import { cardIssuedLinks } from "../../utils/cardIssuedLinks";
 
 export function CardIssue({
   history,
@@ -30,7 +31,7 @@ export function CardIssue({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const backToCardsList = () => {
-    history.push(`/cards/cards`);
+    history.push(`${cardIssuedLinks.list}`);
   };
 
   function handleCloseSnackbar(event, reason) {

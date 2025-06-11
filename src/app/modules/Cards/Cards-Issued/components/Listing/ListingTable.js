@@ -11,6 +11,7 @@ import { TableNoRecordsFoundMessage } from "../../../../../components/TableNoRec
 import { CardColumnFormatter } from "./column-formatters/CardColumnFormatter";
 import { DetailColumnFormatter } from "./column-formatters/DetailColumnFormatter";
 import { DateColumnFormatter } from "../../../../../utils/column-formatter/DateColumnFormatter";
+import { cardIssuedLinks } from "../../utils/cardIssuedLinks";
 
 const filterData = (cards, filter) => {
   let filteredData = cards;
@@ -31,7 +32,10 @@ export function ListingTable({ cards }) {
   const history = useHistory();
 
   const openEditClientPage = (id) => {
-    history.push(`/cards/cards/issue/edit/${id}`);
+    history.push(`${cardIssuedLinks.edit}/${id}`);
+  };
+  const openSummary = (id) => {
+    history.push(`${cardIssuedLinks.summary}/${id}`);
   };
 
   const columns = [
@@ -85,6 +89,7 @@ export function ListingTable({ cards }) {
       formatter: DetailColumnFormatter,
       formatExtraData: {
         openEditClientPage,
+        openSummary,
       },
     },
   ];

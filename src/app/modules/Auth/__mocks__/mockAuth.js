@@ -217,7 +217,7 @@ export default function mockAuth(mock) {
                 access: 1,
               },
               {
-                link: "/cards/cardsrs",
+                link: "/cards/cards",
                 name: "Emisores",
                 access: 1,
               },

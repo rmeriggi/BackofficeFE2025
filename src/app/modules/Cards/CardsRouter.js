@@ -15,7 +15,11 @@ const ProductsPage = lazy(() => import("./Products/pages/ProductsPage.js"));
 
 const ProvidersPage = lazy(() => import("./Providers/pages/ProvidersPage.js"));
 
-const IssuersPage = lazy(() => import("./Issuers/pages/IssuersPage.js"));
+/* const IssuersPage = lazy(() => import("./Issuers/pages/IssuersPage.js"));
+ */
+const ConciliationPage = lazy(() =>
+  import("./Conciliation/pages/ConciliationPage.js")
+);
 
 const DashboardPage = lazy(() => import("./Dashboard/pages/DashboardPage"));
 
@@ -51,6 +55,14 @@ export default function CardsRouter() {
         component={checkRouteAccess(
           "cards.Tarjetas emitidas",
           CardsIssuedPage,
+          access
+        )}
+      />
+      <Route
+        path={baseRouterUrl + "/conciliation"}
+        component={checkRouteAccess(
+          "cards.Conciliación",
+          ConciliationPage,
           access
         )}
       />

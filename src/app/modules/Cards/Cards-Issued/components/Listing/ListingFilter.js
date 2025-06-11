@@ -7,6 +7,7 @@ import { getExcel } from "../../../../../utils/exportExcel";
 import { formatClientReport } from "../../../../../utils/formatData";
 import { Button } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
+import { cardIssuedLinks } from "../../utils/cardIssuedLinks";
 
 const prepareFilter = (queryParams, values) => {
   const { searchText } = values;
@@ -105,7 +106,7 @@ const ListingFilter = ({ disabled, data, setShowModal }) => {
         style={{ display: "flex", alignItems: "center", gap: "4px" }}
         className="ml-4"
       >
-        <Button onClick={() => history.push("/cards/cards/issue/single")}>
+        <Button onClick={() => history.push(`${cardIssuedLinks.create}`)}>
           Emitir tarjeta
         </Button>
         <Button onClick={() => setShowModal(true)}>Emitir todas</Button>

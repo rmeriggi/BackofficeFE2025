@@ -1,11 +1,13 @@
-import React from 'react';
-import Listing from './Listing';
-import { ListingTableContextProvider } from './Listing/ListingTableContext';
+import React from "react";
+/* import Listing from './Listing';
+import { ListingTableContextProvider } from './Listing/ListingTableContext'; */
+import IvaVentas from "./IvaVentas";
 
 export default function VatSalesPage() {
   return (
-    <ListingTableContextProvider>
+    /*  <ListingTableContextProvider>
       <Listing />
-    </ListingTableContextProvider>
+    </ListingTableContextProvider> */
+    <IvaVentas />
   );
 }

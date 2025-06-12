@@ -1,11 +1,13 @@
-import React from 'react'
-import Listing from './Listing'
-import { ListingTableContextProvider } from './Listing/ListingTableContext'
+import React from "react";
+/* import Listing from './Listing'
+import { ListingTableContextProvider } from './Listing/ListingTableContext' */
+import LibroDiario from "./LibroDiario";
 
-export default function DiaryBookPage  () {
+export default function DiaryBookPage() {
   return (
-    <ListingTableContextProvider>
+    /*  <ListingTableContextProvider>
       <Listing />
-    </ListingTableContextProvider>
-  )
+    </ListingTableContextProvider> */
+    <LibroDiario />
+  );
 }

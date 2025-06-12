@@ -5,7 +5,7 @@ export const ACCESS_DENIED = 0;
 
 export const checkRouteAccess = (key, PageComponent, access) => {
   if (!access || typeof access[key] == "undefined") {
-    return null;
+    return PageComponent;
   }
 
   if (access[key] === ACCESS_DENIED) {

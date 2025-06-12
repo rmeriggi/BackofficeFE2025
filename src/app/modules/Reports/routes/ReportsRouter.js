@@ -17,6 +17,12 @@ import {
   ComplianceMonitoring,
   ActivePortfolio,
 } from "./lazyImports";
+import Interchange from "../interChange/pages/InterChange";
+import Clearing from "../Clearing/pages/Clearing";
+import DailyOperations from "../DailyOperations/pages/DailyOperations";
+import CommercialCards from "../Commercial/pages/ComercialCards";
+import Fraud from "../Fraud/pages/Fraud";
+import Regulations from "../Regulations/pages/Regulations";
 
 export default function ReportsRouter() {
   const access = useSelector((state) => state.auth.access);
@@ -40,6 +46,7 @@ export default function ReportsRouter() {
             access
           )}
         />
+
         <ContentRoute
           path={baseRouterUrl + "/deliquency-collections"}
           component={checkRouteAccess(
@@ -109,6 +116,50 @@ export default function ReportsRouter() {
           component={checkRouteAccess(
             "reports.Cartera Activa Créditos",
             ActivePortfolio,
+            access
+          )}
+        />
+        <ContentRoute
+          path={baseRouterUrl + "/interchange"}
+          component={checkRouteAccess(
+            "reports.Interchange Tarjetas",
+            Interchange,
+            access
+          )}
+        />
+        <ContentRoute
+          path={baseRouterUrl + "/clearing"}
+          component={checkRouteAccess(
+            "reports.Clearing Tarjetas",
+            Clearing,
+            access
+          )}
+        />
+        <ContentRoute
+          path={baseRouterUrl + "/Daily"}
+          component={checkRouteAccess(
+            "reports.Op. Diario Tarjetas",
+            DailyOperations,
+            access
+          )}
+        />
+        <ContentRoute
+          path={baseRouterUrl + "/comercial"}
+          component={checkRouteAccess(
+            "reports.Comercial Tarjetas",
+            CommercialCards,
+            access
+          )}
+        />
+        <ContentRoute
+          path={baseRouterUrl + "/fraud"}
+          component={checkRouteAccess("reports.Fraude Tarjetas", Fraud, access)}
+        />
+        <ContentRoute
+          path={baseRouterUrl + "/regulation"}
+          component={checkRouteAccess(
+            "reports.Regulatorio Tarjetas",
+            Regulations,
             access
           )}
         />

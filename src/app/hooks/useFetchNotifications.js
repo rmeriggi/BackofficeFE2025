@@ -3,21 +3,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllNotifications } from "../_redux/notifications/notificationsActions";
 
 export const useFetchNotifications = () => {
-    
-  const { notifications, loading } = useSelector(
-      (s) => (s.notifications)
+  const { notifications, loading, error } = useSelector(
+    (state) => state.notifications
   );
-  
-  const dispatch = useDispatch()
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
-      if(!notifications || notifications.length === 0){
-          dispatch(getAllNotifications())
-      }else{
-          return
-      }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (!notifications || notifications.length === 0) {
+      dispatch(getAllNotifications());
+    }
+  }, [dispatch, notifications]);
 
-  return [notifications, loading];
-}
+  return [notifications, loading, error];
+};

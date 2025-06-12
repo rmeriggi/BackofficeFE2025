@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FormControlLabel, Switch } from "@material-ui/core";
 import * as Yup from "yup";
 import { Field, Form, Formik } from "formik";
@@ -26,26 +26,23 @@ const cardSchema = Yup.object().shape({
   birthDay: Yup.string().required("Fecha de nacimiento es requerido"),
   status: Yup.string().required("Status reqerido"),
 });
-const getCardImage = (idCard) => {
-  if (idCard === "3" || idCard === "4" || idCard === "6")
-    return "/media/cards/card2.png";
-  return "/media/cards/card1.png";
-};
 
 export function CardIssueForm({
   values,
   btnRef,
   setIsSubmitting,
   saveEditCard,
-  idCard,
 }) {
+  const [cardImageId, setCardImageId] = useState(values.cardId || 1);
+  const [isHovered, setIsHovered] = useState(false);
+  const toggleCardImage = (setFieldValue) => {
+    const newId = cardImageId === 1 ? 2 : 1;
+    setCardImageId(newId);
+    setFieldValue("cardId", newId);
+  };
+
   return (
     <div className="col-3">
-      <img
-        src={toAbsoluteUrl(`${getCardImage(idCard)}`)}
-        alt="card"
-        className="img-fluid"
-      />
       <Formik
         initialValues={values}
         validationSchema={cardSchema}
@@ -55,6 +52,20 @@ export function CardIssueForm({
       >
         {({ handleSubmit, values, setFieldValue, isSubmitting }) => (
           <>
+            <img
+              src={toAbsoluteUrl(`/media/cards/card${cardImageId}.png`)}
+              alt="card"
+              className="img-fluid mb-3"
+              style={{
+                cursor: "pointer",
+                transition: "all 0.3s ease-in-out",
+                transform: isHovered ? "scale(1.03)" : "scale(1)",
+                filter: isHovered ? "brightness(1.1)" : "brightness(1)",
+              }}
+              onClick={() => toggleCardImage(setFieldValue)}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            />
             <Form className="form form-label-right mt-5">
               <div className="form-group row">
                 <div className="col">
@@ -66,6 +77,7 @@ export function CardIssueForm({
                   />
                 </div>
               </div>
+
               <div className="form-group row">
                 <div className="col text-center">
                   <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
@@ -86,17 +98,38 @@ export function CardIssueForm({
                   </MuiPickersUtilsProvider>
                 </div>
               </div>
+              <div className="form-group row">
+                <div className="col text-center">
+                  <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                    <ThemeProvider theme={defaultMaterialTheme}>
+                      <KeyboardDatePicker
+                        autoOk
+                        fullWidth
+                        size="small"
+                        inputVariant="outlined"
+                        label="Fecha Vencimiento"
+                        format="dd/MM/yyyy"
+                        value={values.expiration_date}
+                        cancelLabel="cancelar"
+                        onChange={(date) =>
+                          setFieldValue("expiration_date", date)
+                        }
+                      />
+                    </ThemeProvider>
+                  </MuiPickersUtilsProvider>
+                </div>
+              </div>
 
               <div className="form-group row">
                 <div className="col d-flex align-items-baseline">
                   <FormControlLabel
                     control={
                       <Switch
-                        checked={values.status === "0" ? false : true}
+                        checked={values.status === 0 ? false : true}
                         onChange={(e) =>
                           setFieldValue(
                             "status",
-                            e.target.checked !== false ? "1" : "0"
+                            e.target.checked !== false ? 1 : 0
                           )
                         }
                         name="status"
@@ -106,10 +139,11 @@ export function CardIssueForm({
                     labelPlacement="top"
                   />
                   <div>
-                    {values.status === "1" ? <span>On</span> : <span>Off</span>}
+                    {values.status === 1 ? <span>On</span> : <span>Off</span>}
                   </div>
                 </div>
               </div>
+
               <button
                 type="submit"
                 style={{ display: "none" }}

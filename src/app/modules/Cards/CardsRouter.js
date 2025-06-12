@@ -20,6 +20,9 @@ const ProvidersPage = lazy(() => import("./Providers/pages/ProvidersPage.js"));
 const ConciliationPage = lazy(() =>
   import("./Conciliation/pages/ConciliationPage.js")
 );
+const ConciliationBanksPage = lazy(() =>
+  import("./ConciliationBanks/pages/ConciliationBanksPage.js")
+);
 
 const DashboardPage = lazy(() => import("./Dashboard/pages/DashboardPage"));
 
@@ -61,8 +64,16 @@ export default function CardsRouter() {
       <Route
         path={baseRouterUrl + "/conciliation"}
         component={checkRouteAccess(
-          "cards.Conciliación",
+          "cards.Conciliación Grupo A",
           ConciliationPage,
+          access
+        )}
+      />
+      <Route
+        path={baseRouterUrl + "/conciliation-banks"}
+        component={checkRouteAccess(
+          "cards.Conciliación Grupo A",
+          ConciliationBanksPage,
           access
         )}
       />

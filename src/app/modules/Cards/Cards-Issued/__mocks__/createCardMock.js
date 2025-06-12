@@ -2,7 +2,7 @@ export default {
   card: {
     name: "",
     start_date: "2025-05-26",
-    expiration_date: "",
+    expiration_date: "2030-05-26",
     number: "",
     birthDay: "",
     status: 0,

@@ -12,6 +12,8 @@ import { SnackbarMessage } from "../../../../../components/SnackbarMessage";
 import CardEdit from "./flaps/CardEdit/CardEdit";
 import editCardsMock from "../../__mocks__/editCardsMock";
 import TransactionsCard from "./flaps/Transactions/TransactionsCard";
+import CardPaymentList from "./flaps/CardPayment/CardPaymentList";
+import usePrint from "../../../../hooks/usePrint";
 import { cardIssuedLinks } from "../../utils/cardIssuedLinks";
 
 export function CardDetail({
@@ -22,7 +24,7 @@ export function CardDetail({
 }) {
   const [tab, setTab] = useState("card");
   const btnRef = useRef();
-
+  const { printRef, handlePrint } = usePrint();
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [variant, setVariant] = useState("success");
   const [message, setMessage] = useState(
@@ -31,7 +33,7 @@ export function CardDetail({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const backToCardsList = () => {
-    history.push(`${cardIssuedLinks}`);
+    history.push(`${cardIssuedLinks.list}`);
   };
 
   function handleCloseSnackbar(event, reason) {
@@ -63,7 +65,11 @@ export function CardDetail({
 
   return (
     <Card>
-      <CardHeader title="Editar">
+      <CardHeader
+        title={
+          tab === "card" || tab === "transactions" ? "Editar" : "Últimos pagos"
+        }
+      >
         <CardHeaderToolbar>
           <Button
             variant="outlined"
@@ -74,19 +80,30 @@ export function CardDetail({
           >
             Volver
           </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            className="ml-4"
-            size="large"
-            disabled={isSubmitting || tab === "transactions"}
-            onClick={saveCardClick}
-            endIcon={
-              isSubmitting && <CircularProgress size={20} color="secondary" />
-            }
-          >
-            Actualizar
-          </Button>
+          {tab === "card" || tab === "transactions" ? (
+            <Button
+              variant="contained"
+              color="secondary"
+              className="ml-4"
+              size="large"
+              disabled={isSubmitting || tab === "transactions"}
+              onClick={saveCardClick}
+              endIcon={
+                isSubmitting && <CircularProgress size={20} color="secondary" />
+              }
+            >
+              Actualizar
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              size="large"
+              onClick={handlePrint}
+              className="ml-4 btn btn-primary no-print"
+            >
+              Imprimir
+            </Button>
+          )}
         </CardHeaderToolbar>
       </CardHeader>
       <CardBody>
@@ -111,6 +128,16 @@ export function CardDetail({
               Transacciones
             </a>
           </li>
+          <li className="nav-item" onClick={() => setTab("pagos")}>
+            <a
+              className={`nav-link ${tab === "pagos" && "active"}`}
+              data-toggle="tab"
+              role="tab"
+              aria-selected={(tab === "pagos").toString()}
+            >
+              Pagos
+            </a>
+          </li>
         </ul>
         <div className="mt-5">
           {tab === "card" && (
@@ -123,6 +150,7 @@ export function CardDetail({
             />
           )}
           {tab === "transactions" && <TransactionsCard />}
+          {tab === "pagos" && <CardPaymentList printRef={printRef} />}
         </div>
       </CardBody>
       <SnackbarMessage

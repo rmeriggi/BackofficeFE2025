@@ -109,17 +109,6 @@ export function CardEditForm({
                   </MuiPickersUtilsProvider>
                 </div>
               </div>
-              <div className="form-group row">
-                <div className="col">
-                  <Field
-                    name="number"
-                    component={Input}
-                    placeholder="Número de tarjeta"
-                    label="Número"
-                    autoComplete="cc-exp"
-                  />
-                </div>
-              </div>
 
               <div className="form-group row">
                 <div className="col d-flex align-items-baseline">

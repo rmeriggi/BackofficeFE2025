@@ -11,7 +11,7 @@ import { Button, CircularProgress } from "@material-ui/core";
 import { SnackbarMessage } from "../../../../../components/SnackbarMessage";
 import CardIssueContent from "./flaps/CardIssue/CardIssue";
 import createCardMock from "../../__mocks__/createCardMock";
-import TransactionsCard from "./flaps/Transactions/TransactionsCard";
+/* import TransactionsCard from "./flaps/Transactions/TransactionsCard"; */
 import { cardIssuedLinks } from "../../utils/cardIssuedLinks";
 
 export function CardIssue({
@@ -31,7 +31,7 @@ export function CardIssue({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const backToCardsList = () => {
-    history.push(`${cardIssuedLinks}`);
+    history.push(`${cardIssuedLinks.list}`);
   };
 
   function handleCloseSnackbar(event, reason) {
@@ -101,7 +101,7 @@ export function CardIssue({
               Tarjeta
             </a>
           </li>
-          <li className="nav-item" onClick={() => setTab("transactions")}>
+          {/*  <li className="nav-item" onClick={() => setTab("transactions")}>
             <a
               className={`nav-link ${tab === "transactions" && "active"}`}
               data-toggle="tab"
@@ -110,7 +110,7 @@ export function CardIssue({
             >
               Transacciones
             </a>
-          </li>
+          </li> */}
         </ul>
         <div className="mt-5">
           {tab === "card" && (
@@ -121,7 +121,7 @@ export function CardIssue({
               saveEditCard={saveEditCard}
             />
           )}
-          {tab === "transactions" && <TransactionsCard />}
+          {/*  {tab === "transactions" && <TransactionsCard />} */}
         </div>
       </CardBody>
       <SnackbarMessage

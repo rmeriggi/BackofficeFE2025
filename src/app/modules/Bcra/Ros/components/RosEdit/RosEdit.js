@@ -1,8 +1,15 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { useHistory } from "react-router-dom";
 
 const RosEdit = () => {
+  const history = useHistory();
+
+  // Function to handle the "Volver" button click
+  const handleBack = () => {
+    history.push("/compliance/ros");
+  };
   return (
     <div className="container mt-5">
       <div className="card shadow-sm">
@@ -10,6 +17,14 @@ const RosEdit = () => {
           <h4 className="mb-0">
             Formulario de Reporte de Operación Sospechosa (ROS)
           </h4>
+          <div>
+            <button
+              onClick={handleBack}
+              className="btn btn-secondary no-print mr-2"
+            >
+              Volver
+            </button>
+          </div>
         </div>
 
         <div className="card-body">

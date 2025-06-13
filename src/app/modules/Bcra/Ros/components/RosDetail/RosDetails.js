@@ -1,6 +1,13 @@
 import React from "react";
 import usePrint from "../../../../hooks/usePrint";
+import { useHistory } from "react-router-dom";
+
 const RosDetails = () => {
+  const history = useHistory();
+  // Function to handle the "Volver" button click
+  const handleBack = () => {
+    history.push("/compliance/ros");
+  };
   const { printRef, handlePrint } = usePrint();
   return (
     <div className="container-fluid mt-5" ref={printRef}>
@@ -18,6 +25,12 @@ const RosDetails = () => {
         </div>
 
         <div>
+          <button
+            onClick={handleBack}
+            className="btn btn-secondary no-print mr-2"
+          >
+            Volver
+          </button>
           <button className="btn btn-primary no-print" onClick={handlePrint}>
             Imprimir
           </button>

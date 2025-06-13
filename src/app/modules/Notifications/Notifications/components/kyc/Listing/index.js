@@ -139,13 +139,13 @@ export default function Listing() {
     <>
       <Card>
         <CardHeader title="Notificaciones">
-          <CardHeaderToolbar>
+          {/*    <CardHeaderToolbar>
             <ListingFilter
               disabled={clients.length === 0}
               data={clients}
               setShowCreateModal={setShowCreateModal}
             />
-          </CardHeaderToolbar>
+          </CardHeaderToolbar> */}
         </CardHeader>
         <CardBody>
           <ListingTable

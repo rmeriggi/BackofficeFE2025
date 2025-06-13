@@ -1,0 +1,90 @@
+/* metronic.css */
+:root {
+  --primary-color: #3699ff;
+  --secondary-color: #e4e6ef;
+  --accent-color: #f64e60;
+  --light-color: #f3f6f9;
+  --dark-color: #181c32;
+  --success-color: #1bc5bd;
+}
+
+body {
+  background-color: #f2f6f9;
+  font-family: "Poppins", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.card-custom {
+  border-radius: 0.75rem;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+  border: none;
+}
+
+.card-header {
+  background-color: white;
+  border-bottom: 1px solid #ebedf3;
+  padding: 1.25rem 1.75rem;
+}
+
+.card-title {
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.card-body {
+  padding: 1.75rem;
+}
+
+.highlight {
+  border-color: var(--primary-color) !important;
+  background-color: rgba(54, 153, 255, 0.05) !important;
+}
+
+.drop-area:hover {
+  border-color: var(--primary-color);
+  cursor: pointer;
+}
+
+.table th {
+  background-color: #f5f8fa;
+  color: #7e8299;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.table > tbody > tr:hover {
+  background-color: rgba(54, 153, 255, 0.03);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  transition: all 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #187de4;
+  border-color: #187de4;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(54, 153, 255, 0.25);
+}
+
+.btn-icon {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+}
+
+.badge-light-success {
+  background-color: rgba(27, 197, 189, 0.1);
+  color: #1bc5bd;
+}
+
+.badge-light-warning {
+  background-color: rgba(255, 168, 0, 0.1);
+  color: #ffa800;
+}

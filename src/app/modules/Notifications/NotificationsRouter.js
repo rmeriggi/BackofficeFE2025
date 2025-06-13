@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { Switch, Route } from "react-router-dom";
 import ErrorPageMenu from "../../pages/ErrorPageMenu";
 import { checkRouteAccess } from "../../utils/access";
+import KycPage from "./Notifications/pages/KycPage.js";
 
 const NotificationsPage = lazy(() =>
   import("./Notifications/pages/NotificationsPage.js")
@@ -27,6 +28,10 @@ export default function NotificationsRouter() {
       <Route
         path={baseRouterUrl + "/ros"}
         component={checkRouteAccess("uif.ROS", RosPage, access)}
+      />
+      <Route
+        path={baseRouterUrl + "/kyc"}
+        component={checkRouteAccess("uif.ROS", KycPage, access)}
       />
       <Route component={ErrorPageMenu} />
     </Switch>

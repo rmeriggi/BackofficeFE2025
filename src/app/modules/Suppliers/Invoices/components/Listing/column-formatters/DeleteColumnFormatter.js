@@ -4,13 +4,13 @@ import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../../../../../_metronic/_helpers";
 
-export const ActionColumnFormatter = ({
+export const DeleteColumnFormatter = ({
   cellContent,
   row,
   rowIndex,
-  formatExtraData: { tooltip = "Editar", fnAction, icon },
+  formatExtraData: { tooltip = "Eliminar", fnAction, icon },
 }) => {
-  const iconRoute = icon || "Communication/Write.svg";
+  const iconRoute = icon ? icon : "General/Trash.svg";
 
   return (
     <OverlayTrigger overlay={<Tooltip>{tooltip}</Tooltip>}>

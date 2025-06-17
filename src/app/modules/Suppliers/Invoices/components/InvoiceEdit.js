@@ -25,6 +25,14 @@ import {
   getInvoicesById,
   editInvoice,
 } from "../../../../_redux/invoices/invoicesCrud";
+import {
+  CalendarToday,
+  Description,
+  Email,
+  Link,
+  Payment,
+  Today,
+} from "@material-ui/icons";
 
 const NotificationsSchema = Yup.object().shape({
   date: Yup.string().required("La fecha es obligatoria"),
@@ -41,7 +49,6 @@ export function InvoiceEdit() {
   const [invoice, setInvoice] = useState();
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(false);
-  /*   const dispatch = useDispatch(); */
 
   const [categories] = useFetchCombos("categories", getCategories);
   const [costCenters] = useFetchCombos("costCenters", getCostCenters);
@@ -83,13 +90,14 @@ export function InvoiceEdit() {
       razonsocial: values.businnes_name || "",
     };
 
-    setLoading(true); // Asegúrate de que el estado de carga se actualice al inicio
+    setLoading(true);
     try {
       const response = await editInvoice(payload);
       if (response.id) {
         setOpenMessage("Edición exitosa", "success");
-        history.push("/suppliers/invoices"); // Navega a la página anterior
-        window.location.reload(); // Recarga la página para mostrar los datos actualizados
+        setTimeout(() => {
+          history.push("/suppliers/invoices");
+        }, 1500);
       } else {
         setOpenMessage("No se pudo editar", "error");
       }
@@ -97,7 +105,7 @@ export function InvoiceEdit() {
       console.error("Error al editar la deuda:", error);
       setOpenMessage("Ocurrió un error al editar", "error");
     } finally {
-      setLoading(false); // Asegúrate de detener la carga en cualquier caso
+      setLoading(false);
     }
   };
 
@@ -125,23 +133,102 @@ export function InvoiceEdit() {
     businnes_name: invoice?.businnes_name || "",
   };
 
+  // Estilos para campos de formulario
+  const fieldStyle = {
+    backgroundColor: "#f8f9fa",
+    borderRadius: "6px",
+    border: "1px solid #e4e6ef",
+    padding: "12px 15px",
+    fontSize: "15px",
+  };
+
   return (
-    <Card className="mx-40 col-lg-8">
-      <CardHeader title={`DETALLE DE DEUDA`}>
-        <CardHeaderToolbar>
-          <Button
-            onClick={() => history.goBack()}
-            variant="outlined"
-            color="secondary"
-            className="mr-3"
-            size="large"
-          >
-            Volver
-          </Button>
-        </CardHeaderToolbar>
-      </CardHeader>
-      <CardBody>
-        <div>
+    <div className="d-flex justify-content-center p-5">
+      <Card className="col-lg-10 shadow-lg">
+        <CardHeader
+          title={
+            <div className="d-flex align-items-center">
+              <div
+                className="symbol symbol-50px "
+                style={{ marginRight: "8px" }}
+              >
+                <div className="symbol-label bg-light-primary">
+                  <span className="svg-icon svg-icon-2x svg-icon-primary">
+                    <i className="fas fa-file-invoice-dollar fs-2x text-primary"></i>
+                  </span>
+                </div>
+              </div>
+              <div>
+                <h2 className="card-title fw-bolder text-dark">
+                  DETALLE DE DEUDA
+                </h2>
+                <div className="text-muted">Editando factura #{id}</div>
+              </div>
+            </div>
+          }
+        >
+          <CardHeaderToolbar>
+            <Button
+              onClick={() => history.goBack()}
+              variant="outlined"
+              className="btn btn-light btn-active-light-primary"
+              startIcon={<i className="fas fa-arrow-left me-2"></i>}
+            >
+              Volver
+            </Button>
+          </CardHeaderToolbar>
+        </CardHeader>
+
+        <CardBody className="p-8">
+          <div className="mb-10">
+            <h3 className="fw-bolder text-dark mb-6">
+              Información del Proveedor
+            </h3>
+            <div className="d-flex align-items-center mb-8">
+              <div
+                className="symbol symbol-50px"
+                style={{ marginRight: "8px" }}
+              >
+                <div className="symbol-label bg-light-warning">
+                  <span className="svg-icon svg-icon-2x svg-icon-warning">
+                    <i className="fas fa-building fs-2x text-warning"></i>
+                  </span>
+                </div>
+              </div>
+              <div className="d-flex flex-column">
+                <span className="text-gray-600 fs-6 fw-bold">Razón Social</span>
+                <span className="text-gray-800 fs-5 fw-bolder">
+                  {initialValues.businnes_name}
+                </span>
+              </div>
+            </div>
+
+            <div className="row g-5 mb-8">
+              <div className="col-md-6">
+                <div className="d-flex flex-column">
+                  <span className="text-gray-600 fs-6 fw-bold">CUIT/CUIL</span>
+                  <span className="text-gray-800 fs-5">
+                    {initialValues.cuit}
+                  </span>
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="d-flex flex-column">
+                  <span className="text-gray-600 fs-6 fw-bold">Monto</span>
+                  <span className="text-gray-800 fs-5 fw-bolder">
+                    $
+                    {parseFloat(initialValues.amount).toLocaleString("es-AR", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="separator separator-dashed my-10"></div>
+
           <Formik
             innerRef={formikRef}
             enableReinitialize
@@ -159,113 +246,193 @@ export function InvoiceEdit() {
               handleChange,
               setFieldValue,
               isSubmitting,
+              errors,
+              touched,
             }) => (
-              <Form className="form form-label-right">
-                <div className="row">
-                  <div className="col-lg-12">
-                    <p className="header-title fs-2 mb-5 mt-4">RAZÓN SOCIAL</p>
+              <Form>
+                <h3 className="fw-bolder text-dark mb-6">
+                  Detalles de la Factura
+                </h3>
+
+                <div className="row g-8 mb-10">
+                  <div className="col-md-6">
+                    <label className="form-label fs-6 fw-bold text-gray-700 mb-3 d-flex align-items-center">
+                      <Description
+                        style={{ color: "#3699FF", marginRight: "4px" }}
+                      />
+                      Descripción
+                    </label>
                     <Field
-                      name="businnes_name"
+                      name="description"
                       component={Input}
-                      label=""
-                      readOnly
+                      style={fieldStyle}
+                      placeholder="Descripción de la factura"
                     />
                   </div>
-                  <div className="col-lg-6">
-                    <p className="header-title fs-2 mb-5 mt-4">IMPORTE</p>
-                    <Field
-                      name="amount"
-                      component={Input}
-                      type="number"
-                      label=""
-                    />
-                  </div>
-                  <div className="col-lg-6">
-                    <p className="header-title fs-2 mb-5 mt-4">
-                      CONDICIÓN DE PAGO
-                    </p>
+
+                  <div className="col-md-6">
+                    <label className="form-label fs-6 fw-bold text-gray-700 mb-3 d-flex align-items-center">
+                      <Payment
+                        className="me-2"
+                        style={{ color: "#3699FF", marginRight: "4px" }}
+                      />
+                      Condición de Pago
+                    </label>
                     <Field
                       name="payment_condition"
                       component={Input}
-                      label=""
+                      style={fieldStyle}
+                      placeholder="Ej: Contado, 30 días"
                     />
                   </div>
-                  <div className="col-lg-6">
-                    <p className="header-title fs-2 mb-5 mt-4">DESCRIPCIÓN</p>
-                    <Field name="description" component={Input} label="" />
+
+                  <div className="col-md-6">
+                    <label className="form-label fs-6 fw-bold text-gray-700 mb-3 d-flex align-items-center">
+                      <Today
+                        className="me-2"
+                        style={{ color: "#3699FF", marginRight: "4px" }}
+                      />
+                      Fecha de Emisión
+                      {errors.date && touched.date && (
+                        <span className="text-danger ms-2">*</span>
+                      )}
+                    </label>
+                    <Field
+                      name="date"
+                      type="date"
+                      component={Input}
+                      style={fieldStyle}
+                    />
                   </div>
-                  <div className="col-lg-6">
-                    <p className="header-title fs-2 mb-5 mt-4">FECHA</p>
-                    <Field name="date" component={Input} label="" />
+
+                  <div className="col-md-6">
+                    <label className="form-label fs-6 fw-bold text-gray-700 mb-3 d-flex align-items-center">
+                      <CalendarToday
+                        className="me-2"
+                        style={{ color: "#3699FF", marginRight: "4px" }}
+                      />
+                      Fecha de Vencimiento
+                      {errors.expiration_date && touched.expiration_date && (
+                        <span className="text-danger ms-2">*</span>
+                      )}
+                    </label>
+                    <Field
+                      name="expiration_date"
+                      type="date"
+                      component={Input}
+                      style={fieldStyle}
+                    />
                   </div>
-                  <div className="col-lg-6">
-                    <p className="header-title fs-2 mb-5 mt-4">
-                      FECHA DE VENCIMIENTO
-                    </p>
-                    <Field name="expiration_date" component={Input} label="" />
+
+                  <div className="col-md-6">
+                    <label className="form-label fs-6 fw-bold text-gray-700 mb-3 d-flex align-items-center">
+                      <Email
+                        className="me-2"
+                        style={{ color: "#3699FF", marginRight: "4px" }}
+                      />
+                      Email
+                    </label>
+                    <Field
+                      name="email"
+                      type="email"
+                      component={Input}
+                      style={fieldStyle}
+                      placeholder="correo@proveedor.com"
+                    />
                   </div>
-                  <div className="col-lg-6">
-                    <p className="header-title fs-2 mb-5 mt-4">EMAIL</p>
-                    <Field name="email" component={Input} label="" />
+
+                  <div className="col-md-6">
+                    <label className="form-label fs-6 fw-bold text-gray-700 mb-3 d-flex align-items-center">
+                      <Link
+                        className="me-2"
+                        style={{ color: "#3699FF", marginRight: "4px" }}
+                      />
+                      URL
+                    </label>
+                    <Field
+                      name="url"
+                      component={Input}
+                      style={fieldStyle}
+                      placeholder="https://..."
+                    />
                   </div>
-                  <div className="col-lg-6">
-                    <p className="header-title fs-2 mb-5 mt-4">URL</p>
-                    <Field name="url" component={Input} label="" />
+
+                  <div className="col-md-6">
+                    <label className="form-label fs-6 fw-bold text-gray-700 mb-3">
+                      Comprobante
+                    </label>
+                    <Field
+                      name="receipt"
+                      component={Input}
+                      style={fieldStyle}
+                      placeholder="Número de comprobante"
+                    />
                   </div>
-                  <div className="col-lg-6">
-                    <p className="header-title fs-2 mb-5 mt-4">COMPROBANTE</p>
-                    <Field name="receipt" component={Input} label="" />
-                  </div>
-                  <div className="col-lg-6">
-                    <p className="header-title fs-2 mb-5 mt-4">CATEGORÍA</p>
+
+                  <div className="col-md-6">
+                    <label className="form-label fs-6 fw-bold text-gray-700 mb-3">
+                      Categoría
+                    </label>
                     <GeneralSelector
                       values={values}
                       valueName="id_category"
                       keyName="categoria"
-                      label=""
                       data={categories}
                       setFieldValue={setFieldValue}
+                      style={fieldStyle}
                     />
                   </div>
-                  <div className="col-lg-6">
-                    <p className="header-title fs-2 mb-5 mt-4">
-                      CENTRO DE COSTO
-                    </p>
+
+                  <div className="col-md-6">
+                    <label className="form-label fs-6 fw-bold text-gray-700 mb-3">
+                      Centro de Costo
+                    </label>
                     <GeneralSelector
                       values={values}
                       valueName="id_center_cost"
                       keyName="CentroC"
-                      label=""
                       data={costCenters}
                       setFieldValue={setFieldValue}
+                      style={fieldStyle}
                     />
                   </div>
                 </div>
-                <div className="d-flex justify-content-end mt-5">
+
+                <div className="d-flex justify-content-end mt-8">
                   <Button
                     type="submit"
                     variant="contained"
-                    style={{
-                      backgroundColor: "#3783E7",
-                      color: "white",
-                      border: "1px solid #3783E7",
-                    }}
+                    className="btn btn-primary"
                     disabled={isSubmitting}
+                    style={{
+                      minWidth: "120px",
+                      padding: "10px 20px",
+                      fontWeight: 600,
+                      fontSize: "1rem",
+                    }}
                   >
-                    Guardar
+                    {isSubmitting ? (
+                      <span>
+                        <span className="spinner-border spinner-border-sm me-2"></span>
+                        Guardando...
+                      </span>
+                    ) : (
+                      "Guardar Cambios"
+                    )}
                   </Button>
                 </div>
               </Form>
             )}
           </Formik>
-        </div>
-      </CardBody>
-      <SnackbarMessage
-        handleClose={handleClose}
-        open={open}
-        variant={variant}
-        message={message}
-      />
-    </Card>
+        </CardBody>
+
+        <SnackbarMessage
+          handleClose={handleClose}
+          open={open}
+          variant={variant}
+          message={message}
+        />
+      </Card>
+    </div>
   );
 }

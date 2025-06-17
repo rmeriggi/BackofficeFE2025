@@ -3,61 +3,80 @@ import {
   Card,
   CardBody,
   CardHeader,
-  CardHeaderToolbar
+  CardHeaderToolbar,
 } from "../../../../../_metronic/_partials/controls";
 import { useHistory } from "react-router";
 import { useParams } from "react-router-dom";
 import { Button, CircularProgress } from "@material-ui/core";
 import { SnackbarMessage } from "../../../../components/SnackbarMessage";
-import { useSnackBar } from '../../../../hooks/useSnackBar';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { useSnackBar } from "../../../../hooks/useSnackBar";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Input } from "../../../../../_metronic/_partials/controls";
 import { LayoutSplashScreen } from "../../../../../_metronic/layout";
 import { useDispatch } from "react-redux";
-import { useFetchCombos } from '../../../../hooks';
-import { getCountries, getCategories, getCostCenters } from "../../../../_redux/combos/combosActions";
-import { GeneralSelector } from '../../../../components/Fields/GeneralSelector';
+import { useFetchCombos } from "../../../../hooks";
+import {
+  getCountries,
+  getCategories,
+  getCostCenters,
+} from "../../../../_redux/combos/combosActions";
+import { GeneralSelector } from "../../../../components/Fields/GeneralSelector";
 import { CreateModal } from "./Modal/CreateModal";
-import { updateSupplier, getBankAccounts, deleteBankAccount } from "../../../../_redux/suppliers/suppliersCrud";
+import {
+  updateSupplier,
+  getBankAccounts,
+  deleteBankAccount,
+} from "../../../../_redux/suppliers/suppliersCrud";
 import { getAllSuppliers } from "../../../../_redux/suppliers/suppliersActions";
 import { getSupplierDetail } from "../../../../_redux/suppliers/suppliersCrud";
 import BankAccountData from "./BankAccountData";
 import { DeleteModal } from "../../../../modules/Clients/BankAccounts/pages/Listing/components/DeleteModal";
+import {
+  ArrowBack as ArrowBackIcon,
+  Save as SaveIcon,
+  Add as AddIcon,
+  Business as BusinessIcon,
+  LocationOn as LocationIcon,
+  Contacts as ContactsIcon,
+  AttachMoney as MoneyIcon,
+  Category as CategoryIcon,
+  AccountBalance as BankIcon,
+} from "@material-ui/icons";
 
 const NotificationsSchema = Yup.object().shape({
-  id: Yup.number().required('Este campo es obligatorio'),
-  cuit: Yup.string().required('Este campo es obligatorio'),    
-  business_name: Yup.string().required('Este campo es obligatorio'),
-  country: Yup.string().required('Este campo es obligatorio'),
-  province: Yup.string().required('Este campo es obligatorio'),
-  city: Yup.string().required('Este campo es obligatorio'),
-  address: Yup.string().required('Este campo es obligatorio'),
-  cp: Yup.string().required('Este campo es obligatorio'),
-  cellphone: Yup.string().required('Este campo es obligatorio'),
-  email: Yup.string().required('Este campo es obligatorio'),
-  category_id: Yup.number().required('Este campo es obligatorio'),
-  center_id: Yup.number().required('Este campo es obligatorio'),
-  iva: Yup.number().required('Este campo es obligatorio'),
-  ganancias: Yup.number().required('Este campo es obligatorio'),
-  iibb: Yup.number().required('Este campo es obligatorio')
+  id: Yup.number().required("Este campo es obligatorio"),
+  cuit: Yup.string().required("Este campo es obligatorio"),
+  business_name: Yup.string().required("Este campo es obligatorio"),
+  country: Yup.string().required("Este campo es obligatorio"),
+  province: Yup.string().required("Este campo es obligatorio"),
+  city: Yup.string().required("Este campo es obligatorio"),
+  address: Yup.string().required("Este campo es obligatorio"),
+  cp: Yup.string().required("Este campo es obligatorio"),
+  cellphone: Yup.string().required("Este campo es obligatorio"),
+  email: Yup.string().required("Este campo es obligatorio"),
+  category_id: Yup.number().required("Este campo es obligatorio"),
+  center_id: Yup.number().required("Este campo es obligatorio"),
+  iva: Yup.number().required("Este campo es obligatorio"),
+  ganancias: Yup.number().required("Este campo es obligatorio"),
+  iibb: Yup.number().required("Este campo es obligatorio"),
 });
 
 export function SupplierEdit() {
   const history = useHistory();
-  const formikRef = useRef(null);  
-  const { id }  = useParams();
+  const formikRef = useRef(null);
+  const { id } = useParams();
   const { open, variant, message, handleClose, setOpenMessage } = useSnackBar();
   const dispatch = useDispatch();
   const [supplier, setSupplier] = useState();
-  const [loading , setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [showAccountModal, setAccountModal] = useState(false);
-  const [countries] = useFetchCombos('countries', getCountries);
-  const [categories] = useFetchCombos('categories', getCategories);
-  const [costCenters] = useFetchCombos('costCenters', getCostCenters);
+  const [countries] = useFetchCombos("countries", getCountries);
+  const [categories] = useFetchCombos("categories", getCategories);
+  const [costCenters] = useFetchCombos("costCenters", getCostCenters);
   const [bankAccounts, setBankAccounts] = useState([]);
   const [progress, setProgress] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false); 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [accountIdToDelete, setAccountIdToDelete] = useState(null);
 
   const initialValues = {
@@ -74,9 +93,9 @@ export function SupplierEdit() {
     category_id: supplier?.category_id,
     center_id: supplier?.center_id,
     status: supplier?.status,
-    iva: supplier?.IVA || '',
-    ganancias: supplier?.Ganancias || '',
-    iibb: supplier?.IIBB || ''
+    iva: supplier?.IVA || "",
+    ganancias: supplier?.Ganancias || "",
+    iibb: supplier?.IIBB || "",
   };
 
   useEffect(() => {
@@ -94,11 +113,14 @@ export function SupplierEdit() {
 
     const fetchBankAccounts = async () => {
       try {
-        const response = await getBankAccounts(id); 
+        const response = await getBankAccounts(id);
         if (Array.isArray(response)) {
           setBankAccounts(response);
         } else {
-          console.error("Respuesta inesperada al obtener las cuentas bancarias:", response);
+          console.error(
+            "Respuesta inesperada al obtener las cuentas bancarias:",
+            response
+          );
           setBankAccounts([]);
         }
       } catch (error) {
@@ -115,7 +137,7 @@ export function SupplierEdit() {
     formikRef.current.submitForm();
   };
 
-  const handleEdit = async (value) => {     
+  const handleEdit = async (value) => {
     const requestValues = {
       id: value.id,
       cuit: value.cuit,
@@ -131,36 +153,45 @@ export function SupplierEdit() {
       idcentrocosto: Number(value.center_id),
       IVA: value.iva ? value.iva.toString() : "",
       Ganancias: value.ganancias ? value.ganancias.toString() : "",
-      IIBB: value.iibb ? value.iibb.toString() : ""
-    };   
-      
+      IIBB: value.iibb ? value.iibb.toString() : "",
+    };
+
     try {
       await updateSupplier(requestValues);
       setProgress(false);
-      setOpenMessage("success",'El proveedor fue actualizado correctamente.');
+      setOpenMessage("success", "El proveedor fue actualizado correctamente.");
       dispatch(getAllSuppliers());
       setTimeout(() => {
         history.goBack();
       }, 2000);
     } catch {
-      setOpenMessage("error",'El proveedor no pudo ser actualizado correctamente. Por favor, volvé a intentar.');
+      setOpenMessage(
+        "error",
+        "El proveedor no pudo ser actualizado correctamente. Por favor, volvé a intentar."
+      );
     }
   };
-  
+
   const refetchBankAccounts = async () => {
     try {
       const updatedAccounts = await getBankAccounts(id);
-      console.log("Respuesta de cuentas bancarias después de eliminación:", updatedAccounts);
+      console.log(
+        "Respuesta de cuentas bancarias después de eliminación:",
+        updatedAccounts
+      );
       if (Array.isArray(updatedAccounts)) {
         setBankAccounts(updatedAccounts);
       } else {
-        console.warn("Estructura inesperada al obtener cuentas bancarias:", updatedAccounts);
+        console.warn(
+          "Estructura inesperada al obtener cuentas bancarias:",
+          updatedAccounts
+        );
         setBankAccounts([]);
       }
     } catch (error) {
       if (error.response && error.response.status === 404) {
         console.warn("No se encontraron cuentas bancarias para el proveedor.");
-        setBankAccounts([]); 
+        setBankAccounts([]);
       } else {
         console.error("Error al obtener cuentas bancarias:", error);
         setOpenMessage("error", "Error al cargar las cuentas bancarias.");
@@ -173,12 +204,12 @@ export function SupplierEdit() {
   };
 
   const handleDeleteBankAccount = (accountId) => {
-    setAccountIdToDelete(accountId); 
+    setAccountIdToDelete(accountId);
     setShowDeleteModal(true);
   };
 
   const confirmDeleteBankAccount = async () => {
-    console.log("Iniciando eliminación de cuenta bancaria"); 
+    console.log("Iniciando eliminación de cuenta bancaria");
     try {
       const deleteResponse = await deleteBankAccount(accountIdToDelete);
       console.log("Respuesta al eliminar cuenta bancaria:", deleteResponse);
@@ -197,8 +228,18 @@ export function SupplierEdit() {
   }
 
   return (
-    <Card>
-      <CardHeader title={`${supplier?.business_name} - ${supplier?.cuit} `}>       
+    <Card className="supplier-edit-card">
+      <CardHeader
+        title={
+          <div className="d-flex align-items-center">
+            <BusinessIcon className="mr-3 text-primary" fontSize="large" />
+            <div>
+              <h2 className="mb-0">{supplier?.business_name}</h2>
+              <p className="text-muted mb-0">CUIT: {supplier?.cuit}</p>
+            </div>
+          </div>
+        }
+      >
         <CardHeaderToolbar>
           <Button
             onClick={() => history.goBack()}
@@ -206,24 +247,32 @@ export function SupplierEdit() {
             color="secondary"
             className="mr-3"
             size="large"
+            startIcon={<ArrowBackIcon />}
           >
             Volver
           </Button>
-          <Button 
+          <Button
             variant="contained"
             color="secondary"
             type="submit"
             className="ml-4"
             size="large"
             onClick={handleFormSubmit}
-            endIcon={progress && <CircularProgress size={20} color="primary"/>}
+            endIcon={
+              progress ? (
+                <CircularProgress size={20} color="secondary" />
+              ) : (
+                <SaveIcon />
+              )
+            }
           >
-            Actualizar
+            Guardar cambios
           </Button>
         </CardHeaderToolbar>
       </CardHeader>
-      <CardBody>
-        <div className="mt-5">
+
+      <CardBody className="p-6">
+        <div className="mt-4">
           <Formik
             innerRef={formikRef}
             enableReinitialize
@@ -237,164 +286,426 @@ export function SupplierEdit() {
           >
             {({ values, setFieldValue }) => (
               <Form className="form form-label-right">
-            
-                <div className="d-flex flex-column p-5">
-                  <p className="header-title fs-2 mb-5 mt-4">Dirección legal</p>
-                  <article className="d-flex flex-column mb-5 justify-content-md-evenly flex-md-row gap-4">
-                    <div className="col-lg-4">
-                      <p className="header-title mb-2">País*</p>
-                      <GeneralSelector 
-                        values={values}
-                        valueName='country'
-                        keyName='country'
-                        valueKey='code'
-                        label=''
-                        data={countries}
-                        setFieldValue={setFieldValue}
-                      />
-                      <ErrorMessage name="country">{error => <p className="text-danger text-xs">{error}</p>}</ErrorMessage>
-                    </div>   
-                    <div className="col-lg-4"> 
-                      <Field
-                        name="province"
-                        component={Input}
-                        label="Provincia*"
-                      />
+                {/* Sección de información general */}
+                <div className="card card-custom gutter-b mb-8">
+                  <div className="card-header border-0 bg-light-primary py-5 mb-6">
+                    <div className="card-title">
+                      <h3 className="card-label">
+                        <BusinessIcon className="mr-2 text-primary " />
+                        Información del Proveedor
+                      </h3>
                     </div>
-                    <div className="col-lg-4">
-                      <Field
-                        name="city"
-                        component={Input}
-                        label="Ciudad*"
-                      />
+                  </div>
+                  <div className="card-body pt-0">
+                    <div className="row">
+                      <div className="col-md-6">
+                        <div className="form-group">
+                          <label className="font-weight-bold">
+                            Razón Social*
+                          </label>
+                          <Field
+                            name="business_name"
+                            component={Input}
+                            placeholder="Nombre de la empresa"
+                          />
+                          <ErrorMessage name="business_name">
+                            {(error) => (
+                              <div className="text-danger small mt-1">
+                                {error}
+                              </div>
+                            )}
+                          </ErrorMessage>
+                        </div>
+                      </div>
+                      <div className="col-md-6">
+                        <div className="form-group">
+                          <label className="font-weight-bold">CUIT*</label>
+                          <Field
+                            name="cuit"
+                            component={Input}
+                            placeholder="00-00000000-0"
+                          />
+                          <ErrorMessage name="cuit">
+                            {(error) => (
+                              <div className="text-danger small mt-1">
+                                {error}
+                              </div>
+                            )}
+                          </ErrorMessage>
+                        </div>
+                      </div>
                     </div>
-                  </article>
-                  <article className="d-flex flex-column flex-md-row gap-4">
-                    <div className="col-lg-6">
-                      <Field
-                        name="cp"
-                        component={Input}
-                        placeholder=""
-                        label="Código postal*"
-                      />
-                    </div>
-                    <div className="col-lg-6">
-                      <Field
-                        name="address"
-                        component={Input}
-                        placeholder=""
-                        label="Dirección legal*"
-                      />
-                    </div>
-                  </article>
+                  </div>
                 </div>
 
-                <div className="d-flex flex-column p-5">
-                  <p className="header-title fs-2 mb-5 mt-4">Datos de contacto</p>
-                  <article className="d-flex flex-column flex-md-row gap-4">
-                    <div className="col-lg-6">
-                      <Field
-                        name="cellphone"
-                        component={Input}
-                        placeholder=""
-                        label="Teléfono*"
-                      />
+                {/* Sección de ubicación */}
+                <div className="card card-custom gutter-b mb-8">
+                  <div className="mb-6 card-header border-0 bg-light-primary py-5">
+                    <div className="card-title">
+                      <h3 className="card-label">
+                        <LocationIcon className="mr-2 text-primary" />
+                        Ubicación
+                      </h3>
                     </div>
-                    <div className="col-lg-6">
-                      <Field
-                        name="email"
-                        component={Input}
-                        placeholder=""
-                        label="Correo electrónico*"
-                      />
+                  </div>
+                  <div className="card-body pt-0">
+                    <div className="row">
+                      <div className="col-md-4">
+                        <div className="form-group">
+                          <label className="font-weight-bold">País*</label>
+                          <GeneralSelector
+                            values={values}
+                            valueName="country"
+                            keyName="country"
+                            valueKey="code"
+                            placeholder="Seleccionar país"
+                            data={countries}
+                            setFieldValue={setFieldValue}
+                          />
+                          <ErrorMessage name="country">
+                            {(error) => (
+                              <div className="text-danger small mt-1">
+                                {error}
+                              </div>
+                            )}
+                          </ErrorMessage>
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="form-group">
+                          <label className="font-weight-bold">Provincia*</label>
+                          <Field
+                            name="province"
+                            component={Input}
+                            placeholder="Provincia"
+                          />
+                          <ErrorMessage name="province">
+                            {(error) => (
+                              <div className="text-danger small mt-1">
+                                {error}
+                              </div>
+                            )}
+                          </ErrorMessage>
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="form-group">
+                          <label className="font-weight-bold">Ciudad*</label>
+                          <Field
+                            name="city"
+                            component={Input}
+                            placeholder="Ciudad"
+                          />
+                          <ErrorMessage name="city">
+                            {(error) => (
+                              <div className="text-danger small mt-1">
+                                {error}
+                              </div>
+                            )}
+                          </ErrorMessage>
+                        </div>
+                      </div>
                     </div>
-                  </article>
-                </div>
-                <div className="col-lg-12">
-                  <p className="header-title fs-2 mb-5 mt-4">IVA</p>
-                  <Field name="iva" component={Input} type="number" label="" />
-                </div>
-                <div className="col-lg-12">
-                  <p className="header-title fs-2 mb-5 mt-4">Ganancias</p>
-                  <Field name="ganancias" component={Input} type="number" label="" />
-                </div>
-                <div className="col-lg-12">
-                  <p className="header-title fs-2 mb-5 mt-4">IIBB</p>
-                  <Field name="iibb" component={Input} type="number" label="" />
-                </div>
-                
-
-                <div className="d-flex flex-column p-5">
-                  <p className="header-title fs-2 mb-5 mt-4">Categoría</p>
-                  <GeneralSelector 
-                    values={values}
-                    name="id"
-                    valueName='category_id'
-                    keyName='categoria'
-                    label=''
-                    data={categories}
-                    setFieldValue={setFieldValue}
-                  />
-                  <ErrorMessage name="category_id">{error => <p className="text-danger text-xs">{error}</p>}</ErrorMessage>
-                </div>
-                
-                <div className="d-flex flex-column p-5">
-                  <p className="header-title fs-2 mb-5 mt-4">Centro de costos</p>
-                  <GeneralSelector 
-                    values={values}
-                    name="id"
-                    valueName='center_id'
-                    keyName='CentroC'
-                    label=''
-                    data={costCenters}
-                    setFieldValue={setFieldValue}
-                  />
-                  <ErrorMessage name="center_id">{error => <p className="text-danger text-xs">{error}</p>}</ErrorMessage>
+                    <div className="row">
+                      <div className="col-md-8">
+                        <div className="form-group">
+                          <label className="font-weight-bold">Dirección*</label>
+                          <Field
+                            name="address"
+                            component={Input}
+                            placeholder="Dirección completa"
+                          />
+                          <ErrorMessage name="address">
+                            {(error) => (
+                              <div className="text-danger small mt-1">
+                                {error}
+                              </div>
+                            )}
+                          </ErrorMessage>
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="form-group">
+                          <label className="font-weight-bold">
+                            Código Postal*
+                          </label>
+                          <Field
+                            name="cp"
+                            component={Input}
+                            placeholder="Código postal"
+                          />
+                          <ErrorMessage name="cp">
+                            {(error) => (
+                              <div className="text-danger small mt-1">
+                                {error}
+                              </div>
+                            )}
+                          </ErrorMessage>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="mb-10 mt-6 p-5">
-                  <p className="header-title fs-2">Cuentas bancarias</p>
-                  {Array.isArray(bankAccounts) && bankAccounts.length > 0 ? (
-                    bankAccounts.map((account) => (
-                      <BankAccountData
-                        key={account.id}
-                        refetch={refetchBankAccounts}
-                        idSuplier={id}
-                        showView={false}
-                        transferIcon={false}
-                        trashIcon={true}
-                        showButtons={true}
-                        dataCvuSuplier={{
-                          bank: account.CBUAlias,
-                          cvu_cbu: account.cuit,
-                          id: account.id,
-                          name: account.CBU,
-                        }}
-                        onDelete={() => handleDeleteBankAccount(account.id)}
-                      />
-                    ))
-                  ) : (
-                    <p className="text-title fs-4 text-center">
-                      No hay cuentas bancarias/virtuales disponibles.
-                    </p>
-                  )}
+                {/* Sección de contacto */}
+                <div className="card card-custom gutter-b mb-8">
+                  <div className="mb-6 card-header border-0 bg-light-primary py-5">
+                    <div className="card-title">
+                      <h3 className="card-label">
+                        <ContactsIcon className="mr-2 text-primary" />
+                        Información de Contacto
+                      </h3>
+                    </div>
+                  </div>
+                  <div className="card-body pt-0">
+                    <div className="row">
+                      <div className="col-md-6">
+                        <div className="form-group">
+                          <label className="font-weight-bold">Teléfono*</label>
+                          <Field
+                            name="cellphone"
+                            component={Input}
+                            placeholder="Teléfono de contacto"
+                          />
+                          <ErrorMessage name="cellphone">
+                            {(error) => (
+                              <div className="text-danger small mt-1">
+                                {error}
+                              </div>
+                            )}
+                          </ErrorMessage>
+                        </div>
+                      </div>
+                      <div className="col-md-6">
+                        <div className="form-group">
+                          <label className="font-weight-bold">
+                            Correo Electrónico*
+                          </label>
+                          <Field
+                            name="email"
+                            component={Input}
+                            placeholder="email@proveedor.com"
+                            type="email"
+                          />
+                          <ErrorMessage name="email">
+                            {(error) => (
+                              <div className="text-danger small mt-1">
+                                {error}
+                              </div>
+                            )}
+                          </ErrorMessage>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="d-flex w-100 justify-content-md-end gap-4 p-5">
-                  <Button 
-                    variant="contained"
-                    color="secondary"
-                    className="ml-4"
-                    size="large"
-                    onClick={handleAddBankAccount} 
-                    endIcon={progress && <CircularProgress size={20} color="primary"/>}
-                  >
-                    +
-                  </Button>
+                {/* Sección de impuestos */}
+                <div className="card card-custom gutter-b mb-8">
+                  <div className="mb-6 card-header border-0 bg-light-primary py-5">
+                    <div className="card-title">
+                      <h3 className="card-label">
+                        <MoneyIcon className="mr-2 text-primary" />
+                        Impuestos y Retenciones
+                      </h3>
+                    </div>
+                  </div>
+                  <div className="card-body pt-0">
+                    <div className="row">
+                      <div className="col-md-4">
+                        <div className="form-group">
+                          <label className="font-weight-bold">IVA (%)*</label>
+                          <Field
+                            name="iva"
+                            component={Input}
+                            type="number"
+                            min="0"
+                            max="100"
+                            step="0.01"
+                          />
+                          <ErrorMessage name="iva">
+                            {(error) => (
+                              <div className="text-danger small mt-1">
+                                {error}
+                              </div>
+                            )}
+                          </ErrorMessage>
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="form-group">
+                          <label className="font-weight-bold">
+                            Ganancias (%)*
+                          </label>
+                          <Field
+                            name="ganancias"
+                            component={Input}
+                            type="number"
+                            min="0"
+                            max="100"
+                            step="0.01"
+                          />
+                          <ErrorMessage name="ganancias">
+                            {(error) => (
+                              <div className="text-danger small mt-1">
+                                {error}
+                              </div>
+                            )}
+                          </ErrorMessage>
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="form-group">
+                          <label className="font-weight-bold">IIBB (%)*</label>
+                          <Field
+                            name="iibb"
+                            component={Input}
+                            type="number"
+                            min="0"
+                            max="100"
+                            step="0.01"
+                          />
+                          <ErrorMessage name="iibb">
+                            {(error) => (
+                              <div className="text-danger small mt-1">
+                                {error}
+                              </div>
+                            )}
+                          </ErrorMessage>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sección de categorización */}
+                <div className="card card-custom gutter-b mb-8">
+                  <div className="mb-6 card-header border-0 bg-light-primary py-5">
+                    <div className="card-title">
+                      <h3 className="card-label">
+                        <CategoryIcon className="mr-2 text-primary" />
+                        Categorización
+                      </h3>
+                    </div>
+                  </div>
+                  <div className="card-body pt-0">
+                    <div className="row">
+                      <div className="col-md-6">
+                        <div className="form-group">
+                          <label className="font-weight-bold">Categoría*</label>
+                          <GeneralSelector
+                            values={values}
+                            valueName="category_id"
+                            keyName="categoria"
+                            placeholder="Seleccionar categoría"
+                            data={categories}
+                            setFieldValue={setFieldValue}
+                          />
+                          <ErrorMessage name="category_id">
+                            {(error) => (
+                              <div className="text-danger small mt-1">
+                                {error}
+                              </div>
+                            )}
+                          </ErrorMessage>
+                        </div>
+                      </div>
+                      <div className="col-md-6">
+                        <div className="form-group">
+                          <label className="font-weight-bold">
+                            Centro de Costos*
+                          </label>
+                          <GeneralSelector
+                            values={values}
+                            valueName="center_id"
+                            keyName="CentroC"
+                            placeholder="Seleccionar centro de costos"
+                            data={costCenters}
+                            setFieldValue={setFieldValue}
+                          />
+                          <ErrorMessage name="center_id">
+                            {(error) => (
+                              <div className="text-danger small mt-1">
+                                {error}
+                              </div>
+                            )}
+                          </ErrorMessage>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sección de cuentas bancarias */}
+                <div className="card card-custom gutter-b">
+                  <div className="mb-6 card-header border-0 bg-light-primary py-5">
+                    <div className="card-title">
+                      <h3 className="card-label">
+                        <BankIcon className="mr-2 text-primary" />
+                        Cuentas Bancarias
+                      </h3>
+                    </div>
+                    <div className="card-toolbar">
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        className="font-weight-bold"
+                        onClick={handleAddBankAccount}
+                        startIcon={<AddIcon />}
+                      >
+                        Agregar Cuenta
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="card-body pt-0">
+                    {Array.isArray(bankAccounts) && bankAccounts.length > 0 ? (
+                      <div className="bank-accounts-container">
+                        {bankAccounts.map((account) => (
+                          <BankAccountData
+                            key={account.id}
+                            refetch={refetchBankAccounts}
+                            idSuplier={id}
+                            showView={false}
+                            transferIcon={false}
+                            trashIcon={true}
+                            showButtons={true}
+                            dataCvuSuplier={{
+                              bank: account.CBUAlias,
+                              cvu_cbu: account.cuit,
+                              id: account.id,
+                              name: account.CBU,
+                            }}
+                            onDelete={() => handleDeleteBankAccount(account.id)}
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-10">
+                        <BankIcon
+                          className="text-muted"
+                          style={{ fontSize: "4rem" }}
+                        />
+                        <p className="font-size-h4 text-muted mt-4">
+                          No hay cuentas bancarias registradas
+                        </p>
+                        <p className="text-muted mb-6">
+                          Agrega una cuenta bancaria para este proveedor
+                        </p>
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          onClick={handleAddBankAccount}
+                          startIcon={<AddIcon />}
+                        >
+                          Agregar primera cuenta
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </Form>
             )}
-          </Formik>          
+          </Formik>
         </div>
       </CardBody>
 
@@ -411,7 +722,7 @@ export function SupplierEdit() {
         accountId={accountIdToDelete}
         clientId={id}
         refetch={refetchBankAccounts}
-        onConfirm={confirmDeleteBankAccount} 
+        onConfirm={confirmDeleteBankAccount}
       />
 
       <SnackbarMessage

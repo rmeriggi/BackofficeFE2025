@@ -13,6 +13,14 @@ const OperationsPage = lazy(() =>
 const ProductsPPRouter = lazy(() =>
   import("./ProductsPP/pages/ProductsPPRouter.js")
 );
+const PpRouter = lazy(() => import("./PP/pages/PpRouter.js"));
+
+const ManagementPpRouter = lazy(() =>
+  import("./ManagementPP/pages/ManagementPpRouter.js")
+);
+
+const CreatePpRouter = lazy(() => import("./CreatePp/pages/CreatePpRouter.js"));
+
 const AccountsPage = lazy(() => import("./Accounts/pages/AccountsPage.js"));
 
 const AgentsPage = lazy(() => import("./Agents/pages/AgentsPage.js"));
@@ -256,6 +264,31 @@ export default function InvestmentsRouter() {
         component={checkRouteAccess(
           "investments.Productos Plazo Fijo",
           ProductsPPRouter,
+          access
+        )}
+      />
+      <Route
+        path={baseRouterUrl + "/pp"}
+        component={checkRouteAccess(
+          "investments.Plazos Fijos",
+          PpRouter,
+          access
+        )}
+      />
+      <Route
+        path={baseRouterUrl + "/newpp"}
+        component={checkRouteAccess(
+          "investments.Creación Plazo Fijo",
+          CreatePpRouter,
+          access
+        )}
+      />
+
+      <Route
+        path={baseRouterUrl + "/adminpp"}
+        component={checkRouteAccess(
+          "investments.Gestión Plazos Fijos",
+          ManagementPpRouter,
           access
         )}
       />

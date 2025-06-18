@@ -15,6 +15,10 @@ const ProductsPPRouter = lazy(() =>
 );
 const PpRouter = lazy(() => import("./PP/pages/PpRouter.js"));
 
+const PpInvestmentsRouter = lazy(() =>
+  import("./PpInvestments/pages/PpInvestmentsRouter.js")
+);
+
 const ManagementPpRouter = lazy(() =>
   import("./ManagementPP/pages/ManagementPpRouter.js")
 );
@@ -301,6 +305,14 @@ export default function InvestmentsRouter() {
         component={checkRouteAccess(
           "investments.Liquidaciones",
           SettlementsRouter,
+          access
+        )}
+      />
+      <Route
+        path={baseRouterUrl + "/pfinvesments"}
+        component={checkRouteAccess(
+          "investments.Plazo Fijo Inversiones",
+          PpInvestmentsRouter,
           access
         )}
       />

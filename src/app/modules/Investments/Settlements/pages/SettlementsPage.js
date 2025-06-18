@@ -536,52 +536,6 @@ const SettlementsPage = () => {
         </div>
       )}
 
-      {/* Paginación */}
-      {liquidacionesFiltradas.length > 0 && (
-        <div className="card card-custom gutter-t">
-          <div className="card-body py-6">
-            <div className="d-flex justify-content-between align-items-center flex-wrap">
-              <div className="d-flex align-items-center py-3">
-                <span className="text-muted font-weight-bold mr-4">
-                  Mostrando 1 a {liquidacionesFiltradas.length} de{" "}
-                  {liquidacionesFiltradas.length} registros
-                </span>
-              </div>
-
-              <div className="d-flex align-items-center py-3">
-                <ul className="pagination pagination-sm">
-                  <li className="page-item disabled">
-                    <a className="page-link" href="#" tabIndex="-1">
-                      Anterior
-                    </a>
-                  </li>
-                  <li className="page-item active">
-                    <a className="page-link" href="#">
-                      1
-                    </a>
-                  </li>
-                  <li className="page-item">
-                    <a className="page-link" href="#">
-                      2
-                    </a>
-                  </li>
-                  <li className="page-item">
-                    <a className="page-link" href="#">
-                      3
-                    </a>
-                  </li>
-                  <li className="page-item">
-                    <a className="page-link" href="#">
-                      Siguiente
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Modal de detalle de liquidación */}
       {liquidacionSeleccionada && (
         <div

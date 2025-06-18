@@ -29,8 +29,12 @@ const BalancesItauPage = lazy(() =>
   import("./BalancesItau/pages/BalancesItauPage.js")
 );
 const CashierRouter = lazy(() => import("./Cashier/pages/CashierRouter.js"));
+
 const CashierResumeRouter = lazy(() =>
   import("./CashierResume/pages/CashierResumeRouter.js")
+);
+const CashierClosureRouter = lazy(() =>
+  import("./CashierClosure/pages/CashierClosureRouter.js")
 );
 
 export default function CashRouter() {
@@ -64,6 +68,14 @@ export default function CashRouter() {
         component={checkRouteAccess(
           "cash.Movimientos Caja",
           CashierResumeRouter,
+          access
+        )}
+      />
+      <Route
+        path={baseRouterUrl + "/close"}
+        component={checkRouteAccess(
+          "cash.Cierre de Caja",
+          CashierClosureRouter,
           access
         )}
       />

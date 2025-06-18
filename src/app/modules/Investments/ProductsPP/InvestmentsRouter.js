@@ -55,10 +55,6 @@ const OperatorsDashboardPage = lazy(() =>
 
 const ProductsPage = lazy(() => import("./Products/pages/ProductsPage.js"));
 
-const SettlementsRouter = lazy(() =>
-  import("./Settlements/pages/SettlementsRouter.js")
-);
-
 const TransactionsPage = lazy(() =>
   import("./Transactions/pages/TransactionsPage.js")
 );
@@ -293,14 +289,6 @@ export default function InvestmentsRouter() {
         component={checkRouteAccess(
           "investments.Gestión Plazos Fijos",
           ManagementPpRouter,
-          access
-        )}
-      />
-      <Route
-        path={baseRouterUrl + "/liquidationpp"}
-        component={checkRouteAccess(
-          "investments.Liquidaciones",
-          SettlementsRouter,
           access
         )}
       />

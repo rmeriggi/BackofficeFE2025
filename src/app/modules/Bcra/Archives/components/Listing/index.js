@@ -454,8 +454,8 @@ export default function Listing() {
                         </span>
                       </div>
                       <div>
-                        <h4 className="text-dark font-weight-bolder mb-0">
-                          {a.nombre}{" "}
+                        <h4 className="text-dark font-weight-bolder mb-0 text-break">
+                          {a.nombre}
                           {a.destacado && (
                             <span className="label label-sm label-warning label-inline ml-2">
                               Destacado

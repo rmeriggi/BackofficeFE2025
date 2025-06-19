@@ -24,8 +24,9 @@ import {
   Star,
   Storage,
 } from "@material-ui/icons";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { LayoutSplashScreen } from "../../../../../../_metronic/layout";
+import Pagination from "../../../../../components/Pagination";
 import useIsMountedRef from "../../../../../hooks/useIsMountedRef";
 import { formatDate } from "../../../../../utils/formatData";
 import { useAllArchives } from "../../utils/apiHooks";
@@ -40,6 +41,15 @@ export default function Listing() {
   const [viewMode, setViewMode] = useState("grid");
   const [lastUpdate, setLastUpdate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
+
+  // Estados de paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
+
+  // Resetear página cuando cambian los filtros
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filtroActivo, filtroTipo, busqueda]);
 
   // Procesar datos para el nuevo formato - movido antes del return
   const processedArchives = useMemo(() => {
@@ -111,6 +121,24 @@ export default function Listing() {
 
     return coincideTipo && coincideCategoria && coincideBusqueda;
   });
+
+  // Lógica de paginación
+  const totalItems = archivesFiltrados.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const archivosPaginados = archivesFiltrados.slice(startIndex, endIndex);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    // Scroll al top de la página
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1); // Resetear a la primera página
+  };
 
   // Calcular estadísticas
   const totalArchivos = processedArchives.length;
@@ -433,348 +461,388 @@ export default function Listing() {
 
       {/* Listado de archivos */}
       {viewMode === "grid" ? (
-        <div className="row">
-          {archivesFiltrados.map((a) => (
-            <div
-              key={a.id}
-              className="col-xl-6 col-xxl-4 col-md-6 col-sm-12 mb-8"
-            >
+        <>
+          <div className="row">
+            {archivosPaginados.map((a) => (
               <div
-                className={`card card-custom gutter-b shadow-sm ${
-                  a.destacado ? "border-left-warning" : "border-left-primary"
-                }`}
-                style={{ borderLeftWidth: "4px" }}
+                key={a.id}
+                className="col-xl-6 col-xxl-4 col-md-6 col-sm-12 mb-8"
               >
-                <div className="card-body">
-                  <div className="d-flex justify-content-between align-items-center mb-5">
-                    <div className="d-flex align-items-center">
-                      <div className="symbol symbol-50 symbol-light mr-5">
-                        <span className="symbol-label">
-                          {getTipoIcono(a.tipo)}
-                        </span>
-                      </div>
-                      <div>
-                        <h4 className="text-dark font-weight-bolder mb-0 text-break">
-                          {a.nombre}
-                          {a.destacado && (
-                            <span className="label label-sm label-warning label-inline ml-2">
-                              Destacado
-                            </span>
-                          )}
-                        </h4>
-                        <span className="text-muted font-weight-bold">
-                          ID: {a.id} | {a.tipo.toUpperCase()}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="dropdown dropdown-inline">
-                      <button
-                        className="btn btn-clean btn-hover-light-primary btn-sm btn-icon"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                      >
-                        <MoreVert style={{ color: "#B5B5C3" }} />
-                      </button>
-                      <div className="dropdown-menu dropdown-menu-sm dropdown-menu-right">
-                        <ul className="navi navi-hover">
-                          <li className="navi-item">
-                            <a href="#" className="navi-link">
-                              <span className="navi-text">Descargar</span>
-                            </a>
-                          </li>
-                          <li className="navi-item">
-                            <a href="#" className="navi-link">
-                              <span className="navi-text">
-                                Añadir a favoritos
-                              </span>
-                            </a>
-                          </li>
-                          <li className="navi-item">
-                            <a href="#" className="navi-link">
-                              <span className="navi-text">Compartir</span>
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mb-5">
-                    <p className="text-muted font-weight-bold mb-3">
-                      {a.descripcion}
-                    </p>
-
-                    <div className="d-flex align-items-center flex-wrap">
-                      <div className="d-flex align-items-center mr-10 mb-2">
-                        <div className="mr-2">
-                          <span className="text-dark font-weight-bolder">
-                            Período:
+                <div
+                  className={`card card-custom gutter-b shadow-sm ${
+                    a.destacado ? "border-left-warning" : "border-left-primary"
+                  }`}
+                  style={{ borderLeftWidth: "4px" }}
+                >
+                  <div className="card-body">
+                    <div className="d-flex justify-content-between align-items-center mb-5">
+                      <div className="d-flex align-items-center">
+                        <div className="symbol symbol-50 symbol-light mr-5">
+                          <span className="symbol-label">
+                            {getTipoIcono(a.tipo)}
                           </span>
-                          <span className="text-muted ml-2">{a.periodo}</span>
                         </div>
-                      </div>
-
-                      <div className="d-flex align-items-center mr-10 mb-2">
-                        <div className="mr-2">
-                          <span className="text-dark font-weight-bolder">
-                            Categoría:
-                          </span>
-                          <span className="text-muted ml-2">
-                            {getCategoriaIcono(a.categoria)} {a.categoria}
+                        <div>
+                          <h4 className="text-dark font-weight-bolder mb-0 text-break">
+                            {a.nombre}
+                            {a.destacado && (
+                              <span className="label label-sm label-warning label-inline ml-2">
+                                Destacado
+                              </span>
+                            )}
+                          </h4>
+                          <span className="text-muted font-weight-bold">
+                            ID: {a.id} | {a.tipo.toUpperCase()}
                           </span>
                         </div>
                       </div>
-                    </div>
-                  </div>
 
-                  <div className="row mb-5">
-                    <div className="col-6">
-                      <div className="d-flex flex-column">
-                        <span className="text-muted font-weight-bold mb-1">
-                          Tamaño
-                        </span>
-                        <span className="text-dark font-weight-bolder font-size-h5">
-                          {a.tamaño}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="col-6">
-                      <div className="d-flex flex-column">
-                        <span className="text-muted font-weight-bold mb-1">
-                          Descargas
-                        </span>
-                        <span className="text-dark font-weight-bolder font-size-h5">
-                          {a.descargado.toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="d-flex justify-content-between align-items-center mb-5">
-                    <div>
-                      <span
-                        className="label label-lg label-inline"
-                        style={{ backgroundColor: getTipoColor(a.tipo) }}
-                      >
-                        <span className="text-white d-flex align-items-center">
-                          <div
-                            className="bg-white mr-2 rounded-circle"
-                            style={{ width: 8, height: 8 }}
-                          ></div>
-                          {a.tipo.toUpperCase()}
-                        </span>
-                      </span>
-                    </div>
-
-                    <div>
-                      <span className="text-muted font-weight-bold mr-2">
-                        Estado:
-                      </span>
-                      <span className="text-success font-weight-bolder">
-                        {a.estado}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Detalles expandibles */}
-                  <div className="mt-4">
-                    <button
-                      className="btn btn-link btn-sm p-0 d-flex align-items-center text-primary font-weight-bold"
-                      onClick={() => toggleExpandirArchivo(a.id)}
-                    >
-                      <span>Ver más detalles</span>
-                      <ExpandMore
-                        className={`ml-1 transition ${
-                          archivoExpandido === a.id
-                            ? "transform rotate-180"
-                            : ""
-                        }`}
-                      />
-                    </button>
-
-                    {archivoExpandido === a.id && (
-                      <div className="mt-4 pt-4 border-top">
-                        <div className="row">
-                          <div className="col-6">
-                            <div className="d-flex flex-column mb-3">
-                              <span className="text-muted font-weight-bold mb-1">
-                                Fecha
-                              </span>
-                              <span className="text-dark font-weight-bolder">
-                                {a.fecha}
-                              </span>
-                            </div>
-
-                            <div className="d-flex flex-column mb-3">
-                              <span className="text-muted font-weight-bold mb-1">
-                                Versión
-                              </span>
-                              <span className="text-dark font-weight-bolder">
-                                {a.version}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="col-6">
-                            <div className="d-flex flex-column mb-3">
-                              <span className="text-muted font-weight-bold mb-1">
-                                Prioridad
-                              </span>
-                              <span className="text-warning font-weight-bolder">
-                                {a.prioridad}
-                              </span>
-                            </div>
-
-                            <div className="d-flex flex-column">
-                              <span className="text-muted font-weight-bold mb-1">
-                                Última Modificación
-                              </span>
-                              <span className="text-info font-weight-bolder">
-                                {a.ultimaModificacion}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="card-footer border-0 d-flex justify-content-between pt-0 pb-6 px-6">
-                  <a
-                    href={a.action}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    download
-                    className="btn btn-primary font-weight-bold"
-                  >
-                    <CloudDownload className="mr-2" />
-                    Descargar
-                  </a>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        // Vista de lista real
-        <div className="card card-custom gutter-b">
-          <div className="card-body p-0">
-            <div className="table-responsive">
-              <table className="table table-head-custom table-vertical-center overflow-hidden">
-                <thead>
-                  <tr>
-                    <th className="pl-7">
-                      <span className="text-dark-75">Archivo</span>
-                    </th>
-                    <th>
-                      <span className="text-dark-75">Tipo</span>
-                    </th>
-                    <th>
-                      <span className="text-dark-75">Período</span>
-                    </th>
-                    <th>
-                      <span className="text-dark-75">Fecha</span>
-                    </th>
-                    <th>
-                      <span className="text-dark-75">Tamaño</span>
-                    </th>
-                    <th>
-                      <span className="text-dark-75">Descargas</span>
-                    </th>
-                    <th>
-                      <span className="text-dark-75">Estado</span>
-                    </th>
-                    <th className="text-right pr-7">
-                      <span className="text-dark-75">Acciones</span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {archivesFiltrados.map((a) => (
-                    <tr key={a.id} className="border-bottom">
-                      <td className="pl-7">
-                        <div className="d-flex align-items-center">
-                          <div className="symbol symbol-40 symbol-light mr-4">
-                            <span className="symbol-label">
-                              {getTipoIcono(a.tipo)}
-                            </span>
-                          </div>
-                          <div>
-                            <div className="d-flex align-items-center">
-                              <span className="text-dark font-weight-bolder">
-                                {a.nombre}
-                              </span>
-                              {a.destacado && (
-                                <span className="label label-sm label-warning label-inline ml-2">
-                                  Destacado
+                      <div className="dropdown dropdown-inline">
+                        <button
+                          className="btn btn-clean btn-hover-light-primary btn-sm btn-icon"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false"
+                        >
+                          <MoreVert style={{ color: "#B5B5C3" }} />
+                        </button>
+                        <div className="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+                          <ul className="navi navi-hover">
+                            <li className="navi-item">
+                              <a href="#" className="navi-link">
+                                <span className="navi-text">Descargar</span>
+                              </a>
+                            </li>
+                            <li className="navi-item">
+                              <a href="#" className="navi-link">
+                                <span className="navi-text">
+                                  Añadir a favoritos
                                 </span>
-                              )}
-                            </div>
-                            <span className="text-muted font-weight-bold">
-                              ID: {a.id}
+                              </a>
+                            </li>
+                            <li className="navi-item">
+                              <a href="#" className="navi-link">
+                                <span className="navi-text">Compartir</span>
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mb-5">
+                      <p className="text-muted font-weight-bold mb-3">
+                        {a.descripcion}
+                      </p>
+
+                      <div className="d-flex align-items-center flex-wrap">
+                        <div className="d-flex align-items-center mr-10 mb-2">
+                          <div className="mr-2">
+                            <span className="text-dark font-weight-bolder">
+                              Período:
+                            </span>
+                            <span className="text-muted ml-2">{a.periodo}</span>
+                          </div>
+                        </div>
+
+                        <div className="d-flex align-items-center mr-10 mb-2">
+                          <div className="mr-2">
+                            <span className="text-dark font-weight-bolder">
+                              Categoría:
+                            </span>
+                            <span className="text-muted ml-2">
+                              {getCategoriaIcono(a.categoria)} {a.categoria}
                             </span>
                           </div>
                         </div>
-                      </td>
-                      <td>
+                      </div>
+                    </div>
+
+                    <div className="row mb-5">
+                      <div className="col-6">
+                        <div className="d-flex flex-column">
+                          <span className="text-muted font-weight-bold mb-1">
+                            Tamaño
+                          </span>
+                          <span className="text-dark font-weight-bolder font-size-h5">
+                            {a.tamaño}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="col-6">
+                        <div className="d-flex flex-column">
+                          <span className="text-muted font-weight-bold mb-1">
+                            Descargas
+                          </span>
+                          <span className="text-dark font-weight-bolder font-size-h5">
+                            {a.descargado.toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="d-flex justify-content-between align-items-center mb-5">
+                      <div>
                         <span
                           className="label label-lg label-inline"
                           style={{ backgroundColor: getTipoColor(a.tipo) }}
                         >
-                          <span className="text-white font-weight-bold">
+                          <span className="text-white d-flex align-items-center">
+                            <div
+                              className="bg-white mr-2 rounded-circle"
+                              style={{ width: 8, height: 8 }}
+                            ></div>
                             {a.tipo.toUpperCase()}
                           </span>
                         </span>
-                      </td>
-                      <td>
-                        <span className="text-dark font-weight-bolder">
-                          {a.periodo}
+                      </div>
+
+                      <div>
+                        <span className="text-muted font-weight-bold mr-2">
+                          Estado:
                         </span>
-                      </td>
-                      <td>
-                        <span className="text-dark font-weight-bolder">
-                          {a.fecha}
-                        </span>
-                      </td>
-                      <td>
-                        <span className="text-dark font-weight-bolder">
-                          {a.tamaño}
-                        </span>
-                      </td>
-                      <td>
-                        <span className="text-dark font-weight-bolder">
-                          {a.descargado.toLocaleString()}
-                        </span>
-                      </td>
-                      <td>
                         <span className="text-success font-weight-bolder">
                           {a.estado}
                         </span>
-                      </td>
-                      <td className="text-right pr-7">
-                        <div className="d-flex justify-content-end">
-                          <a
-                            href={a.action}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            download
-                            className="btn btn-icon btn-primary btn-sm"
-                            title="Descargar"
-                          >
-                            <CloudDownload style={{ fontSize: 16 }} />
-                          </a>
+                      </div>
+                    </div>
+
+                    {/* Detalles expandibles */}
+                    <div className="mt-4">
+                      <button
+                        className="btn btn-link btn-sm p-0 d-flex align-items-center text-primary font-weight-bold"
+                        onClick={() => toggleExpandirArchivo(a.id)}
+                      >
+                        <span>Ver más detalles</span>
+                        <ExpandMore
+                          className={`ml-1 transition ${
+                            archivoExpandido === a.id
+                              ? "transform rotate-180"
+                              : ""
+                          }`}
+                        />
+                      </button>
+
+                      {archivoExpandido === a.id && (
+                        <div className="mt-4 pt-4 border-top">
+                          <div className="row">
+                            <div className="col-6">
+                              <div className="d-flex flex-column mb-3">
+                                <span className="text-muted font-weight-bold mb-1">
+                                  Fecha
+                                </span>
+                                <span className="text-dark font-weight-bolder">
+                                  {a.fecha}
+                                </span>
+                              </div>
+
+                              <div className="d-flex flex-column mb-3">
+                                <span className="text-muted font-weight-bold mb-1">
+                                  Versión
+                                </span>
+                                <span className="text-dark font-weight-bolder">
+                                  {a.version}
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className="col-6">
+                              <div className="d-flex flex-column mb-3">
+                                <span className="text-muted font-weight-bold mb-1">
+                                  Prioridad
+                                </span>
+                                <span className="text-warning font-weight-bolder">
+                                  {a.prioridad}
+                                </span>
+                              </div>
+
+                              <div className="d-flex flex-column">
+                                <span className="text-muted font-weight-bold mb-1">
+                                  Última Modificación
+                                </span>
+                                <span className="text-info font-weight-bolder">
+                                  {a.ultimaModificacion}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </td>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="card-footer border-0 d-flex justify-content-between pt-0 pb-6 px-6">
+                    <a
+                      href={a.action}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      download
+                      className="btn btn-primary font-weight-bold"
+                    >
+                      <CloudDownload className="mr-2" />
+                      Descargar
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Paginación para vista grilla */}
+          {totalItems > 0 && (
+            <div className="card card-custom mt-8">
+              <div className="card-body">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={totalItems}
+                  itemsPerPage={itemsPerPage}
+                  onPageChange={handlePageChange}
+                  onItemsPerPageChange={handleItemsPerPageChange}
+                  showItemsPerPage={true}
+                  showInfo={true}
+                />
+              </div>
+            </div>
+          )}
+        </>
+      ) : (
+        <>
+          {/* Vista de lista real */}
+          <div className="card card-custom gutter-b">
+            <div className="card-body p-0">
+              <div className="table-responsive">
+                <table className="table table-head-custom table-vertical-center overflow-hidden">
+                  <thead>
+                    <tr>
+                      <th className="pl-7">
+                        <span className="text-dark-75">Archivo</span>
+                      </th>
+                      <th>
+                        <span className="text-dark-75">Tipo</span>
+                      </th>
+                      <th>
+                        <span className="text-dark-75">Período</span>
+                      </th>
+                      <th>
+                        <span className="text-dark-75">Fecha</span>
+                      </th>
+                      <th>
+                        <span className="text-dark-75">Tamaño</span>
+                      </th>
+                      <th>
+                        <span className="text-dark-75">Descargas</span>
+                      </th>
+                      <th>
+                        <span className="text-dark-75">Estado</span>
+                      </th>
+                      <th className="text-right pr-7">
+                        <span className="text-dark-75">Acciones</span>
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {archivosPaginados.map((a) => (
+                      <tr key={a.id} className="border-bottom">
+                        <td className="pl-7">
+                          <div className="d-flex align-items-center">
+                            <div className="symbol symbol-40 symbol-light mr-4">
+                              <span className="symbol-label">
+                                {getTipoIcono(a.tipo)}
+                              </span>
+                            </div>
+                            <div>
+                              <div className="d-flex align-items-center">
+                                <span className="text-dark font-weight-bolder">
+                                  {a.nombre}
+                                </span>
+                                {a.destacado && (
+                                  <span className="label label-sm label-warning label-inline ml-2">
+                                    Destacado
+                                  </span>
+                                )}
+                              </div>
+                              <span className="text-muted font-weight-bold">
+                                ID: {a.id}
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <span
+                            className="label label-lg label-inline"
+                            style={{ backgroundColor: getTipoColor(a.tipo) }}
+                          >
+                            <span className="text-white font-weight-bold">
+                              {a.tipo.toUpperCase()}
+                            </span>
+                          </span>
+                        </td>
+                        <td>
+                          <span className="text-dark font-weight-bolder">
+                            {a.periodo}
+                          </span>
+                        </td>
+                        <td>
+                          <span className="text-dark font-weight-bolder">
+                            {a.fecha}
+                          </span>
+                        </td>
+                        <td>
+                          <span className="text-dark font-weight-bolder">
+                            {a.tamaño}
+                          </span>
+                        </td>
+                        <td>
+                          <span className="text-dark font-weight-bolder">
+                            {a.descargado.toLocaleString()}
+                          </span>
+                        </td>
+                        <td>
+                          <span className="text-success font-weight-bolder">
+                            {a.estado}
+                          </span>
+                        </td>
+                        <td className="text-right pr-7">
+                          <div className="d-flex justify-content-end">
+                            <a
+                              href={a.action}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              download
+                              className="btn btn-icon btn-primary btn-sm"
+                              title="Descargar"
+                            >
+                              <CloudDownload style={{ fontSize: 16 }} />
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
-        </div>
+
+          {/* Paginación para vista lista */}
+          {totalItems > 0 && (
+            <div className="card card-custom mt-8">
+              <div className="card-body">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={totalItems}
+                  itemsPerPage={itemsPerPage}
+                  onPageChange={handlePageChange}
+                  onItemsPerPageChange={handleItemsPerPageChange}
+                  showItemsPerPage={true}
+                  showInfo={true}
+                />
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       {/* Sin resultados */}

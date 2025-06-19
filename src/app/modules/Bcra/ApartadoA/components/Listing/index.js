@@ -1,10 +1,10 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import DateFnsUtils from "@date-io/date-fns";
 import { colors, createMuiTheme } from "@material-ui/core";
 import {
   AccountBalance,
   Add,
   BarChart,
-  Business,
   CalendarToday,
   CloudDownload,
   Description,
@@ -15,7 +15,6 @@ import {
   List,
   MonetizationOn,
   MoreVert,
-  Payment,
   PieChart,
   Print,
   Refresh,
@@ -35,6 +34,7 @@ import { getDate, getMonth, getYear } from "date-fns";
 import { es } from "date-fns/locale";
 import React, { useEffect, useMemo, useState } from "react";
 import { LayoutSplashScreen } from "../../../../../../_metronic/layout";
+import Pagination from "../../../../../components/Pagination";
 import { formatAmountReport } from "../../../../../utils/formatData";
 import { getSectionA } from "../../utils/service";
 
@@ -74,7 +74,7 @@ const validateAndSetDate = (newDate, otherDate, setDateFunction, type) => {
 
 export default function Listing() {
   const [sectionAList, setSectionAList] = useState({ sectionA: [] });
-  const [reportData, setReportData] = useState([]);
+  const [, /* reportData */ setReportData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [lastUpdate, setLastUpdate] = useState(new Date());
   const [filtroActivo, setFiltroActivo] = useState("todos");
@@ -83,6 +83,10 @@ export default function Listing() {
   const [registroExpandido, setRegistroExpandido] = useState(null);
   const [fechaDesde, setFechaDesde] = useState(new Date());
   const [fechaHasta, setFechaHasta] = useState(new Date());
+
+  // Estados de paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
 
   // Carga inicial del mes actual
   useEffect(() => {
@@ -159,6 +163,29 @@ export default function Listing() {
 
     return coincideTipo && coincideBusqueda;
   });
+
+  // Lógica de paginación
+  const totalItems = registrosFiltrados.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const registrosPaginados = registrosFiltrados.slice(startIndex, endIndex);
+
+  // Resetear página cuando cambian los filtros
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filtroActivo, busqueda]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    // Scroll al top de la página
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1); // Resetear a la primera página
+  };
 
   const handleRefresh = () => {
     setIsLoading(true);
@@ -259,7 +286,7 @@ export default function Listing() {
   };
 
   // Obtener icono de categoría
-  const getCategoriaIcono = (categoria) => {
+  /*   const getCategoriaIcono = (categoria) => {
     switch (categoria.toLowerCase()) {
       case "pago":
         return <Payment style={{ fontSize: 18, color: "#0BB783" }} />;
@@ -272,7 +299,7 @@ export default function Listing() {
       default:
         return <Business style={{ fontSize: 18, color: "#7E8299" }} />;
     }
-  };
+  }; */
 
   if (isLoading && processedData.length === 0) {
     return <LayoutSplashScreen />;
@@ -586,322 +613,362 @@ export default function Listing() {
 
       {/* Listado de registros */}
       {viewMode === "grid" ? (
-        <div className="row">
-          {registrosFiltrados.map((r) => (
-            <div
-              key={r.id}
-              className="col-xl-6 col-xxl-4 col-md-6 col-sm-12 mb-8"
-            >
+        <>
+          <div className="row">
+            {registrosPaginados.map((r) => (
               <div
-                className={`card card-custom gutter-b shadow-sm ${
-                  r.destacado ? "border-left-warning" : "border-left-primary"
-                }`}
-                style={{ borderLeftWidth: "4px" }}
+                key={r.id}
+                className="col-xl-6 col-xxl-4 col-md-6 col-sm-12 mb-8"
               >
-                <div className="card-body">
-                  <div className="d-flex justify-content-between align-items-center mb-5">
-                    <div className="d-flex align-items-center">
-                      <div className="symbol symbol-50 symbol-light mr-5">
-                        <span className="symbol-label">
-                          {getTipoIcono(r.tipo)}
-                        </span>
-                      </div>
-                      <div>
-                        <h4 className="text-dark font-weight-bolder mb-0">
-                          {r.concepto}{" "}
-                          {r.destacado && (
-                            <span className="label label-sm label-warning label-inline ml-2">
-                              Destacado
-                            </span>
-                          )}
-                        </h4>
-                        <span className="text-muted font-weight-bold">
-                          ID: {r.id} | {r.tipo}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="dropdown dropdown-inline">
-                      <button
-                        className="btn btn-clean btn-hover-light-primary btn-sm btn-icon"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                      >
-                        <MoreVert style={{ color: "#B5B5C3" }} />
-                      </button>
-                      <div className="dropdown-menu dropdown-menu-sm dropdown-menu-right">
-                        <ul className="navi navi-hover">
-                          <li className="navi-item">
-                            <a href="#" className="navi-link">
-                              <span className="navi-text">Ver detalles</span>
-                            </a>
-                          </li>
-                          <li className="navi-item">
-                            <a href="#" className="navi-link">
-                              <span className="navi-text">Editar</span>
-                            </a>
-                          </li>
-                          <li className="navi-item">
-                            <a href="#" className="navi-link">
-                              <span className="navi-text">
-                                Añadir a favoritos
-                              </span>
-                            </a>
-                          </li>
-                          <li className="navi-item">
-                            <a href="#" className="navi-link">
-                              <span className="navi-text">Compartir</span>
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mb-5">
-                    <div className="d-flex align-items-center flex-wrap">
-                      <div className="d-flex align-items-center mr-10 mb-2">
-                        <div className="mr-2">
-                          <span className="text-dark font-weight-bolder">
-                            Código:
+                <div
+                  className={`card card-custom gutter-b shadow-sm ${
+                    r.destacado ? "border-left-warning" : "border-left-primary"
+                  }`}
+                  style={{ borderLeftWidth: "4px" }}
+                >
+                  <div className="card-body">
+                    <div className="d-flex justify-content-between align-items-center mb-5">
+                      <div className="d-flex align-items-center">
+                        <div className="symbol symbol-50 symbol-light mr-5">
+                          <span className="symbol-label">
+                            {getTipoIcono(r.tipo)}
                           </span>
-                          <span className="text-muted ml-2">{r.código}</span>
                         </div>
-                      </div>
-
-                      <div className="d-flex align-items-center mr-10 mb-2">
-                        <div className="mr-2">
-                          <span className="text-dark font-weight-bolder">
-                            CBU:
-                          </span>
-                          <span className="text-muted ml-2">
-                            {r.cbu || "No disponible"}
+                        <div>
+                          <h4 className="text-dark font-weight-bolder mb-0">
+                            {r.concepto}{" "}
+                            {r.destacado && (
+                              <span className="label label-sm label-warning label-inline ml-2">
+                                Destacado
+                              </span>
+                            )}
+                          </h4>
+                          <span className="text-muted font-weight-bold">
+                            ID: {r.id} | {r.tipo}
                           </span>
                         </div>
                       </div>
-                    </div>
-                  </div>
 
-                  <div className="row mb-5">
-                    <div className="col-6">
-                      <div className="d-flex flex-column">
-                        <span className="text-muted font-weight-bold mb-1">
-                          Cantidad
-                        </span>
-                        <span className="text-dark font-weight-bolder font-size-h5">
-                          {r.cantidad.toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="col-6">
-                      <div className="d-flex flex-column">
-                        <span className="text-muted font-weight-bold mb-1">
-                          Saldo
-                        </span>
-                        <span className="text-dark font-weight-bolder font-size-h5">
-                          ${r.saldo.toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="d-flex justify-content-between align-items-center mb-5">
-                    <div>
-                      <span
-                        className="label label-lg label-inline"
-                        style={{ backgroundColor: getTipoColor(r.tipo) }}
-                      >
-                        <span className="text-white d-flex align-items-center">
-                          <div
-                            className="bg-white mr-2 rounded-circle"
-                            style={{ width: 8, height: 8 }}
-                          ></div>
-                          {r.tipo}
-                        </span>
-                      </span>
-                    </div>
-
-                    <div>
-                      <span className="text-muted font-weight-bold mr-2">
-                        Estado:
-                      </span>
-                      <span className="text-success font-weight-bolder">
-                        {r.estado}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Detalles expandibles */}
-                  <div className="mt-4">
-                    <button
-                      className="btn btn-link btn-sm p-0 d-flex align-items-center text-primary font-weight-bold"
-                      onClick={() => toggleExpandirRegistro(r.id)}
-                    >
-                      <span>Ver más detalles</span>
-                      <ExpandMore
-                        className={`ml-1 transition ${
-                          registroExpandido === r.id
-                            ? "transform rotate-180"
-                            : ""
-                        }`}
-                      />
-                    </button>
-
-                    {registroExpandido === r.id && (
-                      <div className="mt-4 pt-4 border-top">
-                        <div className="row">
-                          <div className="col-6">
-                            <div className="d-flex flex-column mb-3">
-                              <span className="text-muted font-weight-bold mb-1">
-                                Año
-                              </span>
-                              <span className="text-dark font-weight-bolder">
-                                {r.año}
-                              </span>
-                            </div>
-
-                            <div className="d-flex flex-column mb-3">
-                              <span className="text-muted font-weight-bold mb-1">
-                                Mes
-                              </span>
-                              <span className="text-dark font-weight-bolder">
-                                {r.mes}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="col-6">
-                            <div className="d-flex flex-column mb-3">
-                              <span className="text-muted font-weight-bold mb-1">
-                                Día
-                              </span>
-                              <span className="text-dark font-weight-bolder">
-                                {r.día}
-                              </span>
-                            </div>
-
-                            <div className="d-flex flex-column">
-                              <span className="text-muted font-weight-bold mb-1">
-                                Última Modificación
-                              </span>
-                              <span className="text-info font-weight-bolder">
-                                {r.ultimaModificacion}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="card-footer border-0 d-flex justify-content-between pt-0 pb-6 px-6">
-                  <button className="btn btn-light-primary font-weight-bold">
-                    <Visibility className="mr-2" />
-                    Ver detalles
-                  </button>
-                  <button className="btn btn-primary font-weight-bold">
-                    <Edit className="mr-2" />
-                    Editar
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        // Vista de lista real
-        <div className="card card-custom gutter-b">
-          <div className="card-body p-0">
-            <div className="table-responsive">
-              <table className="table table-head-custom table-vertical-center overflow-hidden">
-                <thead>
-                  <tr>
-                    <th className="pl-7">
-                      <span className="text-dark-75">Concepto</span>
-                    </th>
-                    <th>
-                      <span className="text-dark-75">Código</span>
-                    </th>
-                    <th>
-                      <span className="text-dark-75">CBU</span>
-                    </th>
-                    <th>
-                      <span className="text-dark-75">Cantidad</span>
-                    </th>
-                    <th>
-                      <span className="text-dark-75">Saldo</span>
-                    </th>
-                    <th>
-                      <span className="text-dark-75">Tipo</span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {registrosFiltrados.map((r) => (
-                    <tr key={r.id} className="border-bottom">
-                      <td className="pl-7">
-                        <div className="d-flex align-items-center">
-                          <div className="symbol symbol-40 symbol-light mr-4">
-                            <span className="symbol-label">
-                              {getTipoIcono(r.tipo)}
-                            </span>
-                          </div>
-                          <div>
-                            <div className="d-flex align-items-center">
-                              <span className="text-dark font-weight-bolder">
-                                {r.concepto}
-                              </span>
-                              {r.destacado && (
-                                <span className="label label-sm label-warning label-inline ml-2">
-                                  Destacado
+                      <div className="dropdown dropdown-inline">
+                        <button
+                          className="btn btn-clean btn-hover-light-primary btn-sm btn-icon"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false"
+                        >
+                          <MoreVert style={{ color: "#B5B5C3" }} />
+                        </button>
+                        <div className="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+                          <ul className="navi navi-hover">
+                            <li className="navi-item">
+                              <a href="#" className="navi-link">
+                                <span className="navi-text">Ver detalles</span>
+                              </a>
+                            </li>
+                            <li className="navi-item">
+                              <a href="#" className="navi-link">
+                                <span className="navi-text">Editar</span>
+                              </a>
+                            </li>
+                            <li className="navi-item">
+                              <a href="#" className="navi-link">
+                                <span className="navi-text">
+                                  Añadir a favoritos
                                 </span>
-                              )}
-                            </div>
-                            <span className="text-muted font-weight-bold">
-                              ID: {r.id}
+                              </a>
+                            </li>
+                            <li className="navi-item">
+                              <a href="#" className="navi-link">
+                                <span className="navi-text">Compartir</span>
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mb-5">
+                      <div className="d-flex align-items-center flex-wrap">
+                        <div className="d-flex align-items-center mr-10 mb-2">
+                          <div className="mr-2">
+                            <span className="text-dark font-weight-bolder">
+                              Código:
+                            </span>
+                            <span className="text-muted ml-2">{r.código}</span>
+                          </div>
+                        </div>
+
+                        <div className="d-flex align-items-center mr-10 mb-2">
+                          <div className="mr-2">
+                            <span className="text-dark font-weight-bolder">
+                              CBU:
+                            </span>
+                            <span className="text-muted ml-2">
+                              {r.cbu || "No disponible"}
                             </span>
                           </div>
                         </div>
-                      </td>
-                      <td>
-                        <span className="text-dark font-weight-bolder">
-                          {r.código}
-                        </span>
-                      </td>
-                      <td>
-                        <span className="text-dark font-weight-bolder">
-                          {r.cbu || "N/A"}
-                        </span>
-                      </td>
-                      <td>
-                        <span className="text-dark font-weight-bolder">
-                          {r.cantidad.toLocaleString()}
-                        </span>
-                      </td>
-                      <td>
-                        <span className="text-dark font-weight-bolder">
-                          ${r.saldo.toLocaleString()}
-                        </span>
-                      </td>
-                      <td>
+                      </div>
+                    </div>
+
+                    <div className="row mb-5">
+                      <div className="col-6">
+                        <div className="d-flex flex-column">
+                          <span className="text-muted font-weight-bold mb-1">
+                            Cantidad
+                          </span>
+                          <span className="text-dark font-weight-bolder font-size-h5">
+                            {r.cantidad.toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="col-6">
+                        <div className="d-flex flex-column">
+                          <span className="text-muted font-weight-bold mb-1">
+                            Saldo
+                          </span>
+                          <span className="text-dark font-weight-bolder font-size-h5">
+                            ${r.saldo.toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="d-flex justify-content-between align-items-center mb-5">
+                      <div>
                         <span
                           className="label label-lg label-inline"
                           style={{ backgroundColor: getTipoColor(r.tipo) }}
                         >
-                          <span className="text-white font-weight-bold">
+                          <span className="text-white d-flex align-items-center">
+                            <div
+                              className="bg-white mr-2 rounded-circle"
+                              style={{ width: 8, height: 8 }}
+                            ></div>
                             {r.tipo}
                           </span>
                         </span>
-                      </td>
+                      </div>
+
+                      <div>
+                        <span className="text-muted font-weight-bold mr-2">
+                          Estado:
+                        </span>
+                        <span className="text-success font-weight-bolder">
+                          {r.estado}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Detalles expandibles */}
+                    <div className="mt-4">
+                      <button
+                        className="btn btn-link btn-sm p-0 d-flex align-items-center text-primary font-weight-bold"
+                        onClick={() => toggleExpandirRegistro(r.id)}
+                      >
+                        <span>Ver más detalles</span>
+                        <ExpandMore
+                          className={`ml-1 transition ${
+                            registroExpandido === r.id
+                              ? "transform rotate-180"
+                              : ""
+                          }`}
+                        />
+                      </button>
+
+                      {registroExpandido === r.id && (
+                        <div className="mt-4 pt-4 border-top">
+                          <div className="row">
+                            <div className="col-6">
+                              <div className="d-flex flex-column mb-3">
+                                <span className="text-muted font-weight-bold mb-1">
+                                  Año
+                                </span>
+                                <span className="text-dark font-weight-bolder">
+                                  {r.año}
+                                </span>
+                              </div>
+
+                              <div className="d-flex flex-column mb-3">
+                                <span className="text-muted font-weight-bold mb-1">
+                                  Mes
+                                </span>
+                                <span className="text-dark font-weight-bolder">
+                                  {r.mes}
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className="col-6">
+                              <div className="d-flex flex-column mb-3">
+                                <span className="text-muted font-weight-bold mb-1">
+                                  Día
+                                </span>
+                                <span className="text-dark font-weight-bolder">
+                                  {r.día}
+                                </span>
+                              </div>
+
+                              <div className="d-flex flex-column">
+                                <span className="text-muted font-weight-bold mb-1">
+                                  Última Modificación
+                                </span>
+                                <span className="text-info font-weight-bolder">
+                                  {r.ultimaModificacion}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="card-footer border-0 d-flex justify-content-between pt-0 pb-6 px-6">
+                    <button className="btn btn-light-primary font-weight-bold">
+                      <Visibility className="mr-2" />
+                      Ver detalles
+                    </button>
+                    <button className="btn btn-primary font-weight-bold">
+                      <Edit className="mr-2" />
+                      Editar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Paginación para vista grilla */}
+          {totalItems > 0 && (
+            <div className="card card-custom mt-8">
+              <div className="card-body">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={totalItems}
+                  itemsPerPage={itemsPerPage}
+                  onPageChange={handlePageChange}
+                  onItemsPerPageChange={handleItemsPerPageChange}
+                  showItemsPerPage={true}
+                  showInfo={true}
+                />
+              </div>
+            </div>
+          )}
+        </>
+      ) : (
+        <>
+          {/* Vista de lista real */}
+          <div className="card card-custom gutter-b">
+            <div className="card-body p-0">
+              <div className="table-responsive">
+                <table className="table table-head-custom table-vertical-center overflow-hidden">
+                  <thead>
+                    <tr>
+                      <th className="pl-7">
+                        <span className="text-dark-75">Concepto</span>
+                      </th>
+                      <th>
+                        <span className="text-dark-75">Código</span>
+                      </th>
+                      <th>
+                        <span className="text-dark-75">CBU</span>
+                      </th>
+                      <th>
+                        <span className="text-dark-75">Cantidad</span>
+                      </th>
+                      <th>
+                        <span className="text-dark-75">Saldo</span>
+                      </th>
+                      <th>
+                        <span className="text-dark-75">Tipo</span>
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {registrosPaginados.map((r) => (
+                      <tr key={r.id} className="border-bottom">
+                        <td className="pl-7">
+                          <div className="d-flex align-items-center">
+                            <div className="symbol symbol-40 symbol-light mr-4">
+                              <span className="symbol-label">
+                                {getTipoIcono(r.tipo)}
+                              </span>
+                            </div>
+                            <div>
+                              <div className="d-flex align-items-center">
+                                <span className="text-dark font-weight-bolder">
+                                  {r.concepto}
+                                </span>
+                                {r.destacado && (
+                                  <span className="label label-sm label-warning label-inline ml-2">
+                                    Destacado
+                                  </span>
+                                )}
+                              </div>
+                              <span className="text-muted font-weight-bold">
+                                ID: {r.id}
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <span className="text-dark font-weight-bolder">
+                            {r.código}
+                          </span>
+                        </td>
+                        <td>
+                          <span className="text-dark font-weight-bolder">
+                            {r.cbu || "N/A"}
+                          </span>
+                        </td>
+                        <td>
+                          <span className="text-dark font-weight-bolder">
+                            {r.cantidad.toLocaleString()}
+                          </span>
+                        </td>
+                        <td>
+                          <span className="text-dark font-weight-bolder">
+                            ${r.saldo.toLocaleString()}
+                          </span>
+                        </td>
+                        <td>
+                          <span
+                            className="label label-lg label-inline"
+                            style={{ backgroundColor: getTipoColor(r.tipo) }}
+                          >
+                            <span className="text-white font-weight-bold">
+                              {r.tipo}
+                            </span>
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
-        </div>
+
+          {/* Paginación para vista lista */}
+          {totalItems > 0 && (
+            <div className="card card-custom mt-8">
+              <div className="card-body">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={totalItems}
+                  itemsPerPage={itemsPerPage}
+                  onPageChange={handlePageChange}
+                  onItemsPerPageChange={handleItemsPerPageChange}
+                  showItemsPerPage={true}
+                  showInfo={true}
+                />
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       {/* Sin resultados */}

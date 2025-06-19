@@ -67,6 +67,10 @@ const SuppliersRouter = lazy(() =>
 
 const LoansRouter = lazy(() => import("../app/modules/Loans/LoansRouter.js"));
 
+const AgreementsRouter = lazy(() =>
+  import("../app/modules/Agreements/AgreementsRouter.js")
+);
+
 export default function BasePage() {
   useIdle();
 
@@ -144,6 +148,10 @@ export default function BasePage() {
         <Route
           path="/loans"
           component={checkRouteAccess("loans", LoansRouter, access)}
+        />
+        <Route
+          path="/agreements"
+          component={checkRouteAccess("agreements", AgreementsRouter, access)}
         />
         <Route component={ErrorPageMenu} />
       </Switch>

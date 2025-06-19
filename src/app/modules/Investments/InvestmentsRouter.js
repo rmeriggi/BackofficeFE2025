@@ -58,7 +58,6 @@ const OperatorsDashboardPage = lazy(() =>
 );
 
 const ProductsPage = lazy(() => import("./Products/pages/ProductsPage.js"));
-
 const SettlementsRouter = lazy(() =>
   import("./Settlements/pages/SettlementsRouter.js")
 );

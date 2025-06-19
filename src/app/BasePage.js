@@ -2,8 +2,8 @@ import React, { Suspense, lazy } from "react";
 import { useSelector } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { LayoutSplashScreen } from "../_metronic/layout";
-import { checkRouteAccess } from "./utils/access";
 import { useIdle } from "./hooks/useIdle";
+import { checkRouteAccess } from "./utils/access";
 
 const ClientsRouter = lazy(() =>
   import("../app/modules/Clients/ClientsRouter.js")
@@ -64,6 +64,8 @@ const EchecksRouter = lazy(() =>
 const SuppliersRouter = lazy(() =>
   import("../app/modules/Suppliers/suppliersRouter.js")
 );
+
+const LoansRouter = lazy(() => import("../app/modules/Loans/LoansRouter.js"));
 
 export default function BasePage() {
   useIdle();
@@ -138,6 +140,10 @@ export default function BasePage() {
         <Route
           path="/reports"
           component={checkRouteAccess("reports", ReportsRouter, access)}
+        />
+        <Route
+          path="/loans"
+          component={checkRouteAccess("loans", LoansRouter, access)}
         />
         <Route component={ErrorPageMenu} />
       </Switch>

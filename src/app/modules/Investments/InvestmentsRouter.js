@@ -89,8 +89,14 @@ const BlotterCounterpartsPage = lazy(() =>
   import("./BlotterCounterparts/pages/BlotterCounterpartsPage.js")
 );
 
-const BlotterSpeciesPage = lazy(() =>
-  import("./BlotterSpecies/pages/BlotterSpeciesPage.js")
+const SpeciesPage = lazy(() => import("./Species/pages/SpeciesPage.js"));
+
+const InvestmentsToolsPage = lazy(() =>
+  import("./InvestmentsTools/pages/InvestmentsTools.js")
+);
+
+const InvestmentsClientsPage = lazy(() =>
+  import("./InvestmentsClients/pages/InvestmentsClients.js")
 );
 
 export default function InvestmentsRouter() {
@@ -263,7 +269,7 @@ export default function InvestmentsRouter() {
         path={baseRouterUrl + "/species"}
         component={checkRouteAccess(
           "investments.Especies",
-          BlotterSpeciesPage,
+          SpeciesPage,
           access
         )}
       />
@@ -313,6 +319,23 @@ export default function InvestmentsRouter() {
         component={checkRouteAccess(
           "investments.Plazo Fijo Inversiones",
           PpInvestmentsRouter,
+          access
+        )}
+      />
+
+      <Route
+        path={baseRouterUrl + "/tools"}
+        component={checkRouteAccess(
+          "investments.Plazo Fijo Inversiones",
+          InvestmentsToolsPage,
+          access
+        )}
+      />
+      <Route
+        path={baseRouterUrl + "/clients-tools"}
+        component={checkRouteAccess(
+          "investments.Clientes de Inversión",
+          InvestmentsClientsPage,
           access
         )}
       />

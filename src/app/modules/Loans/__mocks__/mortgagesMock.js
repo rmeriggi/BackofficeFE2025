@@ -15,7 +15,7 @@ export const mortgagesMock = {
   // Hipotecas por estado
   byStatus: {
     approved: {
-      count: 76,
+      count: 75,
       amount: 38900000,
       percentage: 85.4,
     },

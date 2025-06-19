@@ -12,6 +12,10 @@ const GuaranteesPage = lazy(() => import("./Guarantees/pages/GuaranteesPage"));
 
 const MortgagesPage = lazy(() => import("./Mortgages/pages/MortgagesPage"));
 
+const DocumentationPage = lazy(() =>
+  import("./Documentation/pages/DocumentationPage")
+);
+
 export default function LoansRouter() {
   const access = useSelector((state) => state.auth.access);
 
@@ -37,6 +41,15 @@ export default function LoansRouter() {
         exact
         path={baseRouterUrl + "/mortgages"}
         component={checkRouteAccess("loans.Hipotecas", MortgagesPage, access)}
+      />
+      <Route
+        exact
+        path={baseRouterUrl + "/documentation"}
+        component={checkRouteAccess(
+          "loans.Documentacion",
+          DocumentationPage,
+          access
+        )}
       />
       <Route component={ErrorPageMenu} />
     </Switch>

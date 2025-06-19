@@ -8,6 +8,10 @@ const AgreementsDashboardPage = lazy(() =>
   import("./Dashboard/pages/AgreementsDashboardPage")
 );
 
+const AgreementsAccountsPage = lazy(() =>
+  import("./Accounts/pages/AgreementsAccountsPage")
+);
+
 export default function AgreementsRouter() {
   const access = useSelector((state) => state.auth.access);
 
@@ -20,6 +24,14 @@ export default function AgreementsRouter() {
         component={checkRouteAccess(
           "agreements.Dashboard",
           AgreementsDashboardPage,
+          access
+        )}
+      />
+      <Route
+        path={baseRouterUrl + "/accounts"}
+        component={checkRouteAccess(
+          "agreements.Accounts",
+          AgreementsAccountsPage,
           access
         )}
       />

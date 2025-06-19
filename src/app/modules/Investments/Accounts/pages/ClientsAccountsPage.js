@@ -304,7 +304,7 @@ const ClientsAccountsPage = () => {
   const [expandedClient, setExpandedClient] = useState(null);
   const [favorites, setFavorites] = useState([]);
   const [viewMode, setViewMode] = useState("cards");
-  const [selectedAccounts, setSelectedAccounts] = useState([]);
+  /*   const [selectedAccounts, setSelectedAccounts] = useState([]); */
 
   const toggleExpandClient = (id) => {
     if (expandedClient === id) {

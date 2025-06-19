@@ -1,18 +1,18 @@
 import { Grid } from "@material-ui/core";
 import React from "react";
-import CardGraphic from "../components/CardGraphic";
-import CardsShow from "../components/CardsShow";
-import GraphicBar from "../Graphics/GraphicBar";
-import GraphicDoughnut from "../Graphics/GraphicDoughnut";
-import GraphicLine from "../Graphics/GraphicLine";
-import { useSubheader } from "../../../../../_metronic/layout";
-import statisticsMocks from "../__mocks__/statisticsMocks";
 import {
   Card,
   CardHeaderToolbar,
 } from "../../../../../_metronic/_partials/controls";
-import { FilterModal } from "../components/modals/FilterModal";
+import { useSubheader } from "../../../../../_metronic/layout";
 import { productsTypesAdapter } from "../../adapters/cardsAdapters";
+import statisticsMocks from "../__mocks__/statisticsMocks";
+import CardGraphic from "../components/CardGraphic";
+import CardsShow from "../components/CardsShow";
+import { FilterModal } from "../components/modals/FilterModal";
+import GraphicBar from "../Graphics/GraphicBar";
+import GraphicDoughnut from "../Graphics/GraphicDoughnut";
+import GraphicLine from "../Graphics/GraphicLine";
 
 let id;
 const productTypesArr = [

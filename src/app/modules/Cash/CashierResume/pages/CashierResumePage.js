@@ -1,18 +1,21 @@
-import React, { useState } from "react";
 import {
-  Search,
-  AttachMoney,
   AccountBalance,
-  CreditCard,
-  Receipt,
-  Print,
-  FilterList,
-  ArrowUpward,
-  ArrowDownward,
   AccountBalanceWallet,
-  Payment,
+  ArrowDownward,
+  ArrowUpward,
+  AttachMoney,
+  CreditCard,
   Description,
+  FilterList,
+  GridOn,
+  List,
+  Payment,
+  Print,
+  Receipt,
+  Search,
+  Visibility,
 } from "@material-ui/icons";
+import React, { useState } from "react";
 
 const MovimientosCajaPage = () => {
   const [busqueda, setBusqueda] = useState("");
@@ -22,6 +25,8 @@ const MovimientosCajaPage = () => {
   const [filtroOperacion, setFiltroOperacion] = useState("todos");
   const [comprobanteVisible, setComprobanteVisible] = useState(false);
   const [comprobanteActual, setComprobanteActual] = useState(null);
+  const [viewMode, setViewMode] = useState("list");
+  const [showFilters, setShowFilters] = useState(false);
 
   // Tipos de operaciones
   const tiposOperacion = [
@@ -281,261 +286,255 @@ const MovimientosCajaPage = () => {
 
   return (
     <div className="container-fluid">
-      {/* Encabezado */}
-      <div className="card card-custom gutter-b">
-        <div className="card-header border-0 py-5">
-          <div className="card-title">
-            <h3 className="card-label">
-              <span className="d-flex align-items-center">
-                <span className="text-dark font-weight-bolder">
-                  Movimientos de Caja
-                </span>
-              </span>
-              <span className="text-muted mt-2 font-weight-bold font-size-sm">
+      {/* Encabezado y acciones */}
+      <div className="card card-custom gutter-b bg-gradient-primary-to-secondary mb-8">
+        <div className="card-body py-8 px-8">
+          <div className="d-flex justify-content-between align-items-center mb-6">
+            <div>
+              <h1 className="text-white font-weight-bolder font-size-h2 mb-2">
+                Movimientos de Caja
+              </h1>
+              <p className="text-white-75 font-size-lg mb-0">
                 Registro completo de todas las transacciones realizadas
-              </span>
-            </h3>
-          </div>
-          <div className="card-toolbar">
+              </p>
+            </div>
             <div className="d-flex align-items-center">
-              <button className="btn btn-light-primary font-weight-bold mr-4">
+              <button
+                className="btn btn-light btn-icon mr-2"
+                onClick={() => setShowFilters(!showFilters)}
+                title="Mostrar/Ocultar filtros"
+              >
+                <FilterList />
+              </button>
+              <button
+                className="btn btn-light btn-icon mr-2"
+                onClick={() =>
+                  setViewMode(viewMode === "grid" ? "list" : "grid")
+                }
+                title={viewMode === "grid" ? "Vista lista" : "Vista grilla"}
+              >
+                {viewMode === "grid" ? <List /> : <GridOn />}
+              </button>
+              <button className="btn btn-light font-weight-bold">
                 <Print className="mr-2" />
                 Imprimir Reporte
               </button>
             </div>
           </div>
-        </div>
-        <div className="card-body bg-light-info pt-6 pb-4 px-8">
+
+          {/* Métricas */}
           <div className="row mb-6">
             <div className="col-md-3">
-              <div className="d-flex align-items-center bg-white rounded p-4">
-                <div className="symbol symbol-40 symbol-light-primary mr-5">
-                  <span className="symbol-label">
-                    <Description style={{ fontSize: 20 }} />
-                  </span>
+              <div className="bg-white bg-opacity-20 rounded p-4 text-center">
+                <div className="text-dark font-weight-bolder font-size-h3 mb-1">
+                  {totalMovimientos}
                 </div>
-                <div className="d-flex flex-column">
-                  <span className="text-muted font-weight-bold">
-                    Total Movimientos
-                  </span>
-                  <span className="font-weight-bolder font-size-h5">
-                    {totalMovimientos}
-                  </span>
+                <div className="text-white-75 font-weight-bold">
+                  Total Transacciones
                 </div>
               </div>
             </div>
-
             <div className="col-md-3">
-              <div className="d-flex align-items-center bg-white rounded p-4">
-                <div className="symbol symbol-40 symbol-light-success mr-5">
-                  <span className="symbol-label">
-                    <ArrowDownward style={{ color: "green", fontSize: 20 }} />
-                  </span>
+              <div className="bg-white bg-opacity-20 rounded p-4 text-center">
+                <div className="text-dark font-weight-bolder font-size-h3 mb-1">
+                  $ {totalIngresos.toLocaleString()}
                 </div>
-                <div className="d-flex flex-column">
-                  <span className="text-muted font-weight-bold">
-                    Total Ingresos
-                  </span>
-                  <span className="font-weight-bolder font-size-h5 text-success">
-                    $ {totalIngresos.toLocaleString()}
-                  </span>
+                <div className="text-white-75 font-weight-bold">
+                  Total Créditos
                 </div>
               </div>
             </div>
-
             <div className="col-md-3">
-              <div className="d-flex align-items-center bg-white rounded p-4">
-                <div className="symbol symbol-40 symbol-light-danger mr-5">
-                  <span className="symbol-label">
-                    <ArrowUpward style={{ color: "red", fontSize: 20 }} />
-                  </span>
+              <div className="bg-white bg-opacity-20 rounded p-4 text-center">
+                <div className="text-dark font-weight-bolder font-size-h3 mb-1">
+                  $ {totalEgresos.toLocaleString()}
                 </div>
-                <div className="d-flex flex-column">
-                  <span className="text-muted font-weight-bold">
-                    Total Egresos
-                  </span>
-                  <span className="font-weight-bolder font-size-h5 text-danger">
-                    $ {totalEgresos.toLocaleString()}
-                  </span>
+                <div className="text-white-75 font-weight-bold">
+                  Total Débitos
                 </div>
               </div>
             </div>
-
             <div className="col-md-3">
-              <div className="d-flex align-items-center bg-white rounded p-4">
-                <div className="symbol symbol-40 symbol-light-info mr-5">
-                  <span className="symbol-label">
-                    <AccountBalanceWallet style={{ fontSize: 20 }} />
-                  </span>
+              <div className="bg-white bg-opacity-20 rounded p-4 text-center">
+                <div className="text-dark font-weight-bolder font-size-h3 mb-1">
+                  $ {saldoNeto.toLocaleString()}
                 </div>
-                <div className="d-flex flex-column">
-                  <span className="text-muted font-weight-bold">
-                    Saldo Neto
-                  </span>
-                  <span
-                    className={`font-weight-bolder font-size-h5 ${
-                      saldoNeto >= 0 ? "text-success" : "text-danger"
-                    }`}
-                  >
-                    $ {saldoNeto.toLocaleString()}
-                  </span>
+                <div className="text-white-75 font-weight-bold">
+                  Balance Neto
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        {/* Filtros */}
-        <div className="card-body bg-light-info pt-6 pb-4 px-8">
-          <div className="row mb-6">
-            <div className="col-md-4">
-              <div className="form-group">
-                <label className="text-muted font-weight-bold">
-                  Tipo de Producto
-                </label>
-                <select
-                  className="form-control form-control-lg"
-                  value={filtroTipo}
-                  onChange={(e) => setFiltroTipo(e.target.value)}
-                >
-                  {tiposProducto.map((tipo) => (
-                    <option key={tipo.value} value={tipo.value}>
-                      {tipo.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="col-md-4">
-              <div className="form-group">
-                <label className="text-muted font-weight-bold">
-                  Tipo de Operación
-                </label>
-                <select
-                  className="form-control form-control-lg"
-                  value={filtroOperacion}
-                  onChange={(e) => setFiltroOperacion(e.target.value)}
-                >
-                  {tiposOperacion.map((op) => (
-                    <option key={op.value} value={op.value}>
-                      {op.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="col-md-4">
-              <div className="form-group">
-                <label className="text-muted font-weight-bold">
-                  Rango de Fechas
-                </label>
-                <div className="input-daterange input-group">
-                  <input
-                    type="date"
-                    className="form-control form-control-lg"
-                    placeholder="Desde"
-                    value={fechaDesde}
-                    onChange={(e) => setFechaDesde(e.target.value)}
-                  />
-                  <div className="input-group-append">
-                    <span className="input-group-text">a</span>
-                  </div>
-                  <input
-                    type="date"
-                    className="form-control form-control-lg"
-                    placeholder="Hasta"
-                    value={fechaHasta}
-                    onChange={(e) => setFechaHasta(e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Búsqueda */}
-          <div className="d-flex align-items-center">
-            <div className="input-icon input-icon-right flex-grow-1 mr-4">
-              <input
-                type="text"
-                className="form-control form-control-lg"
-                placeholder="Buscar por cliente, cuenta, producto o comprobante..."
-                value={busqueda}
-                onChange={(e) => setBusqueda(e.target.value)}
-              />
-              <span>
-                <Search style={{ color: "#7E8299" }} />
-              </span>
-            </div>
-            <button className="btn btn-light btn-icon">
-              <FilterList />
-            </button>
           </div>
         </div>
       </div>
 
+      {/* Filtros */}
+      {showFilters && (
+        <div className="card card-custom gutter-b mb-8">
+          <div className="card-body bg-light-info pt-6 pb-4 px-8">
+            <div className="row mb-6">
+              <div className="col-md-4">
+                <div className="form-group">
+                  <label className="text-muted font-weight-bold">
+                    Tipo de Producto
+                  </label>
+                  <select
+                    className="form-control form-control-solid"
+                    value={filtroTipo}
+                    onChange={(e) => setFiltroTipo(e.target.value)}
+                  >
+                    {tiposProducto.map((tipo) => (
+                      <option key={tipo.value} value={tipo.value}>
+                        {tipo.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="col-md-4">
+                <div className="form-group">
+                  <label className="text-muted font-weight-bold">
+                    Tipo de Operación
+                  </label>
+                  <select
+                    className="form-control form-control-solid"
+                    value={filtroOperacion}
+                    onChange={(e) => setFiltroOperacion(e.target.value)}
+                  >
+                    {tiposOperacion.map((op) => (
+                      <option key={op.value} value={op.value}>
+                        {op.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="col-md-4">
+                <div className="form-group">
+                  <label className="text-muted font-weight-bold">
+                    Rango de Fechas
+                  </label>
+                  <div className="input-daterange input-group">
+                    <input
+                      type="date"
+                      className="form-control form-control-solid"
+                      placeholder="Desde"
+                      value={fechaDesde}
+                      onChange={(e) => setFechaDesde(e.target.value)}
+                    />
+                    <div className="input-group-append">
+                      <span className="input-group-text">a</span>
+                    </div>
+                    <input
+                      type="date"
+                      className="form-control form-control-solid"
+                      placeholder="Hasta"
+                      value={fechaHasta}
+                      onChange={(e) => setFechaHasta(e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Búsqueda */}
+            <div className="d-flex align-items-center">
+              <div className="input-icon input-icon-right flex-grow-1 mr-4">
+                <input
+                  type="text"
+                  className="form-control form-control-solid"
+                  placeholder="Buscar por cliente, cuenta, producto o comprobante..."
+                  value={busqueda}
+                  onChange={(e) => setBusqueda(e.target.value)}
+                />
+                <span>
+                  <Search style={{ color: "#7E8299" }} />
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Separación visual */}
+      <div className="mb-8"></div>
+
       {/* Listado de movimientos */}
-      <div className="card card-custom gutter-b">
-        <div className="card-body">
-          <div className="table-responsive">
-            <table className="table table-hover table-vertical-center">
-              <thead>
-                <tr>
-                  <th>Fecha/Hora</th>
-                  <th>Producto</th>
-                  <th>Operación</th>
-                  <th>Cliente</th>
-                  <th>Cuenta</th>
-                  <th className="text-right">Monto</th>
-                  <th>Estado</th>
-                  <th>Comprobante</th>
-                </tr>
-              </thead>
-              <tbody>
-                {movimientosFiltrados.length > 0 ? (
-                  movimientosFiltrados.map((movimiento) => (
-                    <tr key={movimiento.id}>
-                      <td>
-                        <span className="text-dark font-weight-bolder">
+      {viewMode === "grid" ? (
+        <div className="row">
+          {movimientosFiltrados.length > 0 ? (
+            movimientosFiltrados.map((movimiento) => (
+              <div
+                key={movimiento.id}
+                className="col-xl-6 col-xxl-4 col-md-6 col-sm-12 mb-8"
+              >
+                <div
+                  className={`card card-custom gutter-b shadow-sm ${
+                    movimiento.operacion === "deposito" ||
+                    movimiento.operacion === "cobro" ||
+                    movimiento.operacion === "apertura"
+                      ? "border-left-success"
+                      : "border-left-danger"
+                  }`}
+                >
+                  <div className="card-body">
+                    <div className="d-flex justify-content-between align-items-center mb-5">
+                      <div>
+                        <h4 className="text-dark font-weight-bolder mb-0">
+                          #{movimiento.id}
+                        </h4>
+                        <span className="text-muted font-weight-bold">
                           {formatFecha(movimiento.fecha)}
                         </span>
-                      </td>
-                      <td>
-                        <div className="d-flex align-items-center">
-                          <div className="symbol symbol-40 symbol-light mr-4">
-                            <span className="symbol-label">
-                              {getIconoTipo(movimiento.tipo)}
-                            </span>
-                          </div>
-                          <div>
-                            <span className="text-dark font-weight-bolder">
-                              {movimiento.productoNombre}
-                            </span>
-                            <span className="text-muted d-block font-size-sm">
-                              ID: {movimiento.productoId}
-                            </span>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="d-flex align-items-center">
-                          {getIconoOperacion(movimiento.operacion)}
-                          <span className="ml-2 text-capitalize">
-                            {movimiento.operacion.replace("_", " ")}
+                      </div>
+                      <div
+                        className={`badge badge-lg ${
+                          movimiento.operacion === "deposito" ||
+                          movimiento.operacion === "cobro" ||
+                          movimiento.operacion === "apertura"
+                            ? "badge-success"
+                            : "badge-danger"
+                        }`}
+                      >
+                        {movimiento.operacion.replace("_", " ")}
+                      </div>
+                    </div>
+                    <div className="mb-5">
+                      <div className="d-flex align-items-center mb-3">
+                        <div className="symbol symbol-40 symbol-light mr-4">
+                          <span className="symbol-label">
+                            {getIconoTipo(movimiento.tipo)}
                           </span>
                         </div>
-                      </td>
-                      <td>
-                        <span className="text-dark font-weight-bolder">
-                          {movimiento.cliente}
+                        <div>
+                          <span className="text-dark font-weight-bolder">
+                            {movimiento.productoNombre}
+                          </span>
+                          <span className="text-muted d-block font-size-sm">
+                            ID: {movimiento.productoId}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="d-flex align-items-center">
+                        <span className="text-dark font-weight-bolder mr-2">
+                          Cliente:
                         </span>
-                      </td>
-                      <td>
-                        <span className="text-dark font-weight-bolder">
-                          {movimiento.cuenta}
+                        <span className="text-muted">{movimiento.cliente}</span>
+                      </div>
+                      <div className="d-flex align-items-center">
+                        <span className="text-dark font-weight-bolder mr-2">
+                          Cuenta:
                         </span>
-                      </td>
-                      <td className="text-right">
+                        <span className="text-muted">{movimiento.cuenta}</span>
+                      </div>
+                    </div>
+                    <div className="d-flex justify-content-between align-items-center mb-5">
+                      <div>
+                        <span className="text-muted font-weight-bold mb-1 d-block">
+                          Monto
+                        </span>
                         <span
-                          className={`font-weight-bolder ${
+                          className={`text-dark font-weight-bolder font-size-h5 ${
                             movimiento.operacion === "deposito" ||
                             movimiento.operacion === "cobro" ||
                             movimiento.operacion === "apertura"
@@ -546,54 +545,183 @@ const MovimientosCajaPage = () => {
                           {movimiento.moneda}{" "}
                           {movimiento.monto.toLocaleString()}
                         </span>
-                      </td>
-                      <td>
-                        <span
-                          className={`label label-lg label-inline ${
-                            movimiento.estado === "Completado"
-                              ? "label-light-success"
-                              : movimiento.estado === "Pendiente"
-                              ? "label-light-warning"
-                              : "label-light-danger"
-                          }`}
-                        >
-                          {movimiento.estado}
-                        </span>
-                      </td>
-                      <td>
+                      </div>
+                      <div className="d-flex">
                         <button
-                          className="btn btn-sm btn-light-primary font-weight-bold"
                           onClick={() => mostrarComprobante(movimiento)}
+                          className="btn btn-sm btn-light-primary"
+                          title="Ver comprobante"
                         >
-                          <Description className="mr-2" />
-                          {movimiento.comprobante.numero}
+                          <Visibility className="mr-1" />
+                          Ver
                         </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="col-12">
+              <div className="card card-custom gutter-b">
+                <div className="card-body d-flex flex-column align-items-center py-20">
+                  <div className="symbol symbol-100 symbol-light-primary mb-5">
+                    <span className="symbol-label">
+                      <Search style={{ fontSize: 50, color: "#3699FF" }} />
+                    </span>
+                  </div>
+                  <h3 className="text-dark font-weight-bolder mb-2">
+                    No se encontraron movimientos
+                  </h3>
+                  <p className="text-muted font-weight-bold mb-10">
+                    No hay movimientos que coincidan con los filtros aplicados
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="card card-custom gutter-b">
+          <div className="card-body p-0">
+            <div className="table-responsive">
+              <table className="table table-head-custom table-vertical-center overflow-hidden">
+                <thead>
+                  <tr>
+                    <th className="pl-7">
+                      <span className="text-dark-75">Fecha/Hora</span>
+                    </th>
+                    <th>
+                      <span className="text-dark-75">Producto</span>
+                    </th>
+                    <th>
+                      <span className="text-dark-75">Operación</span>
+                    </th>
+                    <th>
+                      <span className="text-dark-75">Cliente</span>
+                    </th>
+                    <th>
+                      <span className="text-dark-75">Cuenta</span>
+                    </th>
+                    <th>
+                      <span className="text-dark-75">Monto</span>
+                    </th>
+                    <th>
+                      <span className="text-dark-75">Estado</span>
+                    </th>
+                    <th>
+                      <span className="text-dark-75">Comprobante</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {movimientosFiltrados.length > 0 ? (
+                    movimientosFiltrados.map((movimiento) => (
+                      <tr key={movimiento.id} className="border-bottom">
+                        <td className="pl-7">
+                          <span className="text-dark font-weight-bolder">
+                            {formatFecha(movimiento.fecha)}
+                          </span>
+                        </td>
+                        <td>
+                          <div className="d-flex align-items-center">
+                            <div className="symbol symbol-40 symbol-light mr-4">
+                              <span className="symbol-label">
+                                {getIconoTipo(movimiento.tipo)}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="text-dark font-weight-bolder">
+                                {movimiento.productoNombre}
+                              </span>
+                              <span className="text-muted d-block font-size-sm">
+                                ID: {movimiento.productoId}
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div className="d-flex align-items-center">
+                            {getIconoOperacion(movimiento.operacion)}
+                            <span className="ml-2 text-capitalize">
+                              {movimiento.operacion.replace("_", " ")}
+                            </span>
+                          </div>
+                        </td>
+                        <td>
+                          <span className="text-dark font-weight-bolder">
+                            {movimiento.cliente}
+                          </span>
+                        </td>
+                        <td>
+                          <span className="text-dark font-weight-bolder">
+                            {movimiento.cuenta}
+                          </span>
+                        </td>
+                        <td>
+                          <span
+                            className={`font-weight-bolder ${
+                              movimiento.operacion === "deposito" ||
+                              movimiento.operacion === "cobro" ||
+                              movimiento.operacion === "apertura"
+                                ? "text-success"
+                                : "text-danger"
+                            }`}
+                          >
+                            {movimiento.moneda}{" "}
+                            {movimiento.monto.toLocaleString()}
+                          </span>
+                        </td>
+                        <td>
+                          <span
+                            className={`label label-lg label-inline ${
+                              movimiento.estado === "Completado"
+                                ? "label-light-success"
+                                : movimiento.estado === "Pendiente"
+                                ? "label-light-warning"
+                                : "label-light-danger"
+                            }`}
+                          >
+                            {movimiento.estado}
+                          </span>
+                        </td>
+                        <td>
+                          <button
+                            className="btn btn-sm btn-light-primary font-weight-bold"
+                            onClick={() => mostrarComprobante(movimiento)}
+                          >
+                            <Description className="mr-2" />
+                            {movimiento.comprobante.numero}
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8" className="text-center py-10">
+                        <div className="symbol symbol-100 symbol-light-primary mb-5">
+                          <span className="symbol-label">
+                            <Search
+                              style={{ fontSize: 50, color: "#3699FF" }}
+                            />
+                          </span>
+                        </div>
+                        <h4 className="text-dark font-weight-bolder mb-2">
+                          No se encontraron movimientos
+                        </h4>
+                        <p className="text-muted font-weight-bold">
+                          No hay movimientos que coincidan con los filtros
+                          aplicados
+                        </p>
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="8" className="text-center py-10">
-                      <div className="symbol symbol-100 symbol-light-primary mb-5">
-                        <span className="symbol-label">
-                          <Search style={{ fontSize: 50, color: "#3699FF" }} />
-                        </span>
-                      </div>
-                      <h4 className="text-dark font-weight-bolder mb-2">
-                        No se encontraron movimientos
-                      </h4>
-                      <p className="text-muted font-weight-bold">
-                        No hay movimientos que coincidan con los filtros
-                        aplicados
-                      </p>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Modal de comprobante */}
       {comprobanteVisible && (

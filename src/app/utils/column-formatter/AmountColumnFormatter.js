@@ -6,7 +6,7 @@ export function AmountColumnFormatter(cellContent) {
     maximumFractionDigits: 2,
   }).format(cellContent);
   return (
-    <div className="d-flex justify-content-between">
+    <div className="d-flex justify-content-center">
       <span>{`$${amountFormated}`}</span>
     </div>
   );

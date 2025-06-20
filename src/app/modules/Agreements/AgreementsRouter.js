@@ -12,6 +12,14 @@ const AgreementsAccountsPage = lazy(() =>
   import("./Accounts/pages/AgreementsAccountsPage")
 );
 
+const AgreementsManagementPage = lazy(() =>
+  import("./Management/pages/AgreementsManagementPage")
+);
+
+const AgreementsInformationPage = lazy(() =>
+  import("./Information/pages/AgreementsInformationPage")
+);
+
 export default function AgreementsRouter() {
   const access = useSelector((state) => state.auth.access);
 
@@ -32,6 +40,22 @@ export default function AgreementsRouter() {
         component={checkRouteAccess(
           "agreements.Accounts",
           AgreementsAccountsPage,
+          access
+        )}
+      />
+      <Route
+        path={baseRouterUrl + "/management"}
+        component={checkRouteAccess(
+          "agreements.Management",
+          AgreementsManagementPage,
+          access
+        )}
+      />
+      <Route
+        path={baseRouterUrl + "/information"}
+        component={checkRouteAccess(
+          "agreements.Information",
+          AgreementsInformationPage,
           access
         )}
       />

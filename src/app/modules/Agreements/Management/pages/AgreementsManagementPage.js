@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import {
   Add,
+  CheckCircle,
   CloudDownload,
   Edit,
   FilterList,
@@ -9,15 +10,17 @@ import {
   MoreVert,
   Print,
   Refresh,
+  Schedule,
   Search,
   Settings,
   Share,
   Visibility,
+  Warning,
 } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
-import { agreementsAccountsMock } from "../../__mocks__/agreementsAccountsMock";
+import { agreementsManagementMock } from "../../__mocks__/agreementsManagementMock";
 
-const AgreementsAccountsPage = () => {
+const AgreementsManagementPage = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState("grid");
@@ -26,6 +29,7 @@ const AgreementsAccountsPage = () => {
     status: "Todos",
     clientType: "Todos",
     riskLevel: "Todos",
+    approvalStatus: "Todos",
     branch: "Todas",
   });
   const [currentPage, setCurrentPage] = useState(1);
@@ -35,7 +39,7 @@ const AgreementsAccountsPage = () => {
   useEffect(() => {
     // Simular carga de datos
     setTimeout(() => {
-      setData(agreementsAccountsMock);
+      setData(agreementsManagementMock);
       setLoading(false);
     }, 1000);
   }, []);
@@ -70,7 +74,24 @@ const AgreementsAccountsPage = () => {
     switch (status) {
       case "Activo":
         return "#1BC5BD";
+      case "En Revisión":
+        return "#FFA800";
+      case "Pendiente Renovación":
+        return "#8950FC";
       case "Vencido":
+        return "#F64E60";
+      default:
+        return "#3699FF";
+    }
+  };
+
+  const getApprovalColor = (status) => {
+    switch (status) {
+      case "Aprobado":
+        return "#1BC5BD";
+      case "Pendiente":
+        return "#FFA800";
+      case "Rechazado":
         return "#F64E60";
       default:
         return "#3699FF";
@@ -79,28 +100,33 @@ const AgreementsAccountsPage = () => {
 
   // Filtrar y buscar datos
   const filteredData =
-    data?.accounts.filter((account) => {
+    data?.agreements.filter((agreement) => {
       const matchesSearch =
-        account.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        account.accountNumber.includes(searchTerm);
+        agreement.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        agreement.agreementNumber.includes(searchTerm) ||
+        agreement.accountNumber.includes(searchTerm);
 
       const matchesStatus =
         filters.status === "Todos" ||
-        account.agreementStatus === filters.status;
+        agreement.agreementStatus === filters.status;
       const matchesClientType =
         filters.clientType === "Todos" ||
-        account.clientType === filters.clientType;
+        agreement.clientType === filters.clientType;
       const matchesRiskLevel =
         filters.riskLevel === "Todos" ||
-        account.riskLevel === filters.riskLevel;
+        agreement.riskLevel === filters.riskLevel;
+      const matchesApprovalStatus =
+        filters.approvalStatus === "Todos" ||
+        agreement.approvalStatus === filters.approvalStatus;
       const matchesBranch =
-        filters.branch === "Todas" || account.branch === filters.branch;
+        filters.branch === "Todas" || agreement.branch === filters.branch;
 
       return (
         matchesSearch &&
         matchesStatus &&
         matchesClientType &&
         matchesRiskLevel &&
+        matchesApprovalStatus &&
         matchesBranch
       );
     }) || [];
@@ -144,17 +170,17 @@ const AgreementsAccountsPage = () => {
           <div className="d-flex justify-content-between align-items-center">
             <div>
               <h1 className="text-white font-weight-bolder font-size-h2 mb-2">
-                Acuerdos en Cuenta
+                Gestión de Acuerdos
               </h1>
               <p className="text-white-75 font-size-lg mb-0">
-                Gestión y monitoreo de acuerdos en cuenta corriente
+                Administración y control de acuerdos en cuenta corriente
               </p>
             </div>
             <div className="d-flex align-items-center">
               <div className="d-flex align-items-center mr-6">
                 <div className="symbol symbol-40 symbol-circle mr-4">
                   <span className="symbol-label bg-white bg-opacity-20">
-                    <i className="fas fa-calendar text-white"></i>
+                    <i className="fas fa-cogs text-white"></i>
                   </span>
                 </div>
                 <div>
@@ -196,11 +222,11 @@ const AgreementsAccountsPage = () => {
             <h3 className="card-label">
               <span className="d-flex align-items-center">
                 <span className="text-dark font-weight-bolder">
-                  Cuentas con Acuerdos
+                  Acuerdos para Gestión
                 </span>
               </span>
               <span className="text-muted mt-2 font-weight-bold font-size-sm">
-                Explora y gestiona los acuerdos en cuenta corriente
+                Revisa y gestiona los acuerdos activos y pendientes
               </span>
             </h3>
           </div>
@@ -224,17 +250,17 @@ const AgreementsAccountsPage = () => {
               <div className="symbol symbol-50 symbol-light-info mr-4">
                 <span className="symbol-label bg-white">
                   <i
-                    className="fas fa-university"
+                    className="fas fa-file-contract"
                     style={{ fontSize: 24, color: "#8950FC" }}
                   ></i>
                 </span>
               </div>
               <div>
                 <div className="font-size-sm text-muted font-weight-bold">
-                  Total Cuentas
+                  Total Acuerdos
                 </div>
                 <div className="font-size-h4 font-weight-bolder">
-                  {data.summary.totalAccounts}
+                  {data.summary.totalAgreements}
                 </div>
               </div>
             </div>
@@ -242,10 +268,7 @@ const AgreementsAccountsPage = () => {
             <div className="d-flex align-items-center mb-4 mb-lg-0">
               <div className="symbol symbol-50 symbol-light-success mr-4">
                 <span className="symbol-label bg-white">
-                  <i
-                    className="fas fa-check-circle"
-                    style={{ fontSize: 24, color: "#1BC5BD" }}
-                  ></i>
+                  <CheckCircle style={{ fontSize: 24, color: "#1BC5BD" }} />
                 </span>
               </div>
               <div>
@@ -261,18 +284,15 @@ const AgreementsAccountsPage = () => {
             <div className="d-flex align-items-center mb-4 mb-lg-0">
               <div className="symbol symbol-50 symbol-light-warning mr-4">
                 <span className="symbol-label bg-white">
-                  <i
-                    className="fas fa-dollar-sign"
-                    style={{ fontSize: 24, color: "#FFA800" }}
-                  ></i>
+                  <Schedule style={{ fontSize: 24, color: "#FFA800" }} />
                 </span>
               </div>
               <div>
                 <div className="font-size-sm text-muted font-weight-bold">
-                  Monto Total Acordado
+                  Pendientes Renovación
                 </div>
                 <div className="font-size-h4 font-weight-bolder">
-                  {formatCurrency(data.summary.totalAgreedAmount)}
+                  {data.summary.pendingRenewal}
                 </div>
               </div>
             </div>
@@ -280,18 +300,15 @@ const AgreementsAccountsPage = () => {
             <div className="d-flex align-items-center">
               <div className="symbol symbol-50 symbol-light-danger mr-4">
                 <span className="symbol-label bg-white">
-                  <i
-                    className="fas fa-percentage"
-                    style={{ fontSize: 24, color: "#F64E60" }}
-                  ></i>
+                  <Warning style={{ fontSize: 24, color: "#F64E60" }} />
                 </span>
               </div>
               <div>
                 <div className="font-size-sm text-muted font-weight-bold">
-                  Tasa Promedio de Utilización
+                  Pendientes Aprobación
                 </div>
                 <div className="font-size-h4 font-weight-bolder">
-                  {formatPercentage(data.summary.averageUtilizationRate)}
+                  {data.summary.pendingApproval}
                 </div>
               </div>
             </div>
@@ -322,11 +339,23 @@ const AgreementsAccountsPage = () => {
                 </label>
                 <label
                   className={`btn btn-outline-secondary font-weight-bold ${
-                    filters.status === "Vencidos" ? "active" : ""
+                    filters.status === "En Revisión" ? "active" : ""
                   }`}
-                  onClick={() => setFilters({ ...filters, status: "Vencidos" })}
+                  onClick={() =>
+                    setFilters({ ...filters, status: "En Revisión" })
+                  }
                 >
-                  <input type="radio" name="status" /> Vencidos
+                  <input type="radio" name="status" /> En Revisión
+                </label>
+                <label
+                  className={`btn btn-outline-secondary font-weight-bold ${
+                    filters.status === "Pendiente Renovación" ? "active" : ""
+                  }`}
+                  onClick={() =>
+                    setFilters({ ...filters, status: "Pendiente Renovación" })
+                  }
+                >
+                  <input type="radio" name="status" /> Renovación
                 </label>
               </div>
             </div>
@@ -337,7 +366,7 @@ const AgreementsAccountsPage = () => {
                 <input
                   type="text"
                   className="form-control form-control-solid"
-                  placeholder="Buscar por cliente o cuenta..."
+                  placeholder="Buscar por cliente, número de acuerdo o cuenta..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -369,16 +398,16 @@ const AgreementsAccountsPage = () => {
       {viewMode === "grid" ? (
         <>
           <div className="row">
-            {currentItems.map((account) => (
+            {currentItems.map((agreement) => (
               <div
-                key={account.id}
+                key={agreement.id}
                 className="col-xl-6 col-xxl-4 col-md-6 col-sm-12 mb-8"
               >
                 <div
                   className={`card card-custom gutter-b shadow-sm ${
-                    account.riskLevel === "Alto"
+                    agreement.riskLevel === "Alto"
                       ? "border-left-danger"
-                      : account.riskLevel === "Medio"
+                      : agreement.riskLevel === "Medio"
                       ? "border-left-warning"
                       : "border-left-primary"
                   }`}
@@ -390,22 +419,22 @@ const AgreementsAccountsPage = () => {
                         <div className="symbol symbol-50 symbol-light mr-5">
                           <span className="symbol-label">
                             <i
-                              className="fas fa-university"
+                              className="fas fa-file-contract"
                               style={{ fontSize: 30, color: "#3699FF" }}
                             ></i>
                           </span>
                         </div>
                         <div>
                           <h4 className="text-dark font-weight-bolder mb-0">
-                            {account.clientName}
-                            {account.riskLevel === "Alto" && (
+                            {agreement.clientName}
+                            {agreement.riskLevel === "Alto" && (
                               <span className="label label-sm label-danger label-inline ml-2">
                                 Alto Riesgo
                               </span>
                             )}
                           </h4>
                           <span className="text-muted font-weight-bold">
-                            {account.accountNumber} | {account.clientType}
+                            {agreement.agreementNumber} | {agreement.clientType}
                           </span>
                         </div>
                       </div>
@@ -421,26 +450,26 @@ const AgreementsAccountsPage = () => {
                         </button>
                         <div className="dropdown-menu dropdown-menu-sm dropdown-menu-right">
                           <ul className="navi navi-hover">
-                            {/*   <li className="navi-item">
-                              <a href="#" className="navi-link">
-                                <span className="navi-text">Ver detalles</span>
-                              </a>
-                            </li> */}
-                            {/*  <li className="navi-item">
-                              <a href="#" className="navi-link">
-                                <span className="navi-text">Editar</span>
-                              </a>
-                            </li> */}
                             <li className="navi-item">
                               <a href="#" className="navi-link">
-                                <span className="navi-text">
-                                  Renovar acuerdo
-                                </span>
+                                <span className="navi-text">Ver detalles</span>
                               </a>
                             </li>
                             <li className="navi-item">
                               <a href="#" className="navi-link">
-                                <span className="navi-text">Compartir</span>
+                                <span className="navi-text">Editar</span>
+                              </a>
+                            </li>
+                            <li className="navi-item">
+                              <a href="#" className="navi-link">
+                                <span className="navi-text">Renovar</span>
+                              </a>
+                            </li>
+                            <li className="navi-item">
+                              <a href="#" className="navi-link">
+                                <span className="navi-text">
+                                  Aprobar/Rechazar
+                                </span>
                               </a>
                             </li>
                           </ul>
@@ -453,10 +482,10 @@ const AgreementsAccountsPage = () => {
                         <div className="d-flex align-items-center mr-10 mb-2">
                           <div className="mr-2">
                             <span className="text-dark font-weight-bolder">
-                              Sucursal:
+                              Cuenta:
                             </span>
                             <span className="text-muted ml-2">
-                              {account.branch}
+                              {agreement.accountNumber}
                             </span>
                           </div>
                         </div>
@@ -464,10 +493,10 @@ const AgreementsAccountsPage = () => {
                         <div className="d-flex align-items-center mr-10 mb-2">
                           <div className="mr-2">
                             <span className="text-dark font-weight-bolder">
-                              Tipo:
+                              Sucursal:
                             </span>
                             <span className="text-muted ml-2">
-                              {account.accountType}
+                              {agreement.branch}
                             </span>
                           </div>
                         </div>
@@ -478,26 +507,26 @@ const AgreementsAccountsPage = () => {
                       <div className="col-6">
                         <div className="d-flex flex-column">
                           <span className="text-muted font-weight-bold mb-1">
-                            Acuerdo
+                            Monto Acordado
                           </span>
                           <span className="text-dark font-weight-bolder font-size-h5">
-                            {formatCurrency(account.agreementAmount)}
+                            {formatCurrency(agreement.agreementAmount)}
                           </span>
                         </div>
                       </div>
                       <div className="col-6">
                         <div className="d-flex flex-column">
                           <span className="text-muted font-weight-bold mb-1">
-                            Saldo
+                            Saldo Actual
                           </span>
                           <span
                             className={`font-weight-bolder font-size-h5 ${
-                              account.currentBalance < 0
+                              agreement.currentBalance < 0
                                 ? "text-danger"
                                 : "text-success"
                             }`}
                           >
-                            {formatCurrency(account.currentBalance)}
+                            {formatCurrency(agreement.currentBalance)}
                           </span>
                         </div>
                       </div>
@@ -507,20 +536,20 @@ const AgreementsAccountsPage = () => {
                       <div className="col-6">
                         <div className="d-flex flex-column">
                           <span className="text-muted font-weight-bold mb-1">
-                            Disponible
+                            Utilización
                           </span>
                           <span className="text-dark font-weight-bolder font-size-h5">
-                            {formatCurrency(account.availableAmount)}
+                            {formatPercentage(agreement.utilizationRate)}
                           </span>
                         </div>
                       </div>
                       <div className="col-6">
                         <div className="d-flex flex-column">
                           <span className="text-muted font-weight-bold mb-1">
-                            Utilización
+                            Renovaciones
                           </span>
                           <span className="text-dark font-weight-bolder font-size-h5">
-                            {formatPercentage(account.utilizationRate)}
+                            {agreement.renewalCount}
                           </span>
                         </div>
                       </div>
@@ -531,7 +560,7 @@ const AgreementsAccountsPage = () => {
                         <span
                           className="label label-lg label-inline"
                           style={{
-                            backgroundColor: getRiskColor(account.riskLevel),
+                            backgroundColor: getRiskColor(agreement.riskLevel),
                           }}
                         >
                           <span className="text-white d-flex align-items-center">
@@ -539,28 +568,67 @@ const AgreementsAccountsPage = () => {
                               className="bg-white mr-2 rounded-circle"
                               style={{ width: 8, height: 8 }}
                             ></div>
-                            {account.riskLevel}
+                            {agreement.riskLevel}
+                          </span>
+                        </span>
+                      </div>
+
+                      <div>
+                        <span
+                          className="label label-lg label-inline"
+                          style={{
+                            backgroundColor: getApprovalColor(
+                              agreement.approvalStatus
+                            ),
+                          }}
+                        >
+                          <span className="text-white font-weight-bold">
+                            {agreement.approvalStatus}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="d-flex justify-content-between align-items-center mb-5">
+                      <div>
+                        <span className="text-muted font-weight-bold mr-2">
+                          Estado:
+                        </span>
+                        <span
+                          className="label label-lg label-inline"
+                          style={{
+                            backgroundColor: getStatusColor(
+                              agreement.agreementStatus
+                            ),
+                          }}
+                        >
+                          <span className="text-white font-weight-bold">
+                            {agreement.agreementStatus}
                           </span>
                         </span>
                       </div>
 
                       <div>
                         <span className="text-muted font-weight-bold mr-2">
-                          Estado:
+                          Vence:
                         </span>
-                        <span className="text-success font-weight-bolder">
-                          {account.agreementStatus}
+                        <span className="text-dark font-weight-bolder">
+                          {new Date(agreement.endDate).toLocaleDateString()}
                         </span>
                       </div>
                     </div>
                   </div>
-                  {/* 
+
                   <div className="card-footer border-0 d-flex justify-content-between pt-0 pb-6 px-6">
                     <button className="btn btn-light-primary font-weight-bold">
                       <Visibility className="mr-2" />
                       Ver detalles
                     </button>
-                  </div> */}
+                    <button className="btn btn-primary font-weight-bold">
+                      <Edit className="mr-2" />
+                      Gestionar
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -576,25 +644,25 @@ const AgreementsAccountsPage = () => {
                   <thead>
                     <tr>
                       <th className="pl-7">
-                        <span className="text-dark-75">Cuenta</span>
+                        <span className="text-dark-75">Acuerdo</span>
                       </th>
                       <th>
                         <span className="text-dark-75">Cliente</span>
                       </th>
                       <th>
-                        <span className="text-dark-75">Acuerdo</span>
+                        <span className="text-dark-75">Monto</span>
                       </th>
                       <th>
                         <span className="text-dark-75">Saldo</span>
-                      </th>
-                      <th>
-                        <span className="text-dark-75">Disponible</span>
                       </th>
                       <th>
                         <span className="text-dark-75">Utilización</span>
                       </th>
                       <th>
                         <span className="text-dark-75">Estado</span>
+                      </th>
+                      <th>
+                        <span className="text-dark-75">Aprobación</span>
                       </th>
                       <th>
                         <span className="text-dark-75">Riesgo</span>
@@ -605,14 +673,14 @@ const AgreementsAccountsPage = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {currentItems.map((account) => (
-                      <tr key={account.id} className="border-bottom">
+                    {currentItems.map((agreement) => (
+                      <tr key={agreement.id} className="border-bottom">
                         <td className="pl-7">
                           <div className="d-flex align-items-center">
                             <div className="symbol symbol-40 symbol-light mr-4">
                               <span className="symbol-label">
                                 <i
-                                  className="fas fa-university"
+                                  className="fas fa-file-contract"
                                   style={{ fontSize: 20, color: "#3699FF" }}
                                 ></i>
                               </span>
@@ -620,16 +688,16 @@ const AgreementsAccountsPage = () => {
                             <div>
                               <div className="d-flex align-items-center">
                                 <span className="text-dark font-weight-bolder">
-                                  {account.accountNumber}
+                                  {agreement.agreementNumber}
                                 </span>
-                                {account.riskLevel === "Alto" && (
+                                {agreement.riskLevel === "Alto" && (
                                   <span className="label label-sm label-danger label-inline ml-2">
                                     Alto Riesgo
                                   </span>
                                 )}
                               </div>
                               <span className="text-muted font-weight-bold">
-                                {account.accountType}
+                                {agreement.accountNumber}
                               </span>
                             </div>
                           </div>
@@ -637,37 +705,32 @@ const AgreementsAccountsPage = () => {
                         <td>
                           <div>
                             <span className="text-dark font-weight-bolder">
-                              {account.clientName}
+                              {agreement.clientName}
                             </span>
                             <div className="text-muted font-weight-bold">
-                              {account.clientType} • {account.branch}
+                              {agreement.clientType} • {agreement.branch}
                             </div>
                           </div>
                         </td>
                         <td>
                           <span className="text-dark font-weight-bolder">
-                            {formatCurrency(account.agreementAmount)}
+                            {formatCurrency(agreement.agreementAmount)}
                           </span>
                         </td>
                         <td>
                           <span
                             className={`font-weight-bolder ${
-                              account.currentBalance < 0
+                              agreement.currentBalance < 0
                                 ? "text-danger"
                                 : "text-success"
                             }`}
                           >
-                            {formatCurrency(account.currentBalance)}
+                            {formatCurrency(agreement.currentBalance)}
                           </span>
                         </td>
                         <td>
                           <span className="text-dark font-weight-bolder">
-                            {formatCurrency(account.availableAmount)}
-                          </span>
-                        </td>
-                        <td>
-                          <span className="text-dark font-weight-bolder">
-                            {formatPercentage(account.utilizationRate)}
+                            {formatPercentage(agreement.utilizationRate)}
                           </span>
                         </td>
                         <td>
@@ -675,12 +738,12 @@ const AgreementsAccountsPage = () => {
                             className="label label-lg label-inline"
                             style={{
                               backgroundColor: getStatusColor(
-                                account.agreementStatus
+                                agreement.agreementStatus
                               ),
                             }}
                           >
                             <span className="text-white font-weight-bold">
-                              {account.agreementStatus}
+                              {agreement.agreementStatus}
                             </span>
                           </span>
                         </td>
@@ -688,11 +751,27 @@ const AgreementsAccountsPage = () => {
                           <span
                             className="label label-lg label-inline"
                             style={{
-                              backgroundColor: getRiskColor(account.riskLevel),
+                              backgroundColor: getApprovalColor(
+                                agreement.approvalStatus
+                              ),
                             }}
                           >
                             <span className="text-white font-weight-bold">
-                              {account.riskLevel}
+                              {agreement.approvalStatus}
+                            </span>
+                          </span>
+                        </td>
+                        <td>
+                          <span
+                            className="label label-lg label-inline"
+                            style={{
+                              backgroundColor: getRiskColor(
+                                agreement.riskLevel
+                              ),
+                            }}
+                          >
+                            <span className="text-white font-weight-bold">
+                              {agreement.riskLevel}
                             </span>
                           </span>
                         </td>
@@ -726,7 +805,7 @@ const AgreementsAccountsPage = () => {
               </span>
             </div>
             <h3 className="text-dark font-weight-bolder mb-2">
-              No se encontraron cuentas
+              No se encontraron acuerdos
             </h3>
             <p className="text-muted font-weight-bold mb-10">
               Intenta ajustar tus filtros o términos de búsqueda
@@ -739,6 +818,7 @@ const AgreementsAccountsPage = () => {
                   status: "Todos",
                   clientType: "Todos",
                   riskLevel: "Todos",
+                  approvalStatus: "Todos",
                   branch: "Todas",
                 });
               }}
@@ -757,7 +837,7 @@ const AgreementsAccountsPage = () => {
               <span className="text-muted font-weight-bold mr-4">
                 Mostrando {indexOfFirstItem + 1}-
                 {Math.min(indexOfLastItem, filteredData.length)} de{" "}
-                {filteredData.length} cuentas
+                {filteredData.length} acuerdos
               </span>
             </div>
             <div className="d-flex align-items-center">
@@ -786,4 +866,4 @@ const AgreementsAccountsPage = () => {
   );
 };
 
-export default AgreementsAccountsPage;
+export default AgreementsManagementPage;

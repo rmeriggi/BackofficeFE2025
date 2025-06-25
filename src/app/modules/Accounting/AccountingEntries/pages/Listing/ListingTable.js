@@ -1,4 +1,5 @@
 import React from "react";
+import { AmountColumnFormatter } from "../../../../../utils/column-formatter/AmountColumnFormatter";
 import { DateColumnFormatter } from "../../../../../utils/column-formatter/DateColumnFormatter";
 
 export function ListingTable({ accountingEntriesData, openDetailsModal }) {
@@ -18,7 +19,7 @@ export function ListingTable({ accountingEntriesData, openDetailsModal }) {
             ...entry,
             totalDebit,
             totalCredit,
-            data: entry.data,
+            balance: totalDebit - totalCredit,
           };
         })
       : [];
@@ -26,145 +27,136 @@ export function ListingTable({ accountingEntriesData, openDetailsModal }) {
   console.log("Processed data:", processedData);
 
   return (
-    <div
-      style={{
-        margin: "0 auto",
-        padding: "10px",
-        border: "1px solid #d1d1d1",
-        borderRadius: "8px",
-        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-        maxWidth: "100%",
-        backgroundColor: "#ffffff",
-      }}
-    >
-      <table
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-          textAlign: "center",
-        }}
-      >
-        <thead style={{ backgroundColor: "#d9e1f2" }}>
-          <tr>
-            <th style={{ border: "1px solid #d1d1d1", padding: "4px" }}>
-              Asiento
-            </th>
-            <th style={{ border: "1px solid #d1d1d1", padding: "4px" }}>
-              Fecha
-            </th>
-            <th style={{ border: "1px solid #d1d1d1", padding: "4px" }}>
-              Descripción - Cuenta
-            </th>
-            <th style={{ border: "1px solid #d1d1d1", padding: "4px" }}>
-              Debe
-            </th>
-            <th style={{ border: "1px solid #d1d1d1", padding: "4px" }}>
-              Haber
-            </th>
-            <th style={{ border: "1px solid #d1d1d1", padding: "4px" }}>
-              Total Debe
-            </th>
-            <th style={{ border: "1px solid #d1d1d1", padding: "4px" }}>
-              Total Haber
-            </th>
-            <th style={{ border: "1px solid #d1d1d1", padding: "4px" }}>
-              Acciones
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {processedData.length > 0 ? (
-            processedData.map((entry, index) => (
-              <React.Fragment key={index}>
-                {entry.data.map((item, itemIndex) => (
-                  <tr key={`${entry.id}-${itemIndex}`}>
-                    {itemIndex === 0 && (
-                      <>
-                        <td
-                          rowSpan={entry.data.length}
-                          style={{
-                            border: "1px solid #d1d1d1",
-                            padding: "4px",
-                          }}
-                        >
-                          {entry.id}
+    <div className="card card-custom gutter-b">
+      <div className="card-body p-0">
+        <div className="table-responsive">
+          <table className="table table-head-custom table-vertical-center overflow-hidden">
+            <thead>
+              <tr>
+                <th className="pl-7">
+                  <span className="text-dark-75">Asiento</span>
+                </th>
+                <th>
+                  <span className="text-dark-75">Fecha</span>
+                </th>
+                <th>
+                  <span className="text-dark-75">Descripción - Cuenta</span>
+                </th>
+                <th>
+                  <span className="text-dark-75">Debe</span>
+                </th>
+                <th>
+                  <span className="text-dark-75">Haber</span>
+                </th>
+                <th>
+                  <span className="text-dark-75">Total Debe</span>
+                </th>
+                <th>
+                  <span className="text-dark-75">Total Haber</span>
+                </th>
+                <th>
+                  <span className="text-dark-75">Balance</span>
+                </th>
+                <th>
+                  <span className="text-dark-75">Acciones</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {processedData.length > 0 ? (
+                processedData.map((entry, index) => (
+                  <React.Fragment key={index}>
+                    {entry.data.map((item, itemIndex) => (
+                      <tr
+                        key={`${entry.id}-${itemIndex}`}
+                        className="border-bottom"
+                      >
+                        {itemIndex === 0 && (
+                          <>
+                            <td rowSpan={entry.data.length} className="pl-7">
+                              <span className="text-dark font-weight-bolder">
+                                #{entry.id}
+                              </span>
+                            </td>
+                            <td rowSpan={entry.data.length}>
+                              <span className="text-dark font-weight-bolder">
+                                {DateColumnFormatter(entry.date)}
+                              </span>
+                            </td>
+                          </>
+                        )}
+                        <td>
+                          <span className="text-dark font-weight-bolder">
+                            {item.description}
+                          </span>
                         </td>
-                        <td
-                          rowSpan={entry.data.length}
-                          style={{
-                            border: "1px solid #d1d1d1",
-                            padding: "4px",
-                          }}
-                        >
-                          {DateColumnFormatter(entry.date)}
+                        <td>
+                          <span className="text-success font-weight-bolder">
+                            {AmountColumnFormatter(item.debit)}
+                          </span>
                         </td>
-                      </>
-                    )}
-                    <td style={{ border: "1px solid #d1d1d1", padding: "4px" }}>
-                      {item.description}
-                    </td>
-                    <td style={{ border: "1px solid #d1d1d1", padding: "4px" }}>
-                      {item.debit}
-                    </td>
-                    <td style={{ border: "1px solid #d1d1d1", padding: "4px" }}>
-                      {item.credit}
-                    </td>
-                    {itemIndex === 0 && (
-                      <>
-                        <td
-                          rowSpan={entry.data.length}
-                          style={{
-                            border: "1px solid #d1d1d1",
-                            padding: "4px",
-                          }}
-                        >
-                          {entry.totalDebit}
+                        <td>
+                          <span className="text-danger font-weight-bolder">
+                            {AmountColumnFormatter(item.credit)}
+                          </span>
                         </td>
-                        <td
-                          rowSpan={entry.data.length}
-                          style={{
-                            border: "1px solid #d1d1d1",
-                            padding: "4px",
-                          }}
-                        >
-                          {entry.totalCredit}
-                        </td>
-                        <td
-                          rowSpan={entry.data.length}
-                          style={{
-                            border: "1px solid #d1d1d1",
-                            padding: "4px",
-                          }}
-                        >
-                          <button
-                            onClick={() => openDetailsModal(entry.id)}
-                            style={{
-                              backgroundColor: "#007bff",
-                              color: "white",
-                              border: "none",
-                              padding: "4px 8px",
-                              borderRadius: "4px",
-                              cursor: "pointer",
-                            }}
-                          >
-                            Ver Detalles
-                          </button>
-                        </td>
-                      </>
-                    )}
-                  </tr>
-                ))}
-              </React.Fragment>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="8" style={{ padding: "4px" }}>
-                No se encontraron registros
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+                        {itemIndex === 0 && (
+                          <>
+                            <td rowSpan={entry.data.length}>
+                              <span className="text-success font-weight-bolder">
+                                {AmountColumnFormatter(entry.totalDebit)}
+                              </span>
+                            </td>
+                            <td rowSpan={entry.data.length}>
+                              <span className="text-danger font-weight-bolder">
+                                {AmountColumnFormatter(entry.totalCredit)}
+                              </span>
+                            </td>
+                            <td rowSpan={entry.data.length}>
+                              <span
+                                className={`font-weight-bolder ${
+                                  entry.balance === 0
+                                    ? "text-success"
+                                    : "text-warning"
+                                }`}
+                              >
+                                {AmountColumnFormatter(entry.balance)}
+                              </span>
+                            </td>
+                            <td rowSpan={entry.data.length}>
+                              <button
+                                onClick={() => openDetailsModal(entry.id)}
+                                className="btn btn-sm btn-light-primary"
+                                title="Ver detalles"
+                              >
+                                <i className="fas fa-eye"></i>
+                              </button>
+                            </td>
+                          </>
+                        )}
+                      </tr>
+                    ))}
+                  </React.Fragment>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="9" className="text-center py-10">
+                    <div className="d-flex flex-column align-items-center">
+                      <i
+                        className="fas fa-search text-muted mb-3"
+                        style={{ fontSize: "2rem" }}
+                      ></i>
+                      <span className="text-muted font-weight-bold">
+                        No se encontraron registros
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

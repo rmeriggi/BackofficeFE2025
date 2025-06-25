@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from "react";
-import ListingFilter from "./ListingFilter";
-import { ListingTable } from "./ListingTable";
-import { AccountingEntriesModal } from "../components/modal/modal/AccountingEntriesModal";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardBody,
   CardHeader,
   CardHeaderToolbar,
 } from "../../../../../../_metronic/_partials/controls";
+import { AccountingEntriesModal } from "../components/modal/modal/AccountingEntriesModal";
+import ListingFilter from "./ListingFilter";
+import { ListingTable } from "./ListingTable";
 /* import { getAccountingEntries } from "../../utils/service"; */
-import { ModalCreate } from "../components/modal/modalCreate/modalCreate";
 import { LayoutSplashScreen } from "../../../../../../_metronic/layout";
 import { getBooksVista } from "../../../../../_redux/accounting/accountingCrud";
+import { ModalCreate } from "../components/modal/modalCreate/modalCreate";
 
 let yesterday = new Date();
 yesterday.setDate(yesterday.getDate() - 1);
@@ -19,7 +19,7 @@ yesterday.setDate(yesterday.getDate() - 1);
 const initialValues = {
   fromDate: yesterday,
   toDate: new Date(),
-  id_client: 1,
+  id_client: 125,
 };
 
 export default function Listing() {
@@ -32,9 +32,37 @@ export default function Listing() {
 
   useEffect(() => {
     const getAllAccountingEntries = async () => {
-      const accountingEntries = await getBooksVista(values);
-      console.log("accountingEntries", accountingEntries);
-      setAccountiengEntries(accountingEntries);
+      // Convertir las fechas a formato ISO string
+      const apiValues = {
+        ...values,
+        fromDate: values.fromDate.toISOString().split("T")[0], // Formato YYYY-MM-DD
+        toDate: values.toDate.toISOString().split("T")[0], // Formato YYYY-MM-DD
+      };
+
+      try {
+        const accountingEntries = await getBooksVista(apiValues);
+        console.log("accountingEntries", accountingEntries);
+
+        // Validar que los datos tengan la estructura correcta
+        if (
+          accountingEntries &&
+          accountingEntries.asientos &&
+          Array.isArray(accountingEntries.asientos)
+        ) {
+          console.log(
+            "Datos válidos recibidos, cantidad de asientos:",
+            accountingEntries.asientos.length
+          );
+          console.log("Primer asiento:", accountingEntries.asientos[0]);
+          setAccountiengEntries(accountingEntries);
+        } else {
+          console.error("Datos inválidos recibidos:", accountingEntries);
+          setAccountiengEntries({ asientos: [] });
+        }
+      } catch (error) {
+        console.error("Error al obtener datos:", error);
+        setAccountiengEntries({ asientos: [] });
+      }
     };
     getAllAccountingEntries();
   }, [values]);
@@ -54,15 +82,19 @@ export default function Listing() {
     setShowModalCreate(false);
   };
 
-  if (!accountingEntriesData) return <LayoutSplashScreen />;
+  if (accountingEntriesData === undefined) return <LayoutSplashScreen />;
 
   return (
     <Card>
       <CardHeader title="Listado">
         <CardHeaderToolbar>
           <ListingFilter
-            disabled={accountingEntriesData.length === 0}
-            data={accountingEntriesData}
+            disabled={
+              !accountingEntriesData ||
+              !accountingEntriesData.asientos ||
+              accountingEntriesData.asientos.length === 0
+            }
+            data={accountingEntriesData || { asientos: [] }}
             setValues={setValues}
             values={values}
             openCreateModal={openCreateModal}
@@ -81,7 +113,7 @@ export default function Listing() {
           <ModalCreate show={showModalCreate} onHide={closeCreateModal} />
         )}
         <ListingTable
-          accountingEntriesData={accountingEntriesData}
+          accountingEntriesData={accountingEntriesData || { asientos: [] }}
           openDetailsModal={openDetailsModal}
         />
       </CardBody>

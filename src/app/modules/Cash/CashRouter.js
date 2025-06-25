@@ -1,6 +1,6 @@
 import React, { lazy } from "react";
 import { useSelector } from "react-redux";
-import { Switch, Route } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 
 import ErrorPageMenu from "../../pages/ErrorPageMenu";
 import { checkRouteAccess } from "../../utils/access";
@@ -36,6 +36,8 @@ const CashierResumeRouter = lazy(() =>
 const CashierClosureRouter = lazy(() =>
   import("./CashierClosure/pages/CashierClosureRouter.js")
 );
+
+const FilesPage = lazy(() => import("./Files/pages/FilesPage"));
 
 export default function CashRouter() {
   const access = useSelector((state) => state.auth.access);
@@ -78,6 +80,10 @@ export default function CashRouter() {
           CashierClosureRouter,
           access
         )}
+      />
+      <Route
+        path={baseRouterUrl + "/files"}
+        component={checkRouteAccess("cash.Archivos", FilesPage, access)}
       />
       <Route component={ErrorPageMenu} />
     </Switch>

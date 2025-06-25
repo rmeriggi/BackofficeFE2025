@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import {
   AccountBalance,
   Add,
@@ -15,25 +16,25 @@ import {
   Share,
 } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
-import {
+/* import {
   getCurrencies,
   getEntities,
-} from "../../../../../_redux/combos/combosActions";
-import { channelsadapter } from "../../../../../adapters/channelsAdapter";
-import { useFetchCombos } from "../../../../../hooks";
-import useIsMountedRef from "../../../../../hooks/useIsMountedRef";
+} from "../../../../../_redux/combos/combosActions"; */
+/* import { channelsadapter } from "../../../../../adapters/channelsAdapter"; */
+/* import { useFetchCombos } from "../../../../../hooks"; */
+/* import useIsMountedRef from "../../../../../hooks/useIsMountedRef"; */
 import { useLoading } from "../../../../../hooks/useLoading";
-import { useChannels } from "../../../../Credits/Collections/utils/apiHook";
+/* import { useChannels } from "../../../../Credits/Collections/utils/apiHook"; */
 import { collectionsAdapter } from "../../adapters/collectionsAdapter";
 import { getListCollection } from "../../utils/service";
 
 function Listing() {
-  const [currencies] = useFetchCombos("currencies", getCurrencies);
-  const [entities] = useFetchCombos("entities", getEntities);
+  /*   const [currencies] = useFetchCombos("currencies", getCurrencies);
+  const [entities] = useFetchCombos("entities", getEntities); */
   const [collections, setCollections] = useState([]);
   const { loading, enableLoading, disableLoading } = useLoading(false);
   const [viewMode, setViewMode] = useState("table");
-  const [lastUpdate, setLastUpdate] = useState(new Date());
+  const [, /* lastUpdate */ setLastUpdate] = useState(new Date());
 
   // Estados de filtros
   const [busqueda, setBusqueda] = useState("");
@@ -47,9 +48,9 @@ function Listing() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  const isMounted = useIsMountedRef();
-  const [channels] = useChannels(isMounted);
-  const channelsAdapted = channelsadapter(channels);
+  /*   const isMounted = useIsMountedRef(); */
+  /*   const [channels] = useChannels(isMounted); */
+  /*   const channelsAdapted = channelsadapter(channels); */
 
   const fetchCollections = async () => {
     enableLoading();

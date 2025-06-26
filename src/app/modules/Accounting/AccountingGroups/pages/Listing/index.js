@@ -17,7 +17,7 @@ export default function Listing() {
   const [entities] = useFetchCombos("entities", getEntities);
   const [values, setValues] = useState(initialParamsGroups);
   const [data, setData] = useState();
-  const [viewMode, setViewMode] = useState("list");
+  const [viewMode, setViewMode] = useState("grid");
 
   useEffect(() => {
     const getAccountingGroup = async () => {

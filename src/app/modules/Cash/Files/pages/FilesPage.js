@@ -9,6 +9,7 @@ import {
   FileCopy,
   FilterList,
   Folder,
+  GetApp,
   GridOn,
   Image,
   List,
@@ -16,19 +17,42 @@ import {
   Print,
   Refresh,
   Search,
-  Settings,
   Share,
   TableChart,
 } from "@material-ui/icons";
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { useSelector } from "react-redux";
 import {
   DEFAULT_ALLOWED_TYPES,
+  downloadPatronosCSV,
   formatFileSize,
   uploadFileToS3,
   validateFile,
 } from "../utils/service";
 
 const FilesPage = () => {
+  // Agregar estilos CSS para la animación de spin
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.textContent = `
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, []);
+
+  // Obtener token del estado de Redux
+  const token = useSelector((state) => state.auth.authToken);
+
   // Estados
   const [files, setFiles] = useState([]); // Solo archivos en proceso
   const [isDragging, setIsDragging] = useState(false);
@@ -37,6 +61,7 @@ const FilesPage = () => {
   const [viewMode, setViewMode] = useState("table");
   const [showFilters, setShowFilters] = useState(false);
   const [, /* lastUpdate */ setLastUpdate] = useState(new Date());
+  const [isDownloadingCSV, setIsDownloadingCSV] = useState(false);
 
   // Estados de filtros
   const [busqueda, setBusqueda] = useState("");
@@ -340,6 +365,23 @@ const FilesPage = () => {
     }
   }, []);
 
+  // Función para descargar CSV de patronos
+  const handleDownloadPatronosCSV = useCallback(async () => {
+    setIsDownloadingCSV(true);
+    try {
+      const result = await downloadPatronosCSV(token);
+      if (result.success) {
+        alert(result.message);
+      } else {
+        alert(`Error: ${result.message}`);
+      }
+    } catch (error) {
+      alert(`Error inesperado: ${error.message}`);
+    } finally {
+      setIsDownloadingCSV(false);
+    }
+  }, [token]);
+
   // Filtrar archivos usando useMemo para optimizar
   const filesFiltrados = useMemo(() => {
     return files.filter((file) => {
@@ -438,8 +480,17 @@ const FilesPage = () => {
               <button className="btn btn-light btn-icon mr-2">
                 <Print />
               </button>
-              <button className="btn btn-light btn-icon">
-                <Settings />
+              <button
+                className="btn btn-light btn-icon"
+                onClick={handleDownloadPatronosCSV}
+                disabled={isDownloadingCSV}
+                title="Descargar CSV de Patronos"
+              >
+                {isDownloadingCSV ? (
+                  <Refresh style={{ animation: "spin 1s linear infinite" }} />
+                ) : (
+                  <GetApp />
+                )}
               </button>
             </div>
           </div>

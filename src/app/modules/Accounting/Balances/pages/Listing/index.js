@@ -67,13 +67,13 @@ const Listing = () => {
       Crédito: item.creditos,
       "Saldo Final": item.saldo,
       Moneda: item.moneda_d.descripcion,
-    }));
+        }));
 
-    const worksheet = XLSX.utils.json_to_sheet(visibleData);
-    const workbook = XLSX.utils.book_new();
+        const worksheet = XLSX.utils.json_to_sheet(visibleData);
+        const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sumas y Saldos");
     XLSX.writeFile(workbook, "Sumas_y_Saldos.xlsx");
-  };
+    };
  */
   return (
     <div className="container-fluid" ref={printRef}>

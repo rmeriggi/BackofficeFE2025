@@ -1,0 +1,216 @@
+/* Estilos para componentes de gráficos modernos */
+
+.modern-chart-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.modern-chart-container .recharts-wrapper {
+  font-family: "Poppins", sans-serif;
+}
+
+.modern-chart-container .recharts-cartesian-axis-tick-value {
+  font-size: 11px;
+  font-weight: 500;
+  fill: #6c7293;
+}
+
+.modern-chart-container .recharts-cartesian-axis-line {
+  stroke: #e1f0ff;
+  stroke-width: 1;
+}
+
+.modern-chart-container .recharts-cartesian-grid-horizontal line,
+.modern-chart-container .recharts-cartesian-grid-vertical line {
+  stroke: #e1f0ff;
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.modern-chart-container .recharts-tooltip-wrapper {
+  outline: none;
+}
+
+.modern-chart-container .recharts-tooltip-content {
+  background-color: #fff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+  padding: 12px !important;
+}
+
+.modern-chart-container .recharts-tooltip-label {
+  color: #181c32 !important;
+  font-weight: bold !important;
+  font-size: 12px !important;
+  margin-bottom: 4px !important;
+}
+
+.modern-chart-container .recharts-tooltip-item {
+  color: #6c7293 !important;
+  font-size: 11px !important;
+  padding: 2px 0 !important;
+}
+
+.modern-chart-container .recharts-legend-wrapper {
+  padding: 8px 0 !important;
+}
+
+.modern-chart-container .recharts-legend-item {
+  margin-right: 16px !important;
+}
+
+.modern-chart-container .recharts-legend-item-text {
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  color: #6c7293 !important;
+}
+
+/* Animaciones para los gráficos */
+.modern-chart-container .recharts-bar-rectangle {
+  transition: opacity 0.3s ease;
+}
+
+.modern-chart-container .recharts-bar-rectangle:hover {
+  opacity: 0.8;
+}
+
+.modern-chart-container .recharts-line-curve {
+  transition: stroke-width 0.3s ease;
+}
+
+.modern-chart-container .recharts-line-curve:hover {
+  stroke-width: 4;
+}
+
+.modern-chart-container .recharts-area-area {
+  transition: opacity 0.3s ease;
+}
+
+.modern-chart-container .recharts-area-area:hover {
+  opacity: 0.6;
+}
+
+/* Estilos para las tarjetas de métricas */
+.metric-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Estilos para el estado de carga */
+.chart-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 8px;
+}
+
+.chart-loading .spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e1f0ff;
+  border-top: 4px solid #3699ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Estilos para tooltips personalizados */
+.custom-tooltip {
+  background: #fff;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 12px;
+  font-family: "Poppins", sans-serif;
+}
+
+.custom-tooltip .label {
+  color: #181c32;
+  font-weight: bold;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.custom-tooltip .value {
+  color: #6c7293;
+  font-size: 11px;
+  padding: 2px 0;
+}
+
+/* Estilos para gráficos responsivos */
+@media (max-width: 768px) {
+  .modern-chart-container {
+    height: 250px;
+  }
+
+  .modern-chart-container .recharts-cartesian-axis-tick-value {
+    font-size: 10px;
+  }
+
+  .modern-chart-container .recharts-tooltip-content {
+    padding: 8px !important;
+  }
+
+  .modern-chart-container .recharts-tooltip-label {
+    font-size: 11px !important;
+  }
+
+  .modern-chart-container .recharts-tooltip-item {
+    font-size: 10px !important;
+  }
+}
+
+/* Estilos para el modo oscuro (si se implementa) */
+[data-theme="dark"]
+  .modern-chart-container
+  .recharts-cartesian-axis-tick-value {
+  fill: #b5b5c3;
+}
+
+[data-theme="dark"] .modern-chart-container .recharts-cartesian-axis-line {
+  stroke: #2b2b40;
+}
+
+[data-theme="dark"]
+  .modern-chart-container
+  .recharts-cartesian-grid-horizontal
+  line,
+[data-theme="dark"]
+  .modern-chart-container
+  .recharts-cartesian-grid-vertical
+  line {
+  stroke: #2b2b40;
+}
+
+[data-theme="dark"] .modern-chart-container .recharts-tooltip-content {
+  background-color: #1e1e2d !important;
+  color: #b5b5c3 !important;
+}
+
+[data-theme="dark"] .modern-chart-container .recharts-tooltip-label {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .modern-chart-container .recharts-tooltip-item {
+  color: #b5b5c3 !important;
+}
+
+[data-theme="dark"] .modern-chart-container .recharts-legend-item-text {
+  color: #b5b5c3 !important;
+}

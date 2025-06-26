@@ -1,109 +1,120 @@
-import React, { useEffect } from 'react';
-import { Grid } from '@material-ui/core';
-import CardGraphic from '../components/CardGraphic';
-import CardsShow from '../components/CardsShow';
-import DebitBarGraphic from '../Graphics/DebitBarGraphic';
-import GraphicDoughnut from '../Graphics/GraphicDoughnut';
-import CreditBarGraphic from '../Graphics/CreditBarGraphic';
-import {  useSubheader } from '../../../../../_metronic/layout'
-import {Card, CardHeaderToolbar} from "../../../../../_metronic/_partials/controls";
-import {getDashboardInfo} from '../../../Credits/CollectionsDashboard/utils/service';
-import statisticsMocks from '../../../Credits/CollectionsDashboard/__mocks__/statisticsMocks';
-import { FilterModal } from '../components/filterModal/FilterModal';
-import { getCurrencies, getEntities } from '../../../../_redux/combos/combosActions';
-import { useFetchCombos } from '../../../../hooks';
+import {
+  AccountBalance,
+  AccountBalanceWallet,
+  MonetizationOn,
+  Receipt,
+} from "@material-ui/icons";
+import React from "react";
+import modernAccountingMocks from "../__mocks__/modernAccountingMocks";
+import ModernAlerts from "../components/ModernAlerts";
+import ModernCardGraphic from "../components/ModernCardGraphic";
+import ModernQuickActions from "../components/ModernQuickActions";
+import ModernStatsCard from "../components/ModernStatsCard";
+import ModernBarChart from "../Graphics/ModernBarChart";
+import ModernDoughnutChart from "../Graphics/ModernDoughnutChart";
+import ModernLineChart from "../Graphics/ModernLineChart";
 
-const date2 = new Date()
+const DashboardPage = () => {
+  // Datos mock modernos
+  const {
+    mainStats,
+    charts,
+    secondaryStats,
+    alerts,
+    recentActivity,
+  } = modernAccountingMocks;
 
-const initialValues = {
-    group: 0,
-    idEntity: 0,
-    module: 0,
-    idCurrency: 0,
-    fromDate: new Date(date2.getTime() - (7 * 24 * 60 * 60 * 1000)),
-    toDate: new Date()
-}
-
-const groupsMock = {
-    groups: [
-        {
-            id: '1',
-            group: 'Grupo 1'
-        },
-        {
-            id: '2',
-            group: 'Grupo 2'
-        }
-    ]
-}
-
-const modulesMock = {
-    modules: [
-        {
-            id: '1',
-            module: 'Módulo 1'
-        },
-        {
-            id: '2',
-            module: 'Módulo 2'
-        }
-    ]
-}
-const StatisticsPage = () => {
-
-  const subheader = useSubheader()
-  subheader.setTitle("Dashboard De Contabilidad"); 
-  const [currencies] = useFetchCombos('currencies', getCurrencies)
-  const [entities] = useFetchCombos('entities', getEntities) 
-
-  useEffect(() => {
-    const getDashboard = async () => {
-       await getDashboardInfo(initialValues)
-    }
-    getDashboard()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-   
-  const {groups} = groupsMock;
-  const {modules} = modulesMock;
-  const {charts} = statisticsMocks;
+  // Acciones rápidas (puedes conectar handlers reales si lo deseas)
+  const handleRefresh = () => window.location.reload();
+  const handleFilter = () => alert("Abrir filtros (demo)");
+  const handleNewEntry = () => alert("Crear nuevo asiento (demo)");
+  const handleReport = () => alert("Generar reporte (demo)");
 
   return (
-    <>
-        <Card>       
-            <CardHeaderToolbar style={{margin: '0 auto'}}>
-                <FilterModal
-                    initialValues={initialValues}
-                    currencies={currencies}
-                    entities ={entities}
-                    groups = {groups}
-                    modules = {modules}
-                    show={subheader.openFilter}
-                    onHide={subheader.handleClose}
-                />
-            </CardHeaderToolbar>    
-        </Card>
-        <CardsShow /*data={statisticsMocks}*/ /> 
-        <Grid container justify="space-between" className="mt-9">
-            <CardGraphic title="Crédito" data={charts.credits}>
-                <CreditBarGraphic data={charts.credits.data} />
-            </CardGraphic>        
-            <CardGraphic title="Débito" data={charts.collections}>
-                <DebitBarGraphic data={charts.collections.data} />
-            </CardGraphic> 
-            <CardGraphic title="Volumen" data ={charts.volume}> 
-                <GraphicDoughnut data={charts.volume} />
-            </CardGraphic>  
-        </Grid>    
-        <Grid> 
-        <div style={{ position: 'relative', textAlign: 'center', paddingTop:'25px'}}> 
-            <h6 >
-            Última actulización: {`${new Date().toLocaleString()}`} 
-            </h6>
-        </div>   
-        </Grid>
-    </>
-  )
-}
+    <div className="container-fluid">
+      {/* Header */}
+      <div className="d-flex justify-content-between align-items-center mb-8">
+        <div>
+          <h1 className="text-dark font-weight-bold my-1 fs-2hx">
+            Dashboard Contable
+          </h1>
+          <div className="text-muted fs-6">
+            Última actualización: {new Date().toLocaleString("es-AR")}
+          </div>
+        </div>
+      </div>
 
-export default StatisticsPage;
+      {/* Acciones rápidas */}
+      <ModernQuickActions
+        onRefresh={handleRefresh}
+        onFilter={handleFilter}
+        onNewEntry={handleNewEntry}
+        onReport={handleReport}
+      />
+
+      {/* Métricas principales */}
+      <ModernStatsCard stats={mainStats} />
+
+      {/* Gráficos principales */}
+      <div className="row mb-8">
+        <div className="col-xl-4 col-lg-6 col-md-12 mb-8">
+          <ModernCardGraphic
+            title="Créditos por Día"
+            data={charts.credits}
+            icon={MonetizationOn}
+            color="success"
+          >
+            <ModernBarChart
+              data={charts.credits.data}
+              color="#0BB783"
+              height={250}
+            />
+          </ModernCardGraphic>
+        </div>
+        <div className="col-xl-4 col-lg-6 col-md-12 mb-8">
+          <ModernCardGraphic
+            title="Débitos por Día"
+            data={charts.collections}
+            icon={AccountBalanceWallet}
+            color="danger"
+          >
+            <ModernBarChart
+              data={charts.collections.data}
+              color="#F64E60"
+              height={250}
+            />
+          </ModernCardGraphic>
+        </div>
+        <div className="col-xl-4 col-lg-12 col-md-12 mb-8">
+          <ModernCardGraphic
+            title="Distribución Volumen"
+            data={charts.volume}
+            icon={AccountBalance}
+            color="info"
+          >
+            <ModernDoughnutChart data={charts.volume} height={250} />
+          </ModernCardGraphic>
+        </div>
+      </div>
+
+      {/* Gráfico de evolución */}
+      <div className="row mb-8">
+        <div className="col-xl-12 col-lg-12 col-md-12 mb-8">
+          <ModernCardGraphic
+            title="Evolución de Créditos y Débitos"
+            data={{ total: "", variation: 0 }}
+            icon={Receipt}
+            color="primary"
+          >
+            <ModernLineChart data={charts.evolution.data} height={300} />
+          </ModernCardGraphic>
+        </div>
+      </div>
+
+      {/* Alertas y actividad reciente */}
+      <ModernAlerts alerts={alerts} recentActivity={recentActivity} />
+    </div>
+  );
+};
+
+export default DashboardPage;

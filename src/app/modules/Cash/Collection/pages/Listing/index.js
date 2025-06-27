@@ -93,38 +93,50 @@ function Listing() {
 
   // Filtrar cobranzas
   const collectionsFiltradas = collections.filter((collection) => {
-    // Filtro por tipo
+    // Filtro por tipo (usando movementType)
     const coincideTipo =
-      filtroTipo === "todos" || filtroTipo === collection.type?.toLowerCase();
+      filtroTipo === "todos" ||
+      filtroTipo === collection.movementType?.toString();
 
-    // Filtro por estado
+    // Filtro por estado (usando status y limpiando espacios)
     const coincideEstado =
       filtroEstado === "todos" ||
-      filtroEstado === collection.status?.toLowerCase();
+      filtroEstado === collection.status?.trim().toLowerCase();
 
-    // Filtro por entidad
+    // Filtro por entidad (usando entity y limpiando espacios)
     const coincideEntidad =
       filtroEntidad === "todos" ||
-      filtroEntidad === collection.entity?.toLowerCase();
+      filtroEntidad === collection.entity?.trim().toLowerCase();
 
-    // Filtro por moneda
+    // Filtro por moneda (usando currency y limpiando espacios)
     const coincideMoneda =
       filtroMoneda === "todos" ||
-      filtroMoneda === collection.currency?.toLowerCase();
+      filtroMoneda === collection.currency?.trim().toLowerCase();
 
     // Filtro por búsqueda
     const coincideBusqueda =
       (collection.id?.toString() || "")
         .toLowerCase()
         .includes(busqueda.toLowerCase()) ||
-      (collection.entity || "")
+      (collection.entity?.trim() || "")
         .toLowerCase()
         .includes(busqueda.toLowerCase()) ||
-      (collection.type || "").toLowerCase().includes(busqueda.toLowerCase()) ||
-      (collection.status || "")
+      (collection.movementType?.toString() || "").includes(
+        busqueda.toLowerCase()
+      ) ||
+      (collection.status?.trim() || "")
         .toLowerCase()
         .includes(busqueda.toLowerCase()) ||
-      (collection.amount?.toString() || "").includes(busqueda);
+      (collection.amount?.toString() || "").includes(busqueda) ||
+      (collection.transactionNumber || "")
+        .toLowerCase()
+        .includes(busqueda.toLowerCase()) ||
+      (collection.name?.trim() || "")
+        .toLowerCase()
+        .includes(busqueda.toLowerCase()) ||
+      (collection.surname?.trim() || "")
+        .toLowerCase()
+        .includes(busqueda.toLowerCase());
 
     return (
       coincideTipo &&
@@ -142,16 +154,17 @@ function Listing() {
     0
   );
   const totalPending = collectionsFiltradas.filter(
-    (c) => c.status === "Pendiente"
+    (c) => c.status?.trim().toLowerCase() === "pendiente"
   ).length;
   const totalCompleted = collectionsFiltradas.filter(
-    (c) => c.status === "Completado"
+    (c) => c.status?.trim().toLowerCase() === "activo"
   ).length;
 
   // Obtener colores según el estado
   const getStatusColor = (status) => {
-    switch (status?.toLowerCase()) {
-      case "completado":
+    const cleanStatus = status?.trim().toLowerCase();
+    switch (cleanStatus) {
+      case "activo":
         return "#0BB783";
       case "pendiente":
         return "#FFA800";
@@ -164,19 +177,51 @@ function Listing() {
     }
   };
 
-  // Obtener icono según el tipo
-  const getTypeIcon = (type) => {
-    switch (type?.toLowerCase()) {
-      case "transferencia":
-        return <AccountBalance style={{ fontSize: 30, color: "#3699FF" }} />;
-      case "pago":
-        return <CloudDownload style={{ fontSize: 30, color: "#0BB783" }} />;
-      case "deposito":
-        return <Folder style={{ fontSize: 30, color: "#8950FC" }} />;
-      case "retiro":
-        return <Settings style={{ fontSize: 30, color: "#FFA800" }} />;
+  // Obtener icono según el tipo de movimiento
+  const getTypeIcon = (movementType) => {
+    switch (movementType?.toString()) {
+      case "1":
+        return <AccountBalance style={{ fontSize: 30, color: "#2196F3" }} />; // Azul
+      case "2":
+        return <CloudDownload style={{ fontSize: 30, color: "#00BCD4" }} />; // Cyan
+      case "3":
+        return <Folder style={{ fontSize: 30, color: "#FF5722" }} />; // Naranja profundo
+      case "4":
+        return <Settings style={{ fontSize: 30, color: "#9C27B0" }} />; // Púrpura
       default:
         return <InsertDriveFile style={{ fontSize: 30, color: "#7E8299" }} />;
+    }
+  };
+
+  // Obtener nombre del tipo de movimiento
+  const getMovementTypeName = (movementType) => {
+    switch (movementType?.toString()) {
+      case "1":
+        return "Transferencia";
+      case "2":
+        return "Pago";
+      case "3":
+        return "Depósito";
+      case "4":
+        return "Retiro";
+      default:
+        return "Otro";
+    }
+  };
+
+  // Obtener color según el tipo de movimiento
+  const getMovementTypeColor = (movementType) => {
+    switch (movementType?.toString()) {
+      case "1":
+        return "#2196F3"; // Azul
+      case "2":
+        return "#00BCD4"; // Cyan
+      case "3":
+        return "#FF5722"; // Naranja profundo
+      case "4":
+        return "#9C27B0"; // Púrpura
+      default:
+        return "#7E8299"; // Gris
     }
   };
 
@@ -199,16 +244,18 @@ function Listing() {
 
   // Obtener tipos y estados únicos para los filtros
   const tiposUnicos = [
-    ...new Set(collections.map((c) => c.type).filter(Boolean)),
+    ...new Set(
+      collections.map((c) => c.movementType?.toString()).filter(Boolean)
+    ),
   ];
   const estadosUnicos = [
-    ...new Set(collections.map((c) => c.status).filter(Boolean)),
+    ...new Set(collections.map((c) => c.status?.trim()).filter(Boolean)),
   ];
   const entidadesUnicas = [
-    ...new Set(collections.map((c) => c.entity).filter(Boolean)),
+    ...new Set(collections.map((c) => c.entity?.trim()).filter(Boolean)),
   ];
   const monedasUnicas = [
-    ...new Set(collections.map((c) => c.currency).filter(Boolean)),
+    ...new Set(collections.map((c) => c.currency?.trim()).filter(Boolean)),
   ];
 
   return (
@@ -324,8 +371,8 @@ function Listing() {
                   >
                     <option value="todos">Todos los tipos</option>
                     {tiposUnicos.map((tipo) => (
-                      <option key={tipo} value={tipo.toLowerCase()}>
-                        {tipo}
+                      <option key={tipo} value={tipo}>
+                        {getMovementTypeName(tipo)}
                       </option>
                     ))}
                   </select>
@@ -341,7 +388,7 @@ function Listing() {
                   >
                     <option value="todos">Todos los estados</option>
                     {estadosUnicos.map((estado) => (
-                      <option key={estado} value={estado.toLowerCase()}>
+                      <option key={estado} value={estado}>
                         {estado}
                       </option>
                     ))}
@@ -358,7 +405,7 @@ function Listing() {
                   >
                     <option value="todos">Todas las entidades</option>
                     {entidadesUnicas.map((entidad) => (
-                      <option key={entidad} value={entidad.toLowerCase()}>
+                      <option key={entidad} value={entidad}>
                         {entidad}
                       </option>
                     ))}
@@ -375,7 +422,7 @@ function Listing() {
                   >
                     <option value="todos">Todas las monedas</option>
                     {monedasUnicas.map((moneda) => (
-                      <option key={moneda} value={moneda.toLowerCase()}>
+                      <option key={moneda} value={moneda}>
                         {moneda}
                       </option>
                     ))}
@@ -390,7 +437,7 @@ function Listing() {
                 <input
                   type="text"
                   className="form-control form-control-solid"
-                  placeholder="Buscar por ID, entidad, tipo o estado..."
+                  placeholder="Buscar por ID, entidad, cliente, transacción, estado..."
                   value={busqueda}
                   onChange={(e) => setBusqueda(e.target.value)}
                 />
@@ -442,7 +489,7 @@ function Listing() {
                       <div className="d-flex align-items-center">
                         <div className="symbol symbol-50 symbol-light mr-5">
                           <span className="symbol-label">
-                            {getTypeIcon(collection.type)}
+                            {getTypeIcon(collection.movementType)}
                           </span>
                         </div>
                         <div>
@@ -451,7 +498,7 @@ function Listing() {
                           </h4>
                           <span className="text-muted font-weight-bold">
                             ID: {collection.id || index + 1} |{" "}
-                            {collection.type?.toUpperCase() || "N/A"}
+                            {getMovementTypeName(collection.movementType)}
                           </span>
                         </div>
                       </div>
@@ -495,7 +542,7 @@ function Listing() {
                               Entidad:
                             </span>
                             <span className="text-muted ml-2">
-                              {collection.entity || "N/A"}
+                              {collection.entity?.trim() || "N/A"}
                             </span>
                           </div>
                         </div>
@@ -506,7 +553,34 @@ function Listing() {
                               Moneda:
                             </span>
                             <span className="text-muted ml-2">
-                              {collection.currency || "USD"}
+                              {collection.currency?.trim() || "USD"}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mb-5">
+                      <div className="d-flex align-items-center flex-wrap">
+                        <div className="d-flex align-items-center mr-10 mb-2">
+                          <div className="mr-2">
+                            <span className="text-dark font-weight-bolder">
+                              Cliente:
+                            </span>
+                            <span className="text-muted ml-2">
+                              {collection.name?.trim()}{" "}
+                              {collection.surname?.trim()}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="d-flex align-items-center mr-10 mb-2">
+                          <div className="mr-2">
+                            <span className="text-dark font-weight-bolder">
+                              Transacción:
+                            </span>
+                            <span className="text-muted ml-2">
+                              {collection.transactionNumber || "N/A"}
                             </span>
                           </div>
                         </div>
@@ -527,10 +601,10 @@ function Listing() {
                       <div className="col-6">
                         <div className="d-flex flex-column">
                           <span className="text-muted font-weight-bold mb-1">
-                            Fecha
+                            Fecha Movimiento
                           </span>
                           <span className="text-dark font-weight-bolder font-size-h5">
-                            {collection.date || new Date().toLocaleDateString()}
+                            {collection.movementDate || "N/A"}
                           </span>
                         </div>
                       </div>
@@ -549,7 +623,7 @@ function Listing() {
                               className="bg-white mr-2 rounded-circle"
                               style={{ width: 8, height: 8 }}
                             ></div>
-                            {collection.status?.toUpperCase() || "N/A"}
+                            {collection.status?.trim().toUpperCase() || "N/A"}
                           </span>
                         </span>
                       </div>
@@ -559,7 +633,7 @@ function Listing() {
                           Canal:
                         </span>
                         <span className="text-info font-weight-bolder">
-                          {collection.channel || "N/A"}
+                          {collection.collectionChannel?.trim() || "N/A"}
                         </span>
                       </div>
                     </div>
@@ -632,7 +706,7 @@ function Listing() {
                           <div className="d-flex align-items-center">
                             <div className="symbol symbol-40 symbol-light mr-4">
                               <span className="symbol-label">
-                                {getTypeIcon(collection.type)}
+                                {getTypeIcon(collection.movementType)}
                               </span>
                             </div>
                             <div>
@@ -651,11 +725,13 @@ function Listing() {
                           <span
                             className="label label-lg label-inline"
                             style={{
-                              backgroundColor: getStatusColor(collection.type),
+                              backgroundColor: getMovementTypeColor(
+                                collection.movementType
+                              ),
                             }}
                           >
                             <span className="text-white font-weight-bold">
-                              {collection.type?.toUpperCase() || "N/A"}
+                              {getMovementTypeName(collection.movementType)}
                             </span>
                           </span>
                         </td>
@@ -666,7 +742,7 @@ function Listing() {
                         </td>
                         <td>
                           <span className="text-dark font-weight-bolder">
-                            {collection.date || new Date().toLocaleDateString()}
+                            {collection.movementDate || "N/A"}
                           </span>
                         </td>
                         <td>
@@ -679,13 +755,13 @@ function Listing() {
                             }}
                           >
                             <span className="text-white font-weight-bold">
-                              {collection.status?.toUpperCase() || "N/A"}
+                              {collection.status?.trim().toUpperCase() || "N/A"}
                             </span>
                           </span>
                         </td>
                         <td>
                           <span className="text-dark font-weight-bolder">
-                            {collection.entity || "N/A"}
+                            {collection.entity?.trim() || "N/A"}
                           </span>
                         </td>
                         <td className="text-right pr-7">

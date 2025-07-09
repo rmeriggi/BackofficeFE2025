@@ -1,27 +1,38 @@
-import {all} from "redux-saga/effects";
-import {combineReducers} from "redux";
+import { combineReducers } from "redux";
+import { all } from "redux-saga/effects";
 
-import * as auth from "../app/modules/Auth/_redux/authRedux";
-import { combosSlice } from "../app/_redux/combos/combosSlice"
-import { clientsSlice } from "../app/_redux/clients/clientsSlice"
-import { bankAccountsSlice } from "../app/_redux/bankAccounts/bankAccountsSlice"
-import { blottersSlice } from "../app/_redux/blotter/blottersSlice"
-import { blotterSpeciesSlice, blotterSpeciesInstrumentSlice } from "../app/_redux/blotter/blottersSlice"
-import { blotterPnlSlice, blotterPnlSpeciesSlice, blotterPnlInstrumentSlice } from "../app/_redux/blotter/blottersSlice"
-import { blotterCashSlice, blotterCashMoneySlice } from "../app/_redux/blotter/blottersSlice"
-import { relationsSlice } from "../app/_redux/relations/relationsSlice";
-import { notificationsSlice } from "../app/_redux/notifications/notificationsSlice";
-import { signaturesByClientSlice, signaturesClientsSlice } from "../app/_redux/signatures/signaturesSlice";
-import { echecksSlice } from "../app/_redux/e-checks/echeksSlice";
-import { suppliersSlice } from "../app/_redux/suppliers/suppliersSlice";
-import { invoicesSlice } from "../app/_redux/invoices/invoicesSlice";
-import { accountingSlice } from "../app/_redux/accounting/accountingSlice";
 import { accountingMayorSlice } from "../app/_redux/accounting/accountingMayorSlice";
+import { accountingSlice } from "../app/_redux/accounting/accountingSlice";
+import { bankAccountsSlice } from "../app/_redux/bankAccounts/bankAccountsSlice";
+import {
+  blotterCashMoneySlice,
+  blotterCashSlice,
+  blotterPnlInstrumentSlice,
+  blotterPnlSlice,
+  blotterPnlSpeciesSlice,
+  blotterSpeciesInstrumentSlice,
+  blotterSpeciesSlice,
+  blottersSlice,
+} from "../app/_redux/blotter/blottersSlice";
+import { clientsSlice } from "../app/_redux/clients/clientsSlice";
+import { combosSlice } from "../app/_redux/combos/combosSlice";
+import { echecksSlice } from "../app/_redux/e-checks/echeksSlice";
+import { invoicesSlice } from "../app/_redux/invoices/invoicesSlice";
+import { notificationsSlice } from "../app/_redux/notifications/notificationsSlice";
+import { patronosSlice } from "../app/_redux/patronos/patronosSlice";
+import { relationsSlice } from "../app/_redux/relations/relationsSlice";
+import {
+  signaturesByClientSlice,
+  signaturesClientsSlice,
+} from "../app/_redux/signatures/signaturesSlice";
+import { suppliersSlice } from "../app/_redux/suppliers/suppliersSlice";
+import * as auth from "../app/modules/Auth/_redux/authRedux";
 
 export const rootReducer = combineReducers({
   auth: auth.reducer,
   combos: combosSlice.reducer,
   clients: clientsSlice.reducer,
+  patronos: patronosSlice.reducer,
   bankAccounts: bankAccountsSlice.reducer,
   blotters: blottersSlice.reducer,
   relations: relationsSlice.reducer,
@@ -30,7 +41,7 @@ export const rootReducer = combineReducers({
   pnls: blotterPnlSlice.reducer,
   cash: blotterCashSlice.reducer,
   signaturesClients: signaturesClientsSlice.reducer,
-  signaturesByClient:signaturesByClientSlice.reducer,
+  signaturesByClient: signaturesByClientSlice.reducer,
   cashMoney: blotterCashMoneySlice.reducer,
   pnlsSpecies: blotterPnlSpeciesSlice.reducer,
   pnlsInstrument: blotterPnlInstrumentSlice.reducer,

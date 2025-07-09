@@ -1,8 +1,10 @@
 export { useCallAPI } from "./useCallAPI";
-export { useFetchCombos } from "./useFetchCombos";
-export { useTableColumns } from "./useTableColumns";
-export { useFetchClients } from "./useFetchClients";
-export { useFetchBankAccounts } from "./useFetchBankAccounts";
 export { useFetchBankAccountById } from "./useFetchBankAccountById";
+export { useFetchBankAccounts } from "./useFetchBankAccounts";
+export { useFetchClients } from "./useFetchClients";
+export { useFetchCombos } from "./useFetchCombos";
+export { useFetchPatronos } from "./useFetchPatronos";
+export { useFetchRelaciones } from "./useFetchRelaciones";
 export { useFetchRelationById } from "./useFetchRelationById";
 export { useFetchRelations } from "./useFetchRelations";
+export { useTableColumns } from "./useTableColumns";

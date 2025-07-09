@@ -18,6 +18,7 @@ import {
   Search,
   Share,
   TableChart,
+  Visibility,
 } from "@material-ui/icons";
 import React, {
   useCallback,
@@ -27,14 +28,16 @@ import React, {
   useState,
 } from "react";
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import {
   DEFAULT_ALLOWED_TYPES,
   formatFileSize,
-  uploadFileToS3,
   validateFile,
 } from "../utils/service";
 
 const FilesPage = () => {
+  const history = useHistory();
+
   // Agregar estilos CSS para la animación de spin
   useEffect(() => {
     const style = document.createElement("style");
@@ -67,6 +70,17 @@ const FilesPage = () => {
 
   // Referencias
   const fileInputRef = useRef(null);
+
+  // Cargar archivos desde localStorage al iniciar
+  useEffect(() => {
+    const savedFiles = JSON.parse(localStorage.getItem("pendingFiles") || "[]");
+    setFiles(savedFiles);
+  }, []);
+
+  // Guardar archivos en localStorage cuando cambie el estado
+  useEffect(() => {
+    localStorage.setItem("pendingFiles", JSON.stringify(files));
+  }, [files]);
 
   // Formatear tamaño de archivo (usando el servicio)
   const formatFileSizeLocal = useCallback((bytes) => {
@@ -153,7 +167,7 @@ const FilesPage = () => {
     }
   }, []);
 
-  // Función para manejar archivos
+  // Función para manejar archivos - MODIFICADA con simulación de carga
   const handleFiles = useCallback(async (file) => {
     if (!file) return;
 
@@ -169,189 +183,101 @@ const FilesPage = () => {
       return;
     }
 
-    // Crear objeto de archivo en proceso
-    const newFile = {
-      id: Date.now(),
-      name: file.name,
-      size: file.size,
-      date: new Date().toLocaleString("es-ES"),
-      status: "En proceso",
-      statusClass: "status-info",
-      type: file.name
-        .split(".")
-        .pop()
-        .toLowerCase(),
-      category: "general",
-      description: "Archivo en proceso de subida",
-      uploadedBy: "Usuario Actual",
-      downloads: 0,
-      file: file, // Guardar referencia al archivo
-      confirmed: false, // Estado de confirmación
-    };
-
-    // Agregar archivo a la lista
-    setFiles((prevFiles) => [newFile, ...prevFiles]);
-
-    // Iniciar subida
+    // Iniciar simulación de carga
     setIsUploading(true);
     setUploadProgress(0);
 
-    try {
-      const description = `Archivo subido desde el módulo de Cash - ${new Date().toLocaleString(
-        "es-ES"
-      )}`;
-
-      const response = await uploadFileToS3(
-        file,
-        file.name,
-        description,
-        (progress) => {
+    // Simular progreso de carga
+    const simulateProgress = () => {
+      return new Promise((resolve) => {
+        let progress = 0;
+        const interval = setInterval(() => {
+          progress += Math.random() * 15; // Incremento aleatorio
+          if (progress >= 100) {
+            progress = 100;
+            clearInterval(interval);
+            resolve();
+          }
           setUploadProgress(progress);
-        }
-      );
+        }, 200); // Actualizar cada 200ms
+      });
+    };
 
-      if (response.success) {
-        // Actualizar archivo con éxito
-        setFiles((prevFiles) =>
-          prevFiles.map((f) =>
-            f.id === newFile.id
-              ? {
-                  ...f,
-                  status: "Completado",
-                  statusClass: "status-success",
-                  description:
-                    response.description || "Archivo subido exitosamente",
-                  fileUrl: response.fileUrl,
-                  confirmed: true,
-                }
-              : f
-          )
-        );
+    // Esperar a que termine la simulación
+    await simulateProgress();
 
-        // Mostrar mensaje de éxito solo si el usuario lo desea
-        console.log(`Archivo "${file.name}" subido exitosamente a S3`);
-      } else {
-        // Actualizar archivo con error
-        setFiles((prevFiles) =>
-          prevFiles.map((f) =>
-            f.id === newFile.id
-              ? {
-                  ...f,
-                  status: "Error",
-                  statusClass: "status-error",
-                  description: response.message || "Error al subir archivo",
-                }
-              : f
-          )
-        );
+    // Leer el contenido del archivo para poder guardarlo en localStorage
+    const readFileContent = () => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = (e) => reject(e);
+        reader.readAsText(file);
+      });
+    };
 
-        // Log del error para debugging
-        console.error(`Error al subir archivo: ${response.message}`);
-      }
+    try {
+      const fileContent = await readFileContent();
+
+      // Crear objeto de archivo pendiente (NO subir inmediatamente)
+      const newFile = {
+        id: Date.now(),
+        name: file.name,
+        size: file.size,
+        date: new Date().toLocaleString("es-ES"),
+        status: "Pendiente",
+        statusClass: "status-warning",
+        type: file.name
+          .split(".")
+          .pop()
+          .toLowerCase(),
+        category: "general",
+        description: "Archivo cargado - Pendiente de procesamiento",
+        uploadedBy: "Usuario Actual",
+        downloads: 0,
+        content: fileContent, // Guardar el contenido del archivo
+        fileType: file.type, // Guardar el tipo de archivo
+        confirmed: false, // Estado de confirmación
+      };
+
+      // Agregar archivo a la lista
+      setFiles((prevFiles) => [newFile, ...prevFiles]);
     } catch (error) {
-      // Este catch ya no debería ejecutarse porque el servicio no lanza errores
-      // Pero lo mantenemos por seguridad
-      console.error("Error inesperado:", error);
+      console.error("Error al leer el archivo:", error);
+      alert("Error al procesar el archivo");
+    }
 
-      // Actualizar archivo con error
-      setFiles((prevFiles) =>
-        prevFiles.map((f) =>
-          f.id === newFile.id
-            ? {
-                ...f,
-                status: "Error",
-                statusClass: "status-error",
-                description: error.message || "Error inesperado",
-              }
-            : f
-        )
-      );
-    } finally {
+    // Resetear estados de carga
+    setTimeout(() => {
       setIsUploading(false);
       setUploadProgress(0);
-    }
+    }, 500);
   }, []);
 
-  // Manejar soltar archivos
-  const handleDrop = useCallback(
-    (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      setIsDragging(false);
-
-      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-        const file = e.dataTransfer.files[0];
-        if (file) {
-          handleFiles(file);
-        }
-      }
+  // Función para ver el detalle del archivo
+  const handleViewFile = useCallback(
+    (file) => {
+      history.push(`/cash/files/detail/${file.id}`);
     },
-    [handleFiles]
+    [history]
   );
 
-  // Manejar selección de archivos
-  const handleFileSelect = useCallback(() => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  }, []);
-
-  // Manejar cambio en el input de archivos
-  const handleFileInputChange = useCallback(
-    (e) => {
-      if (e.target.files && e.target.files.length > 0) {
-        const selectedFile = e.target.files[0];
-        if (selectedFile) {
-          handleFiles(selectedFile);
-        }
-        e.target.value = "";
-      }
-    },
-    [handleFiles]
-  );
-
-  // Confirmar archivo subido
+  // Función para confirmar archivo
   const handleConfirmFile = useCallback((fileId) => {
     setFiles((prevFiles) =>
-      prevFiles.map((f) => (f.id === fileId ? { ...f, confirmed: true } : f))
+      prevFiles.map((file) =>
+        file.id === fileId ? { ...file, confirmed: true } : file
+      )
     );
   }, []);
 
-  // Eliminar archivo de la lista
-  const handleDeleteFile = useCallback(
-    (id) => {
-      if (
-        window.confirm(
-          "¿Estás seguro de que deseas eliminar este archivo de la lista?"
-        )
-      ) {
-        setFiles(files.filter((file) => file.id !== id));
-      }
-    },
-    [files]
-  );
-
-  // Descargar archivo
+  // Función para descargar archivo
   const handleDownloadFile = useCallback((file) => {
-    // Solo permitir descarga si está completado y confirmado
-    if (file.status !== "Completado" || !file.confirmed) {
-      alert("El archivo debe estar completado y confirmado para descargarlo");
-      return;
-    }
-
-    // Incrementar contador de descargas
-    setFiles((prevFiles) =>
-      prevFiles.map((f) =>
-        f.id === file.id ? { ...f, downloads: f.downloads + 1 } : f
-      )
-    );
-
-    // Si el archivo tiene URL de S3, descargar desde ahí
     if (file.fileUrl) {
       const link = document.createElement("a");
       link.href = file.fileUrl;
-      link.download = file.name;
       link.target = "_blank";
+      link.download = file.name;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -361,6 +287,48 @@ const FilesPage = () => {
       alert("URL de descarga no disponible");
     }
   }, []);
+
+  // Función para eliminar archivo
+  const handleDeleteFile = useCallback((fileId) => {
+    if (window.confirm("¿Estás seguro de que quieres eliminar este archivo?")) {
+      setFiles((prevFiles) => prevFiles.filter((file) => file.id !== fileId));
+    }
+  }, []);
+
+  // Función para subir archivo
+  const handleUpload = useCallback(() => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  }, []);
+
+  // Función para manejar cambio de archivo
+  const handleFileChange = useCallback(
+    (e) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        handleFiles(file);
+      }
+      // Limpiar el input para permitir seleccionar el mismo archivo otra vez
+      e.target.value = "";
+    },
+    [handleFiles]
+  );
+
+  // Función para manejar drop
+  const handleDrop = useCallback(
+    (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDragging(false);
+
+      const droppedFile = e.dataTransfer.files[0];
+      if (droppedFile) {
+        handleFiles(droppedFile);
+      }
+    },
+    [handleFiles]
+  );
 
   // Filtrar archivos usando useMemo para optimizar
   const filesFiltrados = useMemo(() => {
@@ -621,12 +589,12 @@ const FilesPage = () => {
               type="file"
               ref={fileInputRef}
               className="d-none"
-              onChange={handleFileInputChange}
+              onChange={handleFileChange}
             />
 
             <button
               className="btn btn-primary btn-lg px-5"
-              onClick={handleFileSelect}
+              onClick={handleUpload}
               disabled={isUploading}
             >
               <Folder className="mr-2" />
@@ -787,6 +755,13 @@ const FilesPage = () => {
                               Descargar
                             </button>
                           )}
+                          <button
+                            className="btn btn-info font-weight-bold mr-2"
+                            onClick={() => handleViewFile(file)}
+                          >
+                            <Visibility className="mr-2" />
+                            Ver Detalle
+                          </button>
                         </div>
                         <button
                           className="btn btn-light-danger font-weight-bold"
@@ -929,6 +904,13 @@ const FilesPage = () => {
                         </td>
                         <td className="text-right pr-7">
                           <div className="d-flex justify-content-end">
+                            <button
+                              className="btn btn-icon btn-light-info btn-sm mr-2"
+                              onClick={() => handleViewFile(file)}
+                              title="Ver Detalle"
+                            >
+                              <Visibility style={{ fontSize: 16 }} />
+                            </button>
                             {file.status === "Completado" && !file.confirmed && (
                               <button
                                 className="btn btn-icon btn-light-success btn-sm mr-2"

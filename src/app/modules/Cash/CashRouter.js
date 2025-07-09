@@ -39,7 +39,7 @@ const CashierClosureRouter = lazy(() =>
   import("./CashierClosure/pages/CashierClosureRouter.js")
 );
 
-const FilesPage = lazy(() => import("./Files/pages/FilesPage"));
+const FilesRouter = lazy(() => import("./Files/pages/FilesRouter"));
 
 const PlanillasProyectadasPage = lazy(() =>
   import("./Forms/pages/PlanillasProyectadasPage")
@@ -89,7 +89,7 @@ export default function CashRouter() {
       />
       <Route
         path={baseRouterUrl + "/files"}
-        component={checkRouteAccess("cash.Archivos", FilesPage, access)}
+        component={checkRouteAccess("cash.Archivos", FilesRouter, access)}
       />
       <Route
         path={baseRouterUrl + "/forms"}

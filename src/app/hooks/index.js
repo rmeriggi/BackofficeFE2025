@@ -7,4 +7,5 @@ export { useFetchPatronos } from "./useFetchPatronos";
 export { useFetchRelaciones } from "./useFetchRelaciones";
 export { useFetchRelationById } from "./useFetchRelationById";
 export { useFetchRelations } from "./useFetchRelations";
+export { usePlanillasProyectadas } from "./usePlanillasProyectadas";
 export { useTableColumns } from "./useTableColumns";

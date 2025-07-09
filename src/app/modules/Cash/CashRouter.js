@@ -28,16 +28,22 @@ const CollectionsNCPage = lazy(() =>
 const BalancesItauPage = lazy(() =>
   import("./BalancesItau/pages/BalancesItauPage.js")
 );
+
 const CashierRouter = lazy(() => import("./Cashier/pages/CashierRouter.js"));
 
 const CashierResumeRouter = lazy(() =>
   import("./CashierResume/pages/CashierResumeRouter.js")
 );
+
 const CashierClosureRouter = lazy(() =>
   import("./CashierClosure/pages/CashierClosureRouter.js")
 );
 
 const FilesPage = lazy(() => import("./Files/pages/FilesPage"));
+
+const PlanillasProyectadasPage = lazy(() =>
+  import("./Forms/pages/PlanillasProyectadasPage")
+);
 
 export default function CashRouter() {
   const access = useSelector((state) => state.auth.access);
@@ -84,6 +90,14 @@ export default function CashRouter() {
       <Route
         path={baseRouterUrl + "/files"}
         component={checkRouteAccess("cash.Archivos", FilesPage, access)}
+      />
+      <Route
+        path={baseRouterUrl + "/forms"}
+        component={checkRouteAccess(
+          "cash.Planillas",
+          PlanillasProyectadasPage,
+          access
+        )}
       />
       <Route component={ErrorPageMenu} />
     </Switch>

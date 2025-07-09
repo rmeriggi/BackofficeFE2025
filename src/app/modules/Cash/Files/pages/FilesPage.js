@@ -9,7 +9,6 @@ import {
   FileCopy,
   FilterList,
   Folder,
-  GetApp,
   GridOn,
   Image,
   List,
@@ -30,7 +29,6 @@ import React, {
 import { useSelector } from "react-redux";
 import {
   DEFAULT_ALLOWED_TYPES,
-  downloadPatronosCSV,
   formatFileSize,
   uploadFileToS3,
   validateFile,
@@ -61,7 +59,6 @@ const FilesPage = () => {
   const [viewMode, setViewMode] = useState("table");
   const [showFilters, setShowFilters] = useState(false);
   const [, /* lastUpdate */ setLastUpdate] = useState(new Date());
-  const [isDownloadingCSV, setIsDownloadingCSV] = useState(false);
 
   // Estados de filtros
   const [busqueda, setBusqueda] = useState("");
@@ -365,23 +362,6 @@ const FilesPage = () => {
     }
   }, []);
 
-  // Función para descargar CSV de patronos
-  const handleDownloadPatronosCSV = useCallback(async () => {
-    setIsDownloadingCSV(true);
-    try {
-      const result = await downloadPatronosCSV(token);
-      if (result.success) {
-        alert(result.message);
-      } else {
-        alert(`Error: ${result.message}`);
-      }
-    } catch (error) {
-      alert(`Error inesperado: ${error.message}`);
-    } finally {
-      setIsDownloadingCSV(false);
-    }
-  }, [token]);
-
   // Filtrar archivos usando useMemo para optimizar
   const filesFiltrados = useMemo(() => {
     return files.filter((file) => {
@@ -479,18 +459,6 @@ const FilesPage = () => {
               </button>
               <button className="btn btn-light btn-icon mr-2">
                 <Print />
-              </button>
-              <button
-                className="btn btn-light btn-icon"
-                onClick={handleDownloadPatronosCSV}
-                disabled={isDownloadingCSV}
-                title="Descargar CSV de Patronos"
-              >
-                {isDownloadingCSV ? (
-                  <Refresh style={{ animation: "spin 1s linear infinite" }} />
-                ) : (
-                  <GetApp />
-                )}
               </button>
             </div>
           </div>

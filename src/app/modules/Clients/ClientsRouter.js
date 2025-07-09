@@ -10,6 +10,10 @@ const ClientsPage = lazy(() => import("./Clients/pages/ClientsPage.js"));
 
 const PatronosPage = lazy(() => import("./Patronos/pages/PatronosPage.js"));
 
+const PatronosAsocPage = lazy(() =>
+  import("./Patronos/pages/PatronosAsocPage.js")
+);
+
 const StatisticsPage = lazy(() =>
   import("./Statistics/pages/StatisticsPage.js")
 );
@@ -42,6 +46,14 @@ export default function ClientsRouter() {
       <ContentRoute
         path={baseRouterUrl + "/patronos"}
         component={checkRouteAccess("clients.Patronos", PatronosPage, access)}
+      />
+      <ContentRoute
+        path={baseRouterUrl + "/patronosasoc"}
+        component={checkRouteAccess(
+          "clients.PatronosAsoc",
+          PatronosAsocPage,
+          access
+        )}
       />
       <ContentRoute
         path={baseRouterUrl + "/statistics"}

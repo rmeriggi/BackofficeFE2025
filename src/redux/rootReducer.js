@@ -20,6 +20,7 @@ import { echecksSlice } from "../app/_redux/e-checks/echeksSlice";
 import { invoicesSlice } from "../app/_redux/invoices/invoicesSlice";
 import { notificationsSlice } from "../app/_redux/notifications/notificationsSlice";
 import { patronosSlice } from "../app/_redux/patronos/patronosSlice";
+import { relacionesSlice } from "../app/_redux/patronosRelaciones/relacionesSlice";
 import { relationsSlice } from "../app/_redux/relations/relationsSlice";
 import {
   signaturesByClientSlice,
@@ -33,6 +34,7 @@ export const rootReducer = combineReducers({
   combos: combosSlice.reducer,
   clients: clientsSlice.reducer,
   patronos: patronosSlice.reducer,
+  patronosRelaciones: relacionesSlice.reducer,
   bankAccounts: bankAccountsSlice.reducer,
   blotters: blottersSlice.reducer,
   relations: relationsSlice.reducer,

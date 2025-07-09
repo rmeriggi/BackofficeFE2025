@@ -36,10 +36,19 @@ export const createPatrono = (patrono) => (dispatch) => {
   return requestFromServer
     .createPatrono(patrono)
     .then((response) => {
-      dispatch(actions.patronoCreated({ patrono: response.data }));
+      const { success, id } = response.data;
+      if (success && id > 0) {
+        // Limpiar el estado de acciones y refrescar la lista
+        dispatch(actions.resetState());
+        dispatch(getAllPatronos());
+        return { success: true, id };
+      } else {
+        throw new Error("Error al crear el patrono");
+      }
     })
     .catch((error) => {
       dispatch(actions.catchError({ error, callType: callTypes.action }));
+      throw error; // Re-throw para que el componente pueda manejarlo
     });
 };
 

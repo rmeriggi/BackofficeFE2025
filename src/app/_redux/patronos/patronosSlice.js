@@ -68,6 +68,11 @@ export const patronosSlice = createSlice({
         (patrono) => patrono.id !== action.payload.patronoId
       );
     },
+    // Reset del estado para limpiar errores
+    resetState: (state) => {
+      state.lastError = null;
+      state.actionsLoading = false;
+    },
   },
 });
 

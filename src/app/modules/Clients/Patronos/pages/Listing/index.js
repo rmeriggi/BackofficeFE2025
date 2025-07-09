@@ -1,6 +1,13 @@
 import DateFnsUtils from "@date-io/date-fns";
 import { colors, createMuiTheme, ThemeProvider } from "@material-ui/core";
-import { Edit, FilterList, GridOn, List, Search } from "@material-ui/icons";
+import {
+  Add,
+  Edit,
+  FilterList,
+  GridOn,
+  List,
+  Search,
+} from "@material-ui/icons";
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
@@ -11,6 +18,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { LayoutSplashScreen } from "../../../../../../_metronic/layout";
 import { useFetchPatronos } from "../../../../../hooks";
+import NuevoPatronoModal from "../../components/NuevoPatronoModal";
 import {
   filterSearch,
   PatronoStatusCssClasses,
@@ -44,6 +52,8 @@ export default function PatronosListing() {
   const values = usePatronosContext();
   const [viewMode, setViewMode] = useState("grid");
   const [showFilters, setShowFilters] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [localFilters, setLocalFilters] = useState({
     searchText: "",
     status: 0,
@@ -131,6 +141,12 @@ export default function PatronosListing() {
     values.setQueryParams(newQueryParams);
   };
 
+  const handleModalSuccess = (message) => {
+    setSuccessMessage(message);
+    // Limpiar mensaje después de 5 segundos
+    setTimeout(() => setSuccessMessage(""), 5000);
+  };
+
   return (
     <div className="container-fluid">
       {/* Encabezado y acciones */}
@@ -159,9 +175,25 @@ export default function PatronosListing() {
             >
               {viewMode === "grid" ? <List /> : <GridOn />}
             </button>
+            <button
+              className="btn btn-success btn-icon"
+              onClick={() => setShowModal(true)}
+              title="Crear nuevo patrono"
+            >
+              <Add />
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Mensaje de éxito */}
+      {successMessage && (
+        <div className="alert alert-success mb-8" role="alert">
+          <div className="alert-text">
+            <strong>¡Éxito!</strong> {successMessage}
+          </div>
+        </div>
+      )}
 
       {/* Filtros */}
       {showFilters && (
@@ -494,6 +526,13 @@ export default function PatronosListing() {
           </div>
         </div>
       )}
+
+      {/* Modal para crear nuevo patrono */}
+      <NuevoPatronoModal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        onSuccess={handleModalSuccess}
+      />
     </div>
   );
 }

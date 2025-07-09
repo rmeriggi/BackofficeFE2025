@@ -377,9 +377,9 @@ export default function PatronosListing() {
                     </div>
                     <div className="d-flex">
                       <button
-                        onClick={() =>
+                        /*  onClick={() =>
                           history.push(`/clients/patronos/edit/${patrono.id}`)
-                        }
+                        } */
                         className="btn btn-sm btn-light-warning"
                       >
                         <Edit />
@@ -399,7 +399,7 @@ export default function PatronosListing() {
                 <thead>
                   <tr>
                     <th className="pl-7">
-                      <span className="text-dark-75">Cliente</span>
+                      <span className="text-dark-75">Patrono</span>
                     </th>
                     <th>
                       <span className="text-dark-75">Código</span>

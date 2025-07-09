@@ -20,12 +20,18 @@ export const createRelacion = (patronoId, clienteId) => (dispatch) => {
   return requestFromServer
     .createRelacion(patronoId, clienteId)
     .then((response) => {
-      dispatch(actions.relacionCreated({ relacion: response.data }));
-      // Refrescar la lista después de crear
-      dispatch(getAllRelaciones());
+      const { success, id } = response.data;
+      if (success && id > 0) {
+        // Limpiar el estado de acciones y refrescar la lista
+        dispatch(actions.resetState());
+        dispatch(getAllRelaciones());
+      } else {
+        throw new Error("Error al crear la relación");
+      }
     })
     .catch((error) => {
       dispatch(actions.catchError({ error, callType: callTypes.action }));
+      throw error; // Re-throw para que el componente pueda manejarlo
     });
 };
 

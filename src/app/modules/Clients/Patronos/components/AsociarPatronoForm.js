@@ -16,6 +16,7 @@ const AsociarPatronoForm = ({ onSuccess }) => {
   const [patronos, patronosLoading] = useFetchPatronos();
   const [clientes, clientesLoading] = useFetchClients();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   if (patronosLoading || clientesLoading) {
     return <LayoutSplashScreen />;
@@ -27,14 +28,42 @@ const AsociarPatronoForm = ({ onSuccess }) => {
   ) => {
     try {
       setIsSubmitting(true);
+      setSuccessMessage("");
+
       await dispatch(createRelacion(values.patronoId, values.clienteId));
+
+      // Buscar nombres para el mensaje de éxito
+      const patrono = patronos?.find((p) => p.id === values.patronoId);
+      const cliente = clientes?.find((c) => c.id === values.clienteId);
+
+      setSuccessMessage(
+        `Relación creada exitosamente entre ${patrono?.nombre ||
+          "Patrono"} y ${cliente?.name || "Cliente"} ${cliente?.lastName || ""}`
+      );
+
       resetForm();
       if (onSuccess) {
         onSuccess();
       }
+
+      // Limpiar mensaje de éxito después de 5 segundos
+      setTimeout(() => setSuccessMessage(""), 5000);
     } catch (error) {
       console.error("Error al asociar patrono:", error);
-      setFieldError("general", "Error al asociar patrono con cliente");
+
+      if (error.response?.status === 400) {
+        setFieldError(
+          "general",
+          "Los parámetros proporcionados no son válidos"
+        );
+      } else if (error.response?.data?.error) {
+        setFieldError("general", error.response.data.error);
+      } else {
+        setFieldError(
+          "general",
+          "Error al asociar patrono con cliente. Inténtalo de nuevo."
+        );
+      }
     } finally {
       setIsSubmitting(false);
       setSubmitting(false);
@@ -49,6 +78,14 @@ const AsociarPatronoForm = ({ onSuccess }) => {
         </div>
       </div>
       <div className="card-body">
+        {successMessage && (
+          <div className="alert alert-success mb-5" role="alert">
+            <div className="alert-text">
+              <strong>¡Éxito!</strong> {successMessage}
+            </div>
+          </div>
+        )}
+
         <Formik
           initialValues={{
             patronoId: "",
@@ -115,7 +152,9 @@ const AsociarPatronoForm = ({ onSuccess }) => {
 
               {errors.general && (
                 <div className="alert alert-danger mt-3" role="alert">
-                  {errors.general}
+                  <div className="alert-text">
+                    <strong>Error:</strong> {errors.general}
+                  </div>
                 </div>
               )}
 

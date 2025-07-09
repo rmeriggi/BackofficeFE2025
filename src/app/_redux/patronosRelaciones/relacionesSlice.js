@@ -41,17 +41,17 @@ export const relacionesSlice = createSlice({
       state.relaciones = relaciones;
       state.totalCount = relaciones.length;
     },
-    relacionCreated: (state, action) => {
-      state.actionsLoading = false;
-      state.lastError = null;
-      state.relaciones.push(action.payload.relacion);
-    },
     relacionDeleted: (state, action) => {
       state.lastError = null;
       state.actionsLoading = false;
       state.relaciones = state.relaciones.filter(
         (relacion) => relacion.id !== action.payload.relacionId
       );
+    },
+    // Reset del estado para limpiar errores
+    resetState: (state) => {
+      state.lastError = null;
+      state.actionsLoading = false;
     },
   },
 });

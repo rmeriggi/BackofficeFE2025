@@ -10,8 +10,8 @@ export function getAllRelaciones() {
 // Crear una nueva relación patrono-cliente
 export function createRelacion(patronoId, clienteId) {
   return axios.post(RELACIONES_URL, {
-    patronoId,
-    clienteId,
+    idpatrono: Number(patronoId),
+    idcliente: Number(clienteId),
   });
 }
 

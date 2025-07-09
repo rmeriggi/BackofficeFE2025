@@ -448,11 +448,11 @@ export default function PatronosListing() {
                       <td>
                         <div className="d-flex">
                           <button
-                            onClick={() =>
+                            /*   onClick={() =>
                               history.push(
                                 `/clients/patronos/edit/${patrono.id}`
                               )
-                            }
+                            } */
                             className="btn btn-sm btn-light-warning"
                           >
                             <Edit />

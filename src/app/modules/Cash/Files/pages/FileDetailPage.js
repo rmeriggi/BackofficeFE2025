@@ -5,9 +5,11 @@ import {
   Refresh,
   Search,
   TableChart,
+  Visibility,
 } from "@material-ui/icons";
 import React, { useCallback, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
+import DetalleMontoFileModal from "../components/DetalleMontoFileModal";
 import { usePlanillasRecibidas } from "../hooks/usePlanillasRecibidas";
 import { uploadService } from "../services/uploadService";
 
@@ -22,6 +24,12 @@ const FileDetailPage = () => {
   const [busqueda, setBusqueda] = useState("");
   const [filtroMes, setFiltroMes] = useState("todos");
   const [filtroAno, setFiltroAno] = useState("todos");
+
+  // Estados para el modal de detalle
+  const [showDetalleModal, setShowDetalleModal] = useState(false);
+  const [planillaSeleccionada, setPlanillaSeleccionada] = useState(null);
+  const [montoSeleccionado, setMontoSeleccionado] = useState(0);
+  const [cobradoSeleccionado, setCobradoSeleccionado] = useState(0);
 
   // Hook para obtener planillas recibidas (usando idpatrono = 0)
   const { planillas, loading, error, refetch } = usePlanillasRecibidas(0);
@@ -66,6 +74,22 @@ const FileDetailPage = () => {
       setApplyingFile(false);
     }
   }, [file, history]);
+
+  // Función para abrir el modal de detalle
+  const handleVerDetalle = (planilla) => {
+    setPlanillaSeleccionada(planilla);
+    setMontoSeleccionado(planilla.monto);
+    setCobradoSeleccionado(planilla.cobrado);
+    setShowDetalleModal(true);
+  };
+
+  // Función para cerrar el modal de detalle
+  const handleCerrarDetalle = () => {
+    setShowDetalleModal(false);
+    setPlanillaSeleccionada(null);
+    setMontoSeleccionado(0);
+    setCobradoSeleccionado(0);
+  };
 
   // Función para formatear fecha
   /*   const formatFecha = (fechaString) => {
@@ -413,6 +437,9 @@ const FileDetailPage = () => {
                     <th>
                       <span className="text-dark-75">Cobrado</span>
                     </th>
+                    <th className="text-center">
+                      <span className="text-dark-75">Acciones</span>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -469,11 +496,20 @@ const FileDetailPage = () => {
                             {formatMonto(parseFloat(planilla.cobrado || 0))}
                           </span>
                         </td>
+                        <td className="text-center">
+                          <button
+                            className="btn btn-sm btn-light-primary btn-icon"
+                            onClick={() => handleVerDetalle(planilla)}
+                            title="Ver detalle del monto"
+                          >
+                            <Visibility className="text-primary" />
+                          </button>
+                        </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="9" className="text-center py-10">
+                      <td colSpan="10" className="text-center py-10">
                         <div className="symbol symbol-100 symbol-light-primary mb-5">
                           <span className="symbol-label">
                             <TableChart
@@ -497,6 +533,15 @@ const FileDetailPage = () => {
           )}
         </div>
       </div>
+
+      {/* Modal de Detalle de Monto */}
+      <DetalleMontoFileModal
+        show={showDetalleModal}
+        onHide={handleCerrarDetalle}
+        planilla={planillaSeleccionada}
+        monto={montoSeleccionado}
+        cobrado={cobradoSeleccionado}
+      />
     </div>
   );
 };

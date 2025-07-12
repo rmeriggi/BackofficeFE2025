@@ -3,18 +3,19 @@ import {
   Add,
   CheckCircle,
   CloudDownload,
-  Delete,
-  Edit,
   Error,
   FilterList,
   GridOn,
+  Info,
   List,
   Refresh,
   Schedule,
   Search,
+  Visibility,
   Warning,
 } from "@material-ui/icons";
 import React, { useCallback, useMemo, useState } from "react";
+import DetalleConciliacionModal from "../components/DetalleConciliacionModal";
 import { NuevaConciliacionModal } from "../components/NuevaConciliacionModal";
 
 // Data mockeada para conciliaciones
@@ -158,6 +159,12 @@ const ConciliationPage = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Estados para el modal de detalle
+  const [showDetalleModal, setShowDetalleModal] = useState(false);
+  const [conciliacionSeleccionada, setConciliacionSeleccionada] = useState(
+    null
+  );
+
   // Estados de filtros
   const [busqueda, setBusqueda] = useState("");
   const [filtroBanco, setFiltroBanco] = useState("todos");
@@ -235,13 +242,23 @@ const ConciliationPage = () => {
     setShowModal(false);
   }, []);
 
-  // Función para eliminar conciliación
-  const handleEliminarConciliacion = useCallback((id) => {
-    if (
-      window.confirm("¿Está seguro de que desea eliminar esta conciliación?")
-    ) {
-      setConciliaciones((prev) => prev.filter((c) => c.id !== id));
-    }
+  // Función para ver información de conciliación
+  const handleVerInformacion = useCallback((conciliacion) => {
+    setConciliacionSeleccionada(conciliacion);
+    setShowDetalleModal(true);
+  }, []);
+
+  // Función para ver detalle de conciliación (preparado para futuro desarrollo)
+  const handleVerDetalle = useCallback((conciliacion) => {
+    // Aquí se implementará la lógica para mostrar el detalle
+    console.log("Ver detalle de conciliación:", conciliacion);
+    alert("Funcionalidad de detalle en desarrollo");
+  }, []);
+
+  // Función para cerrar modal de detalle
+  const handleCerrarDetalle = useCallback(() => {
+    setShowDetalleModal(false);
+    setConciliacionSeleccionada(null);
   }, []);
 
   // Función para exportar conciliaciones
@@ -607,22 +624,21 @@ const ConciliationPage = () => {
                       <div className="card-footer border-0 d-flex justify-content-between pt-0 pb-6 px-6">
                         <div className="d-flex">
                           <button
-                            className="btn btn-light-primary font-weight-bold mr-2"
-                            title="Editar"
+                            className="btn btn-light-info font-weight-bold mr-2"
+                            onClick={() => handleVerInformacion(conciliacion)}
+                            title="Información"
                           >
-                            <Edit className="mr-2" />
-                            Editar
+                            <Info className="mr-2" />
+                            Información
                           </button>
                         </div>
                         <button
-                          className="btn btn-light-danger font-weight-bold"
-                          onClick={() =>
-                            handleEliminarConciliacion(conciliacion.id)
-                          }
-                          title="Eliminar"
+                          className="btn btn-light-primary font-weight-bold"
+                          onClick={() => handleVerDetalle(conciliacion)}
+                          title="Ver Detalle"
                         >
-                          <Delete className="mr-2" />
-                          Eliminar
+                          <Visibility className="mr-2" />
+                          Ver Detalle
                         </button>
                       </div>
                     </div>
@@ -764,19 +780,18 @@ const ConciliationPage = () => {
                         <td className="text-right pr-7">
                           <div className="d-flex justify-content-end">
                             <button
-                              className="btn btn-icon btn-light-primary btn-sm mr-2"
-                              title="Editar"
+                              className="btn btn-icon btn-light-info btn-sm mr-2"
+                              onClick={() => handleVerInformacion(conciliacion)}
+                              title="Información"
                             >
-                              <Edit style={{ fontSize: 16 }} />
+                              <Info style={{ fontSize: 16 }} />
                             </button>
                             <button
-                              className="btn btn-icon btn-light-danger btn-sm"
-                              onClick={() =>
-                                handleEliminarConciliacion(conciliacion.id)
-                              }
-                              title="Eliminar"
+                              className="btn btn-icon btn-light-primary btn-sm"
+                              onClick={() => handleVerDetalle(conciliacion)}
+                              title="Ver Detalle"
                             >
-                              <Delete style={{ fontSize: 16 }} />
+                              <Visibility style={{ fontSize: 16 }} />
                             </button>
                           </div>
                         </td>
@@ -813,6 +828,13 @@ const ConciliationPage = () => {
         show={showModal}
         onHide={() => setShowModal(false)}
         onSave={handleNuevaConciliacion}
+      />
+
+      {/* Modal de Detalle */}
+      <DetalleConciliacionModal
+        show={showDetalleModal}
+        onHide={handleCerrarDetalle}
+        conciliacion={conciliacionSeleccionada}
       />
     </div>
   );

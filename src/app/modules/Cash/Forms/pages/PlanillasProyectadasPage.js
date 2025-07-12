@@ -9,7 +9,9 @@ import React, { useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 import { Card } from "../../../../../_metronic/_partials/controls";
 import { LayoutSplashScreen } from "../../../../../_metronic/layout";
+import { SnackbarMessage } from "../../../../components/SnackbarMessage";
 import { useFetchPatronos, usePlanillasProyectadas } from "../../../../hooks";
+import { useSnackBar } from "../../../../hooks/useSnackBar";
 import DetalleMontoModal from "../components/DetalleMontoModal";
 import { downloadPatronosCSV } from "../services/exportService";
 
@@ -24,6 +26,9 @@ export default function PlanillasProyectadasPage() {
   const [showDetalleModal, setShowDetalleModal] = useState(false);
   const [planillaSeleccionada, setPlanillaSeleccionada] = useState(null);
   const [montoSeleccionado, setMontoSeleccionado] = useState(0);
+
+  // Hook para notificaciones
+  const { open, variant, message, handleClose, setOpenMessage } = useSnackBar();
 
   // Obtener el token del estado
   const token = useSelector((state) => state.auth.authToken);
@@ -40,16 +45,16 @@ export default function PlanillasProyectadasPage() {
     try {
       const result = await downloadPatronosCSV(token);
       if (result.success) {
-        alert(result.message);
+        setOpenMessage("success", "CSV de patronos descargado exitosamente");
       } else {
-        alert(`Error: ${result.message}`);
+        setOpenMessage("error", `Error: ${result.message}`);
       }
     } catch (error) {
-      alert(`Error inesperado: ${error.message}`);
+      setOpenMessage("error", `Error inesperado: ${error.message}`);
     } finally {
       setIsDownloadingCSV(false);
     }
-  }, [token]);
+  }, [token, setOpenMessage]);
 
   // Función para abrir el modal de detalle
   const handleVerDetalle = (planilla) => {
@@ -202,172 +207,187 @@ export default function PlanillasProyectadasPage() {
       </Card>
 
       {/* Tabla de Planillas Proyectadas */}
-      {patronoSeleccionado && (
-        <Card>
-          <div className="card-header border-0 pt-6">
-            <div className="card-title">
-              <h3 className="card-label">
-                <Assignment className="mr-2" />
-                Planillas Proyectadas
-                {patronoActual && (
-                  <span className="text-muted font-size-sm ml-2">
-                    ({patronoActual.nombre})
-                  </span>
-                )}
-              </h3>
-            </div>
+      <Card>
+        <div className="card-header border-0 pt-6">
+          <div className="card-title">
+            <h3 className="card-label">
+              <Assignment className="mr-2" />
+              Planillas Proyectadas
+              {patronoActual && (
+                <span className="text-muted font-size-sm ml-2">
+                  ({patronoActual.nombre})
+                </span>
+              )}
+            </h3>
           </div>
-          <div className="card-body">
-            {planillasLoading ? (
-              <div className="d-flex justify-content-center py-10">
-                <div className="spinner-border text-primary" role="status">
-                  <span className="sr-only">Cargando...</span>
-                </div>
+        </div>
+        <div className="card-body">
+          {!patronoSeleccionado ? (
+            <div className="d-flex flex-column align-items-center py-10">
+              <div className="symbol symbol-100 symbol-light-primary mb-5">
+                <span className="symbol-label">
+                  <Assignment style={{ fontSize: 50, color: "#3699FF" }} />
+                </span>
               </div>
-            ) : error ? (
-              <div className="alert alert-danger">
-                <div className="alert-text">
-                  <strong>Error:</strong> {error}
-                </div>
+              <h3 className="text-dark font-weight-bolder mb-2">
+                Selecciona un patrono
+              </h3>
+              <p className="text-muted font-weight-bold">
+                Elige un patrono para ver sus planillas proyectadas
+              </p>
+            </div>
+          ) : planillasLoading ? (
+            <div className="d-flex justify-content-center py-10">
+              <div className="spinner-border text-primary" role="status">
+                <span className="sr-only">Cargando...</span>
               </div>
-            ) : planillas.length === 0 ? (
-              <div className="d-flex flex-column align-items-center py-10">
-                <div className="symbol symbol-100 symbol-light-warning mb-5">
-                  <span className="symbol-label">
-                    <Assignment style={{ fontSize: 50, color: "#FFA800" }} />
-                  </span>
-                </div>
-                <h3 className="text-dark font-weight-bolder mb-2">
-                  No hay planillas proyectadas
-                </h3>
-                <p className="text-muted font-weight-bold">
-                  Este patrono no tiene planillas proyectadas disponibles
-                </p>
+            </div>
+          ) : error ? (
+            <div className="alert alert-danger">
+              <div className="alert-text">
+                <strong>Error:</strong> {error}
               </div>
-            ) : (
-              <div className="table-responsive">
-                <table className="table table-head-custom table-vertical-center overflow-hidden">
-                  <thead>
-                    <tr>
-                      <th className="text-center">
-                        <span className="text-dark-75 font-weight-bolder">
-                          Período
+            </div>
+          ) : planillas.length === 0 ? (
+            <div className="d-flex flex-column align-items-center py-10">
+              <div className="symbol symbol-100 symbol-light-warning mb-5">
+                <span className="symbol-label">
+                  <Assignment style={{ fontSize: 50, color: "#FFA800" }} />
+                </span>
+              </div>
+              <h3 className="text-dark font-weight-bolder mb-2">
+                No hay planillas proyectadas
+              </h3>
+              <p className="text-muted font-weight-bold">
+                Este patrono no tiene planillas proyectadas disponibles
+              </p>
+            </div>
+          ) : (
+            <div className="table-responsive">
+              <table className="table table-head-custom table-vertical-center overflow-hidden">
+                <thead>
+                  <tr>
+                    <th className="text-center">
+                      <span className="text-dark-75 font-weight-bolder">
+                        Período
+                      </span>
+                    </th>
+                    <th className="text-center">
+                      <span className="text-dark-75 font-weight-bolder">
+                        Identidad
+                      </span>
+                    </th>
+                    <th className="text-center">
+                      <span className="text-dark-75 font-weight-bolder">
+                        Código
+                      </span>
+                    </th>
+                    <th className="text-center">
+                      <span className="text-dark-75 font-weight-bolder">
+                        Tipo
+                      </span>
+                    </th>
+                    <th className="text-center">
+                      <span className="text-dark-75 font-weight-bolder">
+                        Monto
+                      </span>
+                    </th>
+                    <th className="text-center">
+                      <span className="text-dark-75 font-weight-bolder">
+                        Acciones
+                      </span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {planillas.map((planilla, index) => (
+                    <tr key={index} className="border-bottom">
+                      <td className="text-center">
+                        <span className="text-dark font-weight-bolder">
+                          {formatearMes(planilla.mes)} {planilla.ano}
                         </span>
-                      </th>
-                      <th className="text-center">
-                        <span className="text-dark-75 font-weight-bolder">
-                          Identidad
+                      </td>
+                      <td className="text-center">
+                        <span className="text-dark font-weight-bolder">
+                          {planilla.identidad}
                         </span>
-                      </th>
-                      <th className="text-center">
-                        <span className="text-dark-75 font-weight-bolder">
-                          Código
+                      </td>
+                      <td className="text-center">
+                        <span className="text-dark font-weight-bolder">
+                          {planilla.codigo}
                         </span>
-                      </th>
-                      <th className="text-center">
-                        <span className="text-dark-75 font-weight-bolder">
-                          Tipo
+                      </td>
+                      <td className="text-center">
+                        <span className="text-dark font-weight-bolder">
+                          {planilla.tipo}
                         </span>
-                      </th>
-                      <th className="text-center">
-                        <span className="text-dark-75 font-weight-bolder">
-                          Monto
+                      </td>
+                      <td className="text-center">
+                        <span className="text-success font-weight-bolder font-size-lg">
+                          {formatearMonto(planilla.monto)}
                         </span>
-                      </th>
-                      <th className="text-center">
-                        <span className="text-dark-75 font-weight-bolder">
-                          Acciones
-                        </span>
-                      </th>
+                      </td>
+                      <td className="text-center">
+                        <button
+                          className="btn btn-sm btn-light-primary btn-icon"
+                          onClick={() => handleVerDetalle(planilla)}
+                          title="Ver detalle del monto"
+                        >
+                          <Visibility className="text-primary" />
+                        </button>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {planillas.map((planilla, index) => (
-                      <tr key={index} className="border-bottom">
-                        <td className="text-center">
-                          <span className="text-dark font-weight-bolder">
-                            {formatearMes(planilla.mes)} {planilla.ano}
-                          </span>
-                        </td>
-                        <td className="text-center">
-                          <span className="text-dark font-weight-bolder">
-                            {planilla.identidad}
-                          </span>
-                        </td>
-                        <td className="text-center">
-                          <span className="text-dark font-weight-bolder">
-                            {planilla.codigo}
-                          </span>
-                        </td>
-                        <td className="text-center">
-                          <span className="text-dark font-weight-bolder">
-                            {planilla.tipo}
-                          </span>
-                        </td>
-                        <td className="text-center">
-                          <span className="text-success font-weight-bolder font-size-lg">
-                            {formatearMonto(planilla.monto)}
-                          </span>
-                        </td>
-                        <td className="text-center">
-                          <button
-                            className="btn btn-sm btn-light-primary btn-icon"
-                            onClick={() => handleVerDetalle(planilla)}
-                            title="Ver detalle del monto"
-                          >
-                            <Visibility className="text-primary" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
 
-            {/* Estadísticas */}
-            {planillas.length > 0 && (
-              <div className="mt-8">
-                <div className="row">
-                  <div className="col-md-3">
-                    <div className="card card-custom bg-light-primary">
-                      <div className="card-body">
-                        <div className="d-flex align-items-center">
-                          <div className="symbol symbol-45 symbol-primary mr-5">
-                            <span className="symbol-label">
-                              <Assignment style={{ fontSize: 20 }} />
-                            </span>
-                          </div>
-                          <div>
-                            <div className="text-dark font-weight-bolder font-size-h6">
-                              Total Planillas
-                            </div>
-                            <div className="text-primary font-weight-bold font-size-h4">
-                              {planillas.length}
-                            </div>
-                          </div>
+          {/* Estadísticas */}
+          <div className="mt-8">
+            <div className="row">
+              <div className="col-md-3">
+                <div className="card card-custom bg-light-primary">
+                  <div className="card-body">
+                    <div className="d-flex align-items-center">
+                      <div className="symbol symbol-45 symbol-primary mr-5">
+                        <span className="symbol-label">
+                          <Assignment style={{ fontSize: 20 }} />
+                        </span>
+                      </div>
+                      <div>
+                        <div className="text-dark font-weight-bolder font-size-h6">
+                          Total Planillas
+                        </div>
+                        <div className="text-primary font-weight-bold font-size-h4">
+                          {patronoSeleccionado && planillas
+                            ? planillas.length
+                            : "--"}
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-3">
-                    <div className="card card-custom bg-light-success">
-                      <div className="card-body">
-                        <div className="d-flex align-items-center">
-                          <div className="symbol symbol-45 symbol-success mr-5">
-                            <span className="symbol-label">
-                              <i
-                                className="fas fa-dollar-sign"
-                                style={{ fontSize: 20 }}
-                              />
-                            </span>
-                          </div>
-                          <div>
-                            <div className="text-dark font-weight-bolder font-size-h6">
-                              Monto Total
-                            </div>
-                            <div className="text-success font-weight-bold font-size-h4">
-                              {formatearMonto(
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="card card-custom bg-light-success">
+                  <div className="card-body">
+                    <div className="d-flex align-items-center">
+                      <div className="symbol symbol-45 symbol-success mr-5">
+                        <span className="symbol-label">
+                          <i
+                            className="fas fa-dollar-sign"
+                            style={{ fontSize: 20 }}
+                          />
+                        </span>
+                      </div>
+                      <div>
+                        <div className="text-dark font-weight-bolder font-size-h6">
+                          Monto Total
+                        </div>
+                        <div className="text-success font-weight-bold font-size-h4">
+                          {patronoSeleccionado && planillas
+                            ? formatearMonto(
                                 planillas
                                   .reduce(
                                     (total, planilla) =>
@@ -375,31 +395,35 @@ export default function PlanillasProyectadasPage() {
                                     0
                                   )
                                   .toString()
-                              )}
-                            </div>
-                          </div>
+                              )
+                            : "$--"}
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-3">
-                    <div className="card card-custom bg-light-warning">
-                      <div className="card-body">
-                        <div className="d-flex align-items-center">
-                          <div className="symbol symbol-45 symbol-warning mr-5">
-                            <span className="symbol-label">
-                              <i
-                                className="fas fa-calculator"
-                                style={{ fontSize: 20 }}
-                              />
-                            </span>
-                          </div>
-                          <div>
-                            <div className="text-dark font-weight-bolder font-size-h6">
-                              Promedio
-                            </div>
-                            <div className="text-warning font-weight-bold font-size-h4">
-                              {formatearMonto(
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="card card-custom bg-light-warning">
+                  <div className="card-body">
+                    <div className="d-flex align-items-center">
+                      <div className="symbol symbol-45 symbol-warning mr-5">
+                        <span className="symbol-label">
+                          <i
+                            className="fas fa-calculator"
+                            style={{ fontSize: 20 }}
+                          />
+                        </span>
+                      </div>
+                      <div>
+                        <div className="text-dark font-weight-bolder font-size-h6">
+                          Promedio
+                        </div>
+                        <div className="text-warning font-weight-bold font-size-h4">
+                          {patronoSeleccionado &&
+                          planillas &&
+                          planillas.length > 0
+                            ? formatearMonto(
                                 (
                                   planillas.reduce(
                                     (total, planilla) =>
@@ -407,49 +431,48 @@ export default function PlanillasProyectadasPage() {
                                     0
                                   ) / planillas.length
                                 ).toString()
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-3">
-                    <div className="card card-custom bg-light-info">
-                      <div className="card-body">
-                        <div className="d-flex align-items-center">
-                          <div className="symbol symbol-45 symbol-info mr-5">
-                            <span className="symbol-label">
-                              <i
-                                className="fas fa-calendar-alt"
-                                style={{ fontSize: 20 }}
-                              />
-                            </span>
-                          </div>
-                          <div>
-                            <div className="text-dark font-weight-bolder font-size-h6">
-                              Períodos
-                            </div>
-                            <div className="text-info font-weight-bold font-size-h4">
-                              {
-                                [
-                                  ...new Set(
-                                    planillas.map((p) => `${p.mes}/${p.ano}`)
-                                  ),
-                                ].length
-                              }
-                            </div>
-                          </div>
+                              )
+                            : "$--"}
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            )}
+              <div className="col-md-3">
+                <div className="card card-custom bg-light-info">
+                  <div className="card-body">
+                    <div className="d-flex align-items-center">
+                      <div className="symbol symbol-45 symbol-info mr-5">
+                        <span className="symbol-label">
+                          <i
+                            className="fas fa-calendar-alt"
+                            style={{ fontSize: 20 }}
+                          />
+                        </span>
+                      </div>
+                      <div>
+                        <div className="text-dark font-weight-bolder font-size-h6">
+                          Períodos
+                        </div>
+                        <div className="text-info font-weight-bold font-size-h4">
+                          {patronoSeleccionado && planillas
+                            ? [
+                                ...new Set(
+                                  planillas.map((p) => `${p.mes}/${p.ano}`)
+                                ),
+                              ].length
+                            : "--"}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </Card>
-      )}
+        </div>
+      </Card>
 
       {/* Modal de Detalle de Monto */}
       <DetalleMontoModal
@@ -457,6 +480,12 @@ export default function PlanillasProyectadasPage() {
         onHide={handleCerrarDetalle}
         planilla={planillaSeleccionada}
         monto={montoSeleccionado}
+      />
+      <SnackbarMessage
+        open={open}
+        variant={variant}
+        message={message}
+        handleClose={handleClose}
       />
     </div>
   );

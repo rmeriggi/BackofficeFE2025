@@ -15,6 +15,7 @@ import {
   Warning,
 } from "@material-ui/icons";
 import React, { useCallback, useMemo, useState } from "react";
+import ConciliacionModal from "../components/ConciliacionModal";
 import DetalleConciliacionModal from "../components/DetalleConciliacionModal";
 import { NuevaConciliacionModal } from "../components/NuevaConciliacionModal";
 
@@ -159,9 +160,15 @@ const ConciliationPage = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Estados para el modal de detalle
+  // Estados para el modal de detalle (información)
   const [showDetalleModal, setShowDetalleModal] = useState(false);
   const [conciliacionSeleccionada, setConciliacionSeleccionada] = useState(
+    null
+  );
+
+  // Estados para el modal de conciliación (ver detalle)
+  const [showConciliacionModal, setShowConciliacionModal] = useState(false);
+  const [conciliacionParaConciliar, setConciliacionParaConciliar] = useState(
     null
   );
 
@@ -248,17 +255,22 @@ const ConciliationPage = () => {
     setShowDetalleModal(true);
   }, []);
 
-  // Función para ver detalle de conciliación (preparado para futuro desarrollo)
+  // Función para ver detalle de conciliación (modal de conciliación)
   const handleVerDetalle = useCallback((conciliacion) => {
-    // Aquí se implementará la lógica para mostrar el detalle
-    console.log("Ver detalle de conciliación:", conciliacion);
-    alert("Funcionalidad de detalle en desarrollo");
+    setConciliacionParaConciliar(conciliacion);
+    setShowConciliacionModal(true);
   }, []);
 
-  // Función para cerrar modal de detalle
+  // Función para cerrar modal de detalle (información)
   const handleCerrarDetalle = useCallback(() => {
     setShowDetalleModal(false);
     setConciliacionSeleccionada(null);
+  }, []);
+
+  // Función para cerrar modal de conciliación
+  const handleCerrarConciliacion = useCallback(() => {
+    setShowConciliacionModal(false);
+    setConciliacionParaConciliar(null);
   }, []);
 
   // Función para exportar conciliaciones
@@ -382,7 +394,7 @@ const ConciliationPage = () => {
                 onClick={() => setShowModal(true)}
               >
                 <Add className="mr-2" />
-                Nueva Conciliación
+                Conciliación Banco
               </button>
             </div>
           </div>
@@ -830,11 +842,18 @@ const ConciliationPage = () => {
         onSave={handleNuevaConciliacion}
       />
 
-      {/* Modal de Detalle */}
+      {/* Modal de Detalle (Información) */}
       <DetalleConciliacionModal
         show={showDetalleModal}
         onHide={handleCerrarDetalle}
         conciliacion={conciliacionSeleccionada}
+      />
+
+      {/* Modal de Conciliación (Ver Detalle) */}
+      <ConciliacionModal
+        show={showConciliacionModal}
+        handleClose={handleCerrarConciliacion}
+        conciliacion={conciliacionParaConciliar}
       />
     </div>
   );

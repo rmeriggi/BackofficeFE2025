@@ -1,6 +1,6 @@
 import axios from "axios";
-
-export const PATRONOS_URL = "http://localhost:3005/clients/patronos";
+const API_URL = process.env.REACT_APP_API_URL;
+export const PATRONOS_URL = `${API_URL}/clients/patronos`;
 
 // Obtener todos los patronos
 export function getAllPatronos(search = "*") {

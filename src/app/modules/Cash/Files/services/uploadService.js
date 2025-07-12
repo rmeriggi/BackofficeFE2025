@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:3005";
+const BASE_URL = process.env.REACT_APP_API_URL;
 
 // Función para subir archivo TXT al endpoint final
 const uploadTxtFile = async (fileInfo, authToken = null) => {

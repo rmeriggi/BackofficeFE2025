@@ -1,6 +1,6 @@
 import axios from "axios";
-
-export const RELACIONES_URL = "http://localhost:3005/clients/patronos/relacion";
+const API_URL = process.env.REACT_APP_API_URL;
+export const RELACIONES_URL = `${API_URL}/clients/patronos/relacion`;
 
 // Obtener todas las relaciones patrono-cliente
 export function getAllRelaciones() {

@@ -1,9 +1,16 @@
-import { Assignment, GetApp, Refresh, Search } from "@material-ui/icons";
+import {
+  Assignment,
+  GetApp,
+  Refresh,
+  Search,
+  Visibility,
+} from "@material-ui/icons";
 import React, { useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 import { Card } from "../../../../../_metronic/_partials/controls";
 import { LayoutSplashScreen } from "../../../../../_metronic/layout";
 import { useFetchPatronos, usePlanillasProyectadas } from "../../../../hooks";
+import DetalleMontoModal from "../components/DetalleMontoModal";
 import { downloadPatronosCSV } from "../services/exportService";
 
 export default function PlanillasProyectadasPage() {
@@ -12,6 +19,11 @@ export default function PlanillasProyectadasPage() {
   const [busquedaPatrono, setBusquedaPatrono] = useState("");
   const [showFilters /* setShowFilters */] = useState(true);
   const [isDownloadingCSV, setIsDownloadingCSV] = useState(false);
+
+  // Estados para el modal de detalle
+  const [showDetalleModal, setShowDetalleModal] = useState(false);
+  const [planillaSeleccionada, setPlanillaSeleccionada] = useState(null);
+  const [montoSeleccionado, setMontoSeleccionado] = useState(0);
 
   // Obtener el token del estado
   const token = useSelector((state) => state.auth.authToken);
@@ -38,6 +50,24 @@ export default function PlanillasProyectadasPage() {
       setIsDownloadingCSV(false);
     }
   }, [token]);
+
+  // Función para abrir el modal de detalle
+  const handleVerDetalle = (planilla) => {
+    const planillaConPeriodo = {
+      ...planilla,
+      periodo: `${formatearMes(planilla.mes)} ${planilla.ano}`,
+    };
+    setPlanillaSeleccionada(planillaConPeriodo);
+    setMontoSeleccionado(planilla.monto);
+    setShowDetalleModal(true);
+  };
+
+  // Función para cerrar el modal de detalle
+  const handleCerrarDetalle = () => {
+    setShowDetalleModal(false);
+    setPlanillaSeleccionada(null);
+    setMontoSeleccionado(0);
+  };
 
   if (patronosLoading) {
     return <LayoutSplashScreen />;
@@ -244,6 +274,11 @@ export default function PlanillasProyectadasPage() {
                           Monto
                         </span>
                       </th>
+                      <th className="text-center">
+                        <span className="text-dark-75 font-weight-bolder">
+                          Acciones
+                        </span>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -273,6 +308,15 @@ export default function PlanillasProyectadasPage() {
                           <span className="text-success font-weight-bolder font-size-lg">
                             {formatearMonto(planilla.monto)}
                           </span>
+                        </td>
+                        <td className="text-center">
+                          <button
+                            className="btn btn-sm btn-light-primary btn-icon"
+                            onClick={() => handleVerDetalle(planilla)}
+                            title="Ver detalle del monto"
+                          >
+                            <Visibility className="text-primary" />
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -406,6 +450,14 @@ export default function PlanillasProyectadasPage() {
           </div>
         </Card>
       )}
+
+      {/* Modal de Detalle de Monto */}
+      <DetalleMontoModal
+        show={showDetalleModal}
+        onHide={handleCerrarDetalle}
+        planilla={planillaSeleccionada}
+        monto={montoSeleccionado}
+      />
     </div>
   );
 }

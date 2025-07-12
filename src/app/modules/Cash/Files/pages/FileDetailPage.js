@@ -68,7 +68,7 @@ const FileDetailPage = () => {
   }, [file, history]);
 
   // Función para formatear fecha
-  const formatFecha = (fechaString) => {
+  /*   const formatFecha = (fechaString) => {
     if (!fechaString) return "N/A";
     try {
       const fecha = new Date(fechaString);
@@ -82,7 +82,7 @@ const FileDetailPage = () => {
     } catch {
       return fechaString;
     }
-  };
+  }; */
 
   // Función para formatear monto
   const formatMonto = (monto) => {
@@ -91,6 +91,20 @@ const FileDetailPage = () => {
       style: "currency",
       currency: "ARS",
     }).format(monto);
+  };
+
+  // Función para determinar el color del monto cobrado
+  const getColorCobrado = (cobrado, monto) => {
+    const cobradoNum = parseFloat(cobrado) || 0;
+    const montoNum = parseFloat(monto) || 0;
+
+    if (cobradoNum === montoNum) {
+      return "text-success"; // Verde si son iguales
+    } else if (cobradoNum < montoNum) {
+      return "text-danger"; // Rojo si cobrado es menor
+    } else {
+      return "text-warning"; // Amarillo si cobrado es mayor (caso edge)
+    }
   };
 
   // Función para obtener nombre del mes
@@ -140,6 +154,10 @@ const FileDetailPage = () => {
   const totalPlanillas = planillasFiltradas.length;
   const montoTotal = planillasFiltradas.reduce(
     (sum, p) => sum + (parseFloat(p.monto) || 0),
+    0
+  );
+  const cobradoTotal = planillasFiltradas.reduce(
+    (sum, p) => sum + (parseFloat(p.cobrado) || 0),
     0
   );
   const clientesUnicos = new Set(planillasFiltradas.map((p) => p.identidad))
@@ -199,7 +217,7 @@ const FileDetailPage = () => {
           </div>
 
           {/* Métricas */}
-          <div className="row mb-6">
+          <div className="row">
             <div className="col-md-3">
               <div className="bg-white bg-opacity-20 rounded p-4 text-center">
                 <div className="text-dark font-weight-bolder font-size-h3 mb-1">
@@ -232,29 +250,41 @@ const FileDetailPage = () => {
             </div>
             <div className="col-md-3">
               <div className="bg-white bg-opacity-20 rounded p-4 text-center">
-                <button
-                  className="btn btn-success btn-lg font-weight-bolder"
-                  onClick={handleApplyFile}
-                  disabled={applyingFile}
-                >
-                  {applyingFile ? (
-                    <>
-                      <div
-                        className="spinner-border spinner-border-sm mr-2"
-                        role="status"
-                      >
-                        <span className="sr-only">Cargando...</span>
-                      </div>
-                      Aplicando...
-                    </>
-                  ) : (
-                    <>
-                      <CloudUpload className="mr-2" />
-                      Aplicar Archivo
-                    </>
-                  )}
-                </button>
+                <div className="text-dark font-weight-bolder font-size-h3 mb-1">
+                  {formatMonto(cobradoTotal)}
+                </div>
+                <div className="text-white-75 font-weight-bold">
+                  Cobrado Total
+                </div>
               </div>
+            </div>
+          </div>
+
+          {/* Botón de aplicar archivo */}
+          <div className="row mt-6">
+            <div className="col-12 text-center">
+              <button
+                className="btn btn-success btn-lg font-weight-bolder"
+                onClick={handleApplyFile}
+                disabled={applyingFile}
+              >
+                {applyingFile ? (
+                  <>
+                    <div
+                      className="spinner-border spinner-border-sm mr-2"
+                      role="status"
+                    >
+                      <span className="sr-only">Cargando...</span>
+                    </div>
+                    Aplicando...
+                  </>
+                ) : (
+                  <>
+                    <CloudUpload className="mr-2" />
+                    Aplicar Archivo
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </div>
@@ -380,6 +410,9 @@ const FileDetailPage = () => {
                     <th>
                       <span className="text-dark-75">Monto</span>
                     </th>
+                    <th>
+                      <span className="text-dark-75">Cobrado</span>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -426,11 +459,21 @@ const FileDetailPage = () => {
                             {formatMonto(parseFloat(planilla.monto))}
                           </span>
                         </td>
+                        <td>
+                          <span
+                            className={`font-weight-bolder ${getColorCobrado(
+                              planilla.cobrado,
+                              planilla.monto
+                            )}`}
+                          >
+                            {formatMonto(parseFloat(planilla.cobrado || 0))}
+                          </span>
+                        </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="8" className="text-center py-10">
+                      <td colSpan="9" className="text-center py-10">
                         <div className="symbol symbol-100 symbol-light-primary mb-5">
                           <span className="symbol-label">
                             <TableChart

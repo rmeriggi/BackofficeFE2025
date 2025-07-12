@@ -1,6 +1,6 @@
 import axios from "axios";
-
-const BASE_URL = "http://localhost:3005/clients/patronos";
+const API_URL = process.env.REACT_APP_API_URL;
+const BASE_URL = `${API_URL}/clients/patronos`;
 
 // Obtener planillas proyectadas por patrono
 export const getPlanillasProyectadas = async (idPatrono) => {
